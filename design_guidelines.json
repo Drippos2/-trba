@@ -1,0 +1,75 @@
+{
+  "theme": "dark/light contrast",
+  "archetype": "5 (Jewel & Luxury)",
+  "vibe": "Cinematic, minimalist, exclusive, Apple-style UI, emotionally driven travel brand",
+  "typography": {
+    "headings": {
+      "family": "Outfit, sans-serif",
+      "weights": ["300", "400", "700"],
+      "usage": "H1: text-5xl to text-6xl+ tracking-tighter; H2: text-3xl to text-4xl tracking-tight. DO NOT USE INTER OR BANNED FONTS."
+    },
+    "body": {
+      "family": "Manrope, sans-serif",
+      "weights": ["400", "500", "600"],
+      "usage": "text-base to text-lg leading-relaxed. DO NOT USE INTER."
+    },
+    "accent": {
+      "usage": "Uppercase, wide tracking (tracking-[0.2em]), tiny size (text-xs) for overlines and labels."
+    }
+  },
+  "colors": {
+    "background_dark": "#0A0D10",
+    "background_light": "#F8F9FA",
+    "surface_dark": "#12161A",
+    "surface_glass_dark": "bg-black/60 backdrop-blur-2xl border-white/10",
+    "surface_glass_light": "bg-white/70 backdrop-blur-xl border-black/5",
+    "primary": "#E2C073",
+    "primary_hover": "#D1AF62",
+    "text_dark_theme": "#FAFAFA",
+    "text_muted_dark": "#A1A1AA",
+    "text_light_theme": "#0A0D10",
+    "text_muted_light": "#52525B"
+  },
+  "spacing_and_layout": {
+    "generous_spacing": "Use p-8 to p-24 for section paddings. Let elements breathe.",
+    "hero_section": "min-h-[90vh] or 100vh. Absolute positioned background media with bg-black/40 to bg-black/50 overlay. Content optically aligned. Use a gradient overlay if text needs contrast.",
+    "bento_grid": "Use asymmetrical Tetris grid (grid-cols-1 md:grid-cols-12) for Wellness and Rooms to break standard layouts. E.g., col-span-8 row-span-2 for primary image.",
+    "admin_dashboard": "Use Control Room Grid. grid-cols-1 md:grid-cols-4 gap-4. Dense, highly functional, Swiss High-Contrast styling. Minimal border-radius."
+  },
+  "components": {
+    "navigation": "Sticky, z-50. Must use surface_glass_dark or surface_glass_light depending on page context. 1px bottom border. Include language switcher (SK/EN/DE) and Booking CTA.",
+    "buttons": "Primary: Solid #E2C073 text-black, rounded-none or rounded-sm, hover:scale-[1.02] transition-transform. Secondary: Glass or outline with subtle hover backgrounds.",
+    "cards": "For rooms: Avoid standard Shadcn card. Use pure HTML/Tailwind divs with group-hover:scale-105 on inner images, overflow-hidden, and glassmorphism overlays for text. Max 8px border-radius.",
+    "booking_widget": "Floating or docked glassmorphism bar with Shadcn datepicker, select inputs for guests/rooms, and a high-contrast Book Now button.",
+    "admin_components": "Use Shadcn customized for high-density. Sharp edges (rounded-sm or rounded-none). Recharts for analytics if needed."
+  },
+  "animations": {
+    "scroll": "Use Lenis for momentum scrolling (critical for luxury feel).",
+    "reveal": "Framer Motion for staggered fade-up (y: 20, opacity: 0 -> 1) on scroll.",
+    "microinteractions": "Subtle scale on hover for images. Hover text color changes MUST be explicitly defined.",
+    "parallax": "Use React Spring Parallax or Framer Motion useScroll for subtle background image drift."
+  },
+  "media": {
+    "hero_video_placeholder": "https://static.prod-images.emergentagent.com/jobs/e43b77f6-51b2-49e2-9989-e4ce4fceb8db/images/70c8457f0e00c33e55375be19db01278e14a08b6d5fd08ac2904038a0dc5c8d3.png",
+    "wellness_jacuzzi": "https://static.prod-images.emergentagent.com/jobs/e43b77f6-51b2-49e2-9989-e4ce4fceb8db/images/07f00b7b4c15e4b94be7580fb48376e59442360ce13c71e8d57e81b6469c2fc9.png",
+    "wellness_sauna": "https://images.pexels.com/photos/36420271/pexels-photo-36420271.jpeg",
+    "room_standard": "https://images.pexels.com/photos/18201945/pexels-photo-18201945.jpeg",
+    "room_premium": "https://images.unsplash.com/photo-1776763255122-3d35e32aee64",
+    "location_tatras": "https://images.pexels.com/photos/32275767/pexels-photo-32275767.jpeg",
+    "admin_background": "https://static.prod-images.emergentagent.com/jobs/e43b77f6-51b2-49e2-9989-e4ce4fceb8db/images/e954e567f7859c413074d40dc4964e6f1084c669b03f821123b8963845a9a41b.png"
+  },
+  "testing": {
+    "attributes": "All interactive elements MUST include data-testid. Example: data-testid='booking-submit-button', data-testid='language-switcher'."
+  },
+  "instructions_to_main_agent": [
+    "Build the frontend using React, Tailwind CSS, Framer Motion, and Shadcn UI primitives.",
+    "Implement Lenis for smooth scrolling.",
+    "Ensure dark/light mode contrast across marketing and admin views.",
+    "Install and use lucide-react for all iconography (Services, Amenities, Admin Sidebar).",
+    "Use the exact image URLs provided in the media section. Do not use placeholders like via.placeholder.com.",
+    "Apply Outfit for headings and Manrope for body text via Google Fonts.",
+    "For the admin panel, strip out 'luxury' spacing and use dense, high-contrast utility layouts.",
+    "Implement the multi-language UI switcher logic (UI level).",
+    "Ensure the hero section implements a cinematic parallax effect."
+  ]
+}

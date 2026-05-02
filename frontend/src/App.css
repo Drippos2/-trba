@@ -1,0 +1,5 @@
+/* Component-level overrides, kept minimal. Global styling lives in index.css */
+
+.App {
+  min-height: 100vh;
+}
