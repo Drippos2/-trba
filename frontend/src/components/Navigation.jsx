@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Menu, X } from "lucide-react";
 import { useLang } from "@/contexts/LangContext";
 import LanguageSwitcher from "./LanguageSwitcher";
 import Logo from "./Logo";
@@ -10,7 +9,7 @@ const links = [
   { href: "#rooms", key: "nav.rooms" },
   { href: "#wellness", key: "nav.wellness" },
   { href: "#audiences", key: "nav.audiences" },
-  { href: "#pricing", key: "nav.pricing" }, // Pridaný odkaz na cenník
+  { href: "#pricing", key: "nav.pricing" }, 
   { href: "#services", key: "nav.services" },
   { href: "#location", key: "nav.location" },
   { href: "#reviews", key: "nav.reviews" },
@@ -20,7 +19,6 @@ const links = [
 export default function Navigation({ onBookClick }) {
   const { tr } = useLang();
   const [scrolled, setScrolled] = useState(false);
-  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 30);
@@ -40,6 +38,7 @@ export default function Navigation({ onBookClick }) {
           <Logo size={64} />
         </a>
 
+        {/* Desktop menu - ostáva skryté na mobiloch (lg:flex) */}
         <nav className="hidden lg:flex items-center gap-7 text-sm text-slate-600">
           {links.map((l) => (
             <a
@@ -55,52 +54,21 @@ export default function Navigation({ onBookClick }) {
 
         <div className="flex items-center gap-4">
           <LanguageSwitcher />
+          
+          {/* Tlačidlo rezervácie - teraz viditeľné aj na mobile (odstránené hidden md:inline-flex) */}
           <button
             data-testid="nav-book-btn"
             onClick={onBookClick}
-            className="btn-primary hidden md:inline-flex !py-2.5 !px-5 text-sm"
+            className="btn-primary flex !py-2.5 !px-5 text-sm"
           >
             {tr("nav.book")}
           </button>
 
-          <button
-            data-testid="nav-mobile-toggle"
-            className="lg:hidden text-slate-700"
-            onClick={() => setOpen((v) => !v)}
-            aria-label="Menu"
-          >
-            {open ? <X size={22} /> : <Menu size={22} />}
-          </button>
+          {/* TRI ČIARKY (MOBILE TOGGLE) BOLI ODSTRÁNENÉ */}
         </div>
       </div>
 
-      {open && (
-        <div data-testid="nav-mobile-menu" className="lg:hidden glass-nav border-t border-slate-200">
-          <div className="px-6 py-6 flex flex-col gap-4 text-slate-700">
-            {links.map((l) => (
-              <a
-                key={l.href}
-                href={l.href}
-                onClick={() => setOpen(false)}
-                className="py-1"
-                data-testid={`nav-mob-${l.key.split(".")[1]}`}
-              >
-                {tr(l.key)}
-              </a>
-            ))}
-            <button
-              data-testid="nav-mob-book-btn"
-              onClick={() => {
-                setOpen(false);
-                onBookClick?.();
-              }}
-              className="btn-primary text-sm mt-2 justify-center"
-            >
-              {tr("nav.book")}
-            </button>
-          </div>
-        </div>
-      )}
+      {/* MOBILNÉ MENU (OVERLAY) BOLO ODSTRÁNENÉ */}
     </header>
   );
 }
