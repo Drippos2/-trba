@@ -34,6 +34,7 @@ const Lightbox = ({ images, currentIndex, onClose, onNext, onPrev }) => {
         animate={{ scale: 1, opacity: 1 }}
         className="max-w-full max-h-full object-contain shadow-2xl rounded-sm"
         onClick={(e) => e.stopPropagation()}
+        onError={(e) => { e.target.src = "https://placehold.co/800x600/222/fff?text=Chyba+nacitavania+obrazka"; }}
       />
 
       <button 
@@ -75,6 +76,11 @@ const RoomGallery = ({ images, alt, onImageClick }) => {
           exit={{ opacity: 0 }}
           transition={{ duration: 0.4 }}
           className="w-full h-full object-cover"
+          // AUTOMATICKÁ OPRAVA: Ak cesta neexistuje, ukáže placeholder
+          onError={(e) => { 
+            e.target.onerror = null; 
+            e.target.src = `https://placehold.co/600x450/e2e8f0/475569?text=Chyba:+${images[index].split('/').pop()}`; 
+          }}
         />
       </AnimatePresence>
       
