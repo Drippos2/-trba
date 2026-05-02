@@ -56,9 +56,18 @@ export default function Pricing() {
                   </li>
                 ))}
               </ul>
-              <button className={`w-full py-4 rounded-xl font-bold ${item.highlight ? "bg-slate-900 text-white" : "bg-slate-100"}`}>
+              
+              {/* ZMENA: Tlačidlo je teraz odkaz na #contact */}
+              <a 
+                href="#contact"
+                className={`block w-full py-4 rounded-xl font-bold text-center transition-all ${
+                  item.highlight 
+                    ? "bg-slate-900 text-white hover:bg-slate-800" 
+                    : "bg-slate-100 text-slate-900 hover:bg-slate-200"
+                }`}
+              >
                 Overiť dostupnosť
-              </button>
+              </a>
             </motion.div>
           ))}
         </div>
