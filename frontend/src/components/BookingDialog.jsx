@@ -11,7 +11,29 @@ export default function BookingDialog({ open, onClose, rooms, initialRoomId }) {
   const { lang, tr } = useLang();
   const [step, setStep] = useState(1);
   const [range, setRange] = useState({ from: undefined, to: undefined });
-  const [roomId, setRoomId] = useState(initialRoomId || (rooms?.[0]?.id ?? ""));
+  
+  // OPRAVA: Bezpečnejšia inicializácia roomId
+  const [roomId, setRoomId] = useState("");
+
+  useEffect(() => {
+    if (open) {
+      setStep(1);
+      setDone(false);
+      // Ak je zadané initialRoomId, použijeme ho, inak skúsime prvú dostupnú izbu
+      if (initialRoomId) {
+        setRoomId(initialRoomId);
+      } else if (Array.isArray(rooms) && rooms.length > 0) {
+        setRoomId(rooms[0].id);
+      }
+    }
+  }, [open, initialRoomId, rooms]);
+
+  // KRITICKÁ OPRAVA: Kontrola, či je 'rooms' pole pred volaním .find()
+  const selectedRoom = useMemo(() => {
+    if (!Array.isArray(rooms)) return null;
+    return rooms.find((r) => r.id === roomId);
+  }, [rooms, roomId]);
+
   const [adults, setAdults] = useState(2);
   const [children, setChildren] = useState(0);
   const [wellness, setWellness] = useState(false);
@@ -20,15 +42,6 @@ export default function BookingDialog({ open, onClose, rooms, initialRoomId }) {
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
 
-  useEffect(() => {
-    if (open) {
-      setStep(1);
-      setDone(false);
-      if (initialRoomId) setRoomId(initialRoomId);
-    }
-  }, [open, initialRoomId]);
-
-  const selectedRoom = useMemo(() => rooms?.find((r) => r.id === roomId), [rooms, roomId]);
   const nights = useMemo(() => {
     if (!range.from || !range.to) return 0;
     const diff = (range.to.getTime() - range.from.getTime()) / (1000 * 60 * 60 * 24);
@@ -148,7 +161,7 @@ export default function BookingDialog({ open, onClose, rooms, initialRoomId }) {
                   <div>
                     <label className="overline mb-3 block">{tr("booking.room")}</label>
                     <div className="space-y-2">
-                      {rooms?.map((r) => {
+                      {Array.isArray(rooms) && rooms.map((r) => {
                         const name = r[`name_${lang}`] || r.name_sk;
                         const selected = roomId === r.id;
                         return (
@@ -220,7 +233,7 @@ export default function BookingDialog({ open, onClose, rooms, initialRoomId }) {
 
                     <div className="mt-6 p-5 rounded-xl border border-slate-200 bg-[color:var(--bg-soft)]">
                       <div className="overline mb-3">{tr("booking.summary")}</div>
-                      <SummaryRow label={tr("booking.room")} value={selectedRoom?.[`name_${lang}`]} />
+                      <SummaryRow label={tr("booking.room")} value={selectedRoom?.[`name_${lang}`] || selectedRoom?.name_sk} />
                       <SummaryRow label={tr("booking.nights")} value={nights} />
                       <SummaryRow label={tr("booking.adults")} value={adults} />
                       <SummaryRow label={tr("booking.children")} value={children} />
@@ -256,7 +269,7 @@ export default function BookingDialog({ open, onClose, rooms, initialRoomId }) {
                   </div>
                   <div className="p-5 rounded-xl border border-slate-200 bg-[color:var(--bg-soft)] h-fit">
                     <div className="overline mb-3">{tr("booking.summary")}</div>
-                    <SummaryRow label={tr("booking.room")} value={selectedRoom?.[`name_${lang}`]} />
+                    <SummaryRow label={tr("booking.room")} value={selectedRoom?.[`name_${lang}`] || selectedRoom?.name_sk} />
                     <SummaryRow label={tr("booking.checkin")} value={range.from?.toLocaleDateString()} />
                     <SummaryRow label={tr("booking.checkout")} value={range.to?.toLocaleDateString()} />
                     <SummaryRow label={tr("booking.nights")} value={nights} />
@@ -315,12 +328,10 @@ export default function BookingDialog({ open, onClose, rooms, initialRoomId }) {
   );
 }
 
+// Pomocné komponenty zostávajú nezmenené
 function Counter({ value, onChange, min = 0, max = 10, testid }) {
   return (
-    <div
-      className="inline-flex items-center border border-slate-200 rounded-xl bg-white"
-      data-testid={`counter-${testid}`}
-    >
+    <div className="inline-flex items-center border border-slate-200 rounded-xl bg-white" data-testid={`counter-${testid}`}>
       <button
         onClick={() => onChange(Math.max(min, value - 1))}
         className="px-4 py-3 text-slate-500 hover:text-slate-900 hover:bg-slate-50 rounded-l-xl"
