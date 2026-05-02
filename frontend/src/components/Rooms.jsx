@@ -76,7 +76,6 @@ const RoomGallery = ({ images, alt, onImageClick }) => {
           exit={{ opacity: 0 }}
           transition={{ duration: 0.4 }}
           className="w-full h-full object-cover"
-          // AUTOMATICKÁ OPRAVA: Ak cesta neexistuje, ukáže placeholder
           onError={(e) => { 
             e.target.onerror = null; 
             e.target.src = `https://placehold.co/600x450/e2e8f0/475569?text=Chyba:+${images[index].split('/').pop()}`; 
@@ -112,8 +111,8 @@ export default function Rooms({ onBookRoom }) {
       name_sk: "Štýlová podkrovná izba",
       description_sk: "Zažite neopakovateľnú atmosféru v našej priestrannej podkrovnej izbe. Kombinácia dreva a moderného vybavenia vytvára dokonalé útočisko po dni strávenom v horách.",
       images: [
-        "/rooms/podkrovie1.jpg", "/rooms/podkrovie2.jpg", "/rooms/podkrovie3.jpg", "/rooms/podkrovie4.jpg",
-        "/rooms/podkrovie5.jpg", "/rooms/podkrovie6.jpg", "/rooms/podkrovie7.jpg", "/rooms/podkrovie8.jpg",
+        "/rooms/podkrovie1.JPG", "/rooms/podkrovie2.JPG", "/rooms/podkrovie3.JPG", "/rooms/podkrovie4.JPG",
+        "/rooms/podkrovie5.JPG", "/rooms/podkrovie6.JPG", "/rooms/podkrovie7.JPG", "/rooms/podkrovie8.JPG",
       ],
       price_per_night: 59,
       capacity: 2,
@@ -134,7 +133,7 @@ export default function Rooms({ onBookRoom }) {
       name_sk: "Apartmán Blok A",
       description_sk: "Exkluzívny priestor v Bloku A s dôrazom na detail a súkromie. Ideálne pre náročných hostí hľadajúcich pokoj.",
       images: [
-        "/rooms/bloka1.jpg", "/rooms/bloka2.jpg", "/rooms/bloka3.jpg"
+        "/rooms/bloka1.JPG", "/rooms/bloka2.JPG", "/rooms/bloka3.JPG"
       ],
       price_per_night: 59,
       capacity: 3,
@@ -144,7 +143,7 @@ export default function Rooms({ onBookRoom }) {
       name_sk: "Apartmán Blok B",
       description_sk: "Moderný apartmán v Bloku B navrhnutý pre maximálny relax. Čisté línie a funkčné vybavenie pre váš dokonalý pobyt.",
       images: [
-        "/rooms/blokb1.jpg", "/rooms/blokb2.jpg"
+        "/rooms/blokb1.JPG", "/rooms/blokb2.JPG"
       ],
       price_per_night: 59,
       capacity: 2,
