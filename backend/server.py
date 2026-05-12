@@ -1,5 +1,3 @@
-from dotenv import load_dotenv
-from pathlib import Path
 import os
 import uuid
 import asyncio
@@ -7,6 +5,7 @@ import logging
 import bcrypt
 import jwt
 import resend
+from pathlib import Path
 from datetime import datetime, timezone, timedelta
 from typing import List, Optional
 
@@ -15,31 +14,38 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 from pydantic import BaseModel, Field, EmailStr, ConfigDict, field_validator
+from dotenv import load_dotenv
 
 # ---------- Setup ----------
-ROOT_DIR = Path(__file__).parent
-load_dotenv(ROOT_DIR / ".env")
+# Lokálne načítanie .env (ak existuje), na Renderi sa použijú systémové premenné
+load_dotenv()
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 logger = logging.getLogger("penzion")
 
-# Načítanie premenných prostredia
+# Načítanie premenných prostredia s ošetrením chýb
 try:
-    mongo_url = os.environ["MONGO_URL"]
-    db_name = os.environ["DB_NAME"]
-    JWT_SECRET = os.environ["JWT_SECRET"]
-    ADMIN_EMAIL = os.environ["ADMIN_EMAIL"].lower().strip()
-    ADMIN_PASSWORD = os.environ["ADMIN_PASSWORD"]
+    mongo_url = os.environ.get("MONGO_URL")
+    db_name = os.environ.get("DB_NAME", "penzion_db")
+    JWT_SECRET = os.environ.get("JWT_SECRET", "super-secret-key-change-me")
+    ADMIN_EMAIL = os.environ.get("ADMIN_EMAIL", "admin@penzion.sk").lower().strip()
+    ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "admin123")
+    
+    if not mongo_url:
+        raise KeyError("MONGO_URL must be set in environment variables")
+        
 except KeyError as e:
-    logger.error(f"Missing environment variable: {e}")
+    logger.error(f"Missing critical environment variable: {e}")
     raise
 
+# Inicializácia databázy
 client = AsyncIOMotorClient(mongo_url)
 db = client[db_name]
 
 JWT_ALGORITHM = "HS256"
 JWT_EXPIRE_HOURS = 24
 
+# Konfigurácia Resend
 RESEND_API_KEY = os.environ.get("RESEND_API_KEY", "").strip()
 SENDER_EMAIL = os.environ.get("SENDER_EMAIL", "onboarding@resend.dev")
 NOTIFICATION_EMAIL = os.environ.get("NOTIFICATION_EMAIL", "info@penzion-strba.sk")
@@ -100,7 +106,6 @@ class WellnessReservationIn(BaseModel):
     @classmethod
     def check_total_capacity(cls, v, info):
         adults = info.data.get('guests_adults', 0)
-        # Limit na MAX 2 osoby pre wellness (podľa tvojho frontendu)
         if adults + v > 2:
             raise ValueError(f'Kapacita wellness je max 2 osoby. Máte navolené: {adults + v}')
         return v
@@ -162,9 +167,10 @@ async def get_current_admin(credentials: HTTPAuthorizationCredentials = Depends(
 # ---------- Email Helpers ----------
 async def send_email_safe(to: str, subject: str, html: str):
     if not RESEND_API_KEY:
-        logger.warning(f"Email skip: {to}")
+        logger.warning(f"Email skip (No API Key): {to}")
         return
     try:
+        # Spúšťame synchrónne resend SDK v samostatnom vlákne
         await asyncio.to_thread(resend.Emails.send, {
             "from": SENDER_EMAIL, "to": [to], "subject": subject, "html": html
         })
@@ -193,7 +199,6 @@ async def list_rooms():
 
 @api_router.post("/wellness-reservations")
 async def create_wellness_reservation(payload: WellnessReservationIn):
-    # Výpočet: 15€ dospelý, 8€ dieťa
     total = (payload.guests_adults * 15) + (payload.guests_children * 8)
     res_id = str(uuid.uuid4())
     doc = payload.model_dump()
@@ -207,24 +212,20 @@ async def create_wellness_reservation(payload: WellnessReservationIn):
     
     await db.wellness_reservations.insert_one(doc)
 
-    # Email hosťovi
+    # Emaily
     subject = "Rezervácia Wellness — Penzión Štrba" if payload.language == "sk" else "Wellness Reservation — Penzión Štrba"
     html = f"<h3>Potvrdenie</h3><p>Termín: {payload.date} o {payload.time}. Cena: {total}€</p>"
     asyncio.create_task(send_email_safe(payload.email, subject, html))
-    
-    # Email adminovi
     asyncio.create_task(send_email_safe(NOTIFICATION_EMAIL, f"Wellness: {payload.last_name}", f"Nový wellness: {doc}"))
 
     return {"ok": True, "id": res_id, "total_price": total}
 
 @api_router.post("/reservations", response_model=ReservationOut)
 async def create_reservation(payload: ReservationIn):
-    # Hľadanie izby
     room = next((r for r in ROOM_TYPES if r["id"] == payload.room_type_id), None)
     if not room:
         raise HTTPException(status_code=400, detail="Invalid room type")
 
-    # Počet nocí
     try:
         d1 = datetime.fromisoformat(payload.check_in)
         d2 = datetime.fromisoformat(payload.check_out)
@@ -233,7 +234,6 @@ async def create_reservation(payload: ReservationIn):
     except:
         raise HTTPException(status_code=400, detail="Invalid dates")
 
-    # Cena: (izba * noci) + miestny poplatok (napr. 2€/osoba/noc)
     base_price = room["price_per_night"] * nights
     tax = (payload.guests_adults + payload.guests_children) * 2 * nights
     total = float(base_price + tax)
@@ -250,8 +250,6 @@ async def create_reservation(payload: ReservationIn):
     })
     
     await db.reservations.insert_one(doc)
-    
-    # Emaily (na pozadí cez create_task, aby sme nebrzdili odpoveď)
     asyncio.create_task(send_email_safe(payload.email, "Rezervácia ubytovania", f"Prijali sme vašu objednávku na {room['name_sk']}."))
     
     return doc
@@ -269,7 +267,6 @@ async def admin_stats(current: dict = Depends(get_current_admin)):
 # --- Inicializácia a Štart ---
 @app.on_event("startup")
 async def startup_db():
-    # Vytvorenie admina ak neexistuje
     existing = await db.users.find_one({"email": ADMIN_EMAIL})
     if not existing:
         await db.users.insert_one({
@@ -280,6 +277,7 @@ async def startup_db():
             "role": "admin",
             "created_at": datetime.now(timezone.utc).isoformat()
         })
+        logger.info(f"Admin user {ADMIN_EMAIL} created.")
 
 app.include_router(api_router)
 
@@ -293,4 +291,5 @@ app.add_middleware(
 
 if __name__ == "__main__":
     import uvicorn
+    # Pre lokálne testovanie
     uvicorn.run(app, host="0.0.0.0", port=8000)
