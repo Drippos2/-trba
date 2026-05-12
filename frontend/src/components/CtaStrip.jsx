@@ -5,6 +5,13 @@ import { useLang } from "@/contexts/LangContext";
 
 export default function CtaStrip({ onBookClick }) {
   const { tr } = useLang();
+
+  // Táto podmienka skontroluje, či existuje text pre titulok. 
+  // Ak si ho z prekladov vymazal, komponent nevráti nič a zmizne aj ten modrý box so šípkou.
+  if (!tr("cta.title")) {
+    return null;
+  }
+
   return (
     <section className="section bg-white">
       <div className="max-w-[1400px] mx-auto">

@@ -1,88 +1,87 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { DayPicker } from "react-day-picker";
+import { sk, enUS, de } from "date-fns/locale";
 import "react-day-picker/dist/style.css";
-import { X, Check, ChevronLeft, ChevronRight } from "lucide-react";
-import { api, formatApiError } from "@/lib/api";
+import { X, Check, ChevronLeft, ChevronRight, Clock, Users, Calendar } from "lucide-react";
+import { api } from "@/lib/api";
 import { useLang } from "@/contexts/LangContext";
 import { toast } from "sonner";
 
-export default function BookingDialog({ open, onClose, rooms, initialRoomId }) {
+export default function WellnessBookingDialog({ open, onClose }) {
   const { lang, tr } = useLang();
   const [step, setStep] = useState(1);
-  const [range, setRange] = useState({ from: undefined, to: undefined });
+  const [selectedDate, setSelectedDate] = useState(undefined);
+  const [selectedTime, setSelectedTime] = useState("");
   
-  // OPRAVA: Bezpečnejšia inicializácia roomId
-  const [roomId, setRoomId] = useState("");
+  const [adults, setAdults] = useState(2);
+  const [children, setChildren] = useState(0);
+  const [contact, setContact] = useState({ 
+    first_name: "", 
+    last_name: "", 
+    email: "", 
+    phone: "", 
+    notes: "" 
+  });
+  const [submitting, setSubmitting] = useState(false);
+  const [done, setDone] = useState(false);
 
+  // Kapacita nastavená na 2 osoby podľa tvojho zadania
+  const MAX_CAPACITY = 2;
+  const timeSlots = ["14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00"];
+
+  // Reset stavu pri otvorení/zatvorení
   useEffect(() => {
     if (open) {
       setStep(1);
       setDone(false);
-      // Ak je zadané initialRoomId, použijeme ho, inak skúsime prvú dostupnú izbu
-      if (initialRoomId) {
-        setRoomId(initialRoomId);
-      } else if (Array.isArray(rooms) && rooms.length > 0) {
-        setRoomId(rooms[0].id);
-      }
+      setAdults(2);
+      setChildren(0);
+      setSelectedDate(undefined);
+      setSelectedTime("");
+      setContact({ first_name: "", last_name: "", email: "", phone: "", notes: "" });
     }
-  }, [open, initialRoomId, rooms]);
+  }, [open]);
 
-  // KRITICKÁ OPRAVA: Kontrola, či je 'rooms' pole pred volaním .find()
-  const selectedRoom = useMemo(() => {
-    if (!Array.isArray(rooms)) return null;
-    return rooms.find((r) => r.id === roomId);
-  }, [rooms, roomId]);
+  // Výber správneho jazykového balíka pre kalendár z date-fns
+  const calendarLocale = useMemo(() => {
+    if (lang === 'sk') return sk;
+    if (lang === 'de') return de;
+    return enUS;
+  }, [lang]);
 
-  const [adults, setAdults] = useState(2);
-  const [children, setChildren] = useState(0);
-  const [wellness, setWellness] = useState(false);
-  const [halfBoard, setHalfBoard] = useState(false);
-  const [contact, setContact] = useState({ first_name: "", last_name: "", email: "", phone: "", notes: "" });
-  const [submitting, setSubmitting] = useState(false);
-  const [done, setDone] = useState(false);
-
-  const nights = useMemo(() => {
-    if (!range.from || !range.to) return 0;
-    const diff = (range.to.getTime() - range.from.getTime()) / (1000 * 60 * 60 * 24);
-    return Math.max(Math.round(diff), 0);
-  }, [range]);
-
+  // Dynamický výpočet ceny (Dospelý 15€, Dieťa 8€)
   const total = useMemo(() => {
-    if (!selectedRoom || nights === 0) return 0;
-    const base = selectedRoom.price_per_night * nights * adults;
-    const child = selectedRoom.price_per_night * 0.5 * nights * children;
-    const tax = 2 * nights * (adults + children);
-    const oneNight = nights === 1 ? 5 * (adults + children) : 0;
-    const well = wellness ? 30 : 0;
-    const hb = halfBoard ? 10 * (adults + children) * nights : 0;
-    return Math.round((base + child + tax + oneNight + well + hb) * 100) / 100;
-  }, [selectedRoom, nights, adults, children, wellness, halfBoard]);
+    return (adults * 15) + (children * 8);
+  }, [adults, children]);
 
-  const canProceed1 = range.from && range.to && nights >= 2 && roomId;
-  const canProceed2 = adults >= 1 && (adults + children) <= (selectedRoom?.capacity ?? 99);
+  // Validácia jednotlivých krokov
+  const canProceed1 = selectedDate && selectedTime;
+  const canProceed2 = (adults + children) >= 1 && (adults + children) <= MAX_CAPACITY;
   const canSubmit = contact.first_name && contact.last_name && contact.email && contact.phone;
-
-  const toISO = (d) => (d ? d.toISOString().slice(0, 10) : null);
 
   const submit = async () => {
     if (!canSubmit) return;
     setSubmitting(true);
+    
     try {
-      await api.post("/reservations", {
+      // Formátovanie dátumu tak, aby sedel s časovým pásmom
+      const offset = selectedDate.getTimezoneOffset();
+      const correctedDate = new Date(selectedDate.getTime() - (offset * 60 * 1000));
+      const dateStr = correctedDate.toISOString().split('T')[0];
+
+      await api.post("/wellness-reservations", {
         ...contact,
-        check_in: toISO(range.from),
-        check_out: toISO(range.to),
-        room_type_id: roomId,
+        date: dateStr,
+        time: selectedTime,
         guests_adults: adults,
         guests_children: children,
-        wellness,
-        half_board: halfBoard,
         language: lang,
       });
       setDone(true);
     } catch (err) {
-      toast.error(formatApiError(err.response?.data?.detail) || err.message);
+      const msg = err.response?.data?.detail || err.message;
+      toast.error(typeof msg === 'string' ? msg : tr("wellness.error"));
     } finally {
       setSubmitting(false);
     }
@@ -92,260 +91,266 @@ export default function BookingDialog({ open, onClose, rooms, initialRoomId }) {
 
   return (
     <AnimatePresence>
-      <motion.div
-        className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-8"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-      >
-        <div
-          className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"
-          onClick={onClose}
-          data-testid="booking-overlay"
+      <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-6">
+        {/* Pozadie / Backdrop */}
+        <motion.div 
+          initial={{ opacity: 0 }} 
+          animate={{ opacity: 1 }} 
+          exit={{ opacity: 0 }}
+          className="absolute inset-0 bg-slate-900/60 backdrop-blur-md" 
+          onClick={onClose} 
         />
-        <motion.div
-          className="relative z-10 w-full max-w-4xl max-h-[92vh] overflow-y-auto bg-white rounded-2xl shadow-2xl border border-slate-200"
-          initial={{ y: 30, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          exit={{ y: 30, opacity: 0 }}
-          transition={{ duration: 0.35, ease: [0.2, 0.8, 0.2, 1] }}
-          data-testid="booking-dialog"
+        
+        {/* Modálne okno */}
+        <motion.div 
+          initial={{ scale: 0.9, opacity: 0, y: 30 }}
+          animate={{ scale: 1, opacity: 1, y: 0 }}
+          exit={{ scale: 0.9, opacity: 0, y: 30 }}
+          className="relative z-10 w-full max-w-4xl max-h-[90vh] flex flex-col bg-white rounded-3xl shadow-2xl overflow-hidden border border-white/20"
         >
-          <div className="sticky top-0 z-10 bg-white/95 backdrop-blur-lg border-b border-slate-200 p-5 md:p-7 flex items-start justify-between rounded-t-2xl">
+          {/* Hlavička */}
+          <div className="p-6 md:p-8 border-b border-slate-100 flex items-start justify-between bg-white">
             <div>
-              <div className="overline mb-1.5">
-                {!done ? `${tr("booking.step")} ${step} ${tr("booking.of")} 3` : ""}
+              <div className="flex items-center gap-2 mb-1">
+                <span className="px-2 py-0.5 bg-indigo-50 text-indigo-600 text-[10px] font-bold uppercase tracking-widest rounded-full">
+                  {!done ? `${tr("wellness.step")} ${step} / 3` : tr("wellness.done")}
+                </span>
+                {!done && (
+                  <span className="text-[10px] text-slate-400 font-medium uppercase tracking-widest">
+                    • {tr("wellness.overline")}
+                  </span>
+                )}
               </div>
-              <h3 className="font-display text-2xl md:text-3xl font-semibold tracking-tight text-slate-900">
-                {done ? tr("booking.thanks") : tr("booking.title")}
+              <h3 className="text-2xl md:text-3xl font-bold text-slate-900 tracking-tight">
+                {done ? tr("wellness.thanks") : tr("wellness.bookingTitle")}
               </h3>
-              {!done && <p className="mt-1 text-slate-500 text-sm max-w-lg">{tr("booking.subtitle")}</p>}
             </div>
-            <button
-              onClick={onClose}
-              className="text-slate-400 hover:text-slate-700 p-1"
-              data-testid="booking-close-btn"
-              aria-label="Close"
+            <button 
+              onClick={onClose} 
+              className="p-2 text-slate-400 hover:text-slate-900 hover:bg-slate-100 rounded-full transition-all"
             >
-              <X size={22} />
+              <X size={24} />
             </button>
           </div>
 
-          {done ? (
-            <div className="p-8 md:p-12 text-center">
-              <div className="w-14 h-14 rounded-full bg-[color:var(--accent)] text-white mx-auto flex items-center justify-center">
-                <Check size={28} />
-              </div>
-              <p className="mt-6 text-slate-600 text-base md:text-lg max-w-md mx-auto">
-                {tr("booking.thanksBody")}
-              </p>
-              <button onClick={onClose} className="btn-primary mt-8" data-testid="booking-done-close">
-                {tr("booking.close")}
-              </button>
-            </div>
-          ) : (
-            <div className="p-5 md:p-8">
-              <div className="flex gap-2 mb-6">
-                {[1, 2, 3].map((n) => (
-                  <div
-                    key={n}
-                    className={`h-1 rounded-full flex-1 transition-colors ${
-                      n <= step ? "bg-[color:var(--accent)]" : "bg-slate-200"
-                    }`}
-                  />
-                ))}
-              </div>
+          <div className="flex-1 overflow-y-auto custom-scrollbar">
+            {done ? (
+              /* Obrazovka po úspešnom odoslaní */
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
+                className="p-10 md:p-16 text-center"
+              >
+                <div className="w-24 h-24 rounded-full bg-emerald-50 text-emerald-500 mx-auto flex items-center justify-center mb-8 shadow-inner">
+                  <Check size={48} strokeWidth={3} />
+                </div>
+                <h4 className="text-2xl font-bold text-slate-900 mb-4">{tr("wellness.successTitle")}</h4>
+                <p className="text-slate-500 text-lg max-w-md mx-auto leading-relaxed">
+                  {tr("wellness.successMessage")}
+                </p>
+                <button 
+                  onClick={onClose} 
+                  className="mt-10 bg-slate-900 text-white px-10 py-4 rounded-2xl font-bold hover:bg-indigo-600 transition-all shadow-xl shadow-slate-200"
+                >
+                  {tr("wellness.close")}
+                </button>
+              </motion.div>
+            ) : (
+              <div className="p-6 md:p-8">
+                {/* Indikátory postupu */}
+                <div className="flex gap-3 mb-10">
+                  {[1, 2, 3].map((n) => (
+                    <div key={n} className="flex-1">
+                      <div className={`h-1.5 rounded-full transition-all duration-500 ${n <= step ? "bg-indigo-600 shadow-[0_0_10px_rgba(79,70,229,0.4)]" : "bg-slate-100"}`} />
+                    </div>
+                  ))}
+                </div>
 
-              {step === 1 && (
-                <div className="grid md:grid-cols-2 gap-8">
-                  <div>
-                    <label className="overline mb-3 block">{tr("booking.room")}</label>
-                    <div className="space-y-2">
-                      {Array.isArray(rooms) && rooms.map((r) => {
-                        const name = r[`name_${lang}`] || r.name_sk;
-                        const selected = roomId === r.id;
-                        return (
+                {/* KROK 1: Dátum a Čas */}
+                {step === 1 && (
+                  <motion.div 
+                    initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}
+                    className="grid lg:grid-cols-2 gap-10"
+                  >
+                    <div className="space-y-4">
+                      <label className="flex items-center gap-2 text-xs font-bold text-slate-500 uppercase tracking-wider">
+                        <Calendar size={14} className="text-indigo-500" /> 1. {tr("wellness.selectDate")}
+                      </label>
+                      <div className="bg-slate-50 border border-slate-200 rounded-3xl p-4 flex justify-center shadow-inner">
+                        <DayPicker 
+                          mode="single" 
+                          selected={selectedDate} 
+                          onSelect={setSelectedDate} 
+                          disabled={{ before: new Date() }}
+                          locale={calendarLocale}
+                          className="m-0 wellness-datepicker"
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-4">
+                      <label className="flex items-center gap-2 text-xs font-bold text-slate-500 uppercase tracking-wider">
+                        <Clock size={14} className="text-indigo-500" /> 2. {tr("wellness.selectTime")}
+                      </label>
+                      <div className="grid grid-cols-2 gap-3">
+                        {timeSlots.map((time) => (
                           <button
-                            key={r.id}
-                            data-testid={`booking-room-${r.id}`}
-                            onClick={() => setRoomId(r.id)}
-                            className={`w-full text-left p-4 rounded-xl border transition-all ${
-                              selected
-                                ? "border-[color:var(--accent)] bg-[color:var(--accent-soft)]/40"
-                                : "border-slate-200 hover:border-slate-300"
+                            key={time}
+                            onClick={() => setSelectedTime(time)}
+                            className={`group p-4 rounded-2xl border-2 transition-all flex flex-col items-center gap-1 ${
+                              selectedTime === time 
+                                ? "border-indigo-600 bg-indigo-50/50 text-indigo-700 shadow-lg shadow-indigo-100 ring-2 ring-indigo-600/10" 
+                                : "border-slate-100 hover:border-slate-300 bg-white text-slate-600"
                             }`}
                           >
-                            <div className="flex items-center justify-between">
-                              <div className="font-display font-semibold text-slate-900">{name}</div>
-                              <div className="text-[color:var(--accent)] font-display font-semibold text-sm">
-                                €{r.price_per_night}
-                                <span className="text-slate-400 text-xs ml-1 font-normal">{tr("rooms.night")}</span>
-                              </div>
-                            </div>
-                            <div className="mt-1 text-xs text-slate-500">
-                              {tr("rooms.guests")}: {r.capacity}
-                            </div>
+                            <span className={`text-lg font-bold ${selectedTime === time ? "text-indigo-700" : "text-slate-900"}`}>{time}</span>
+                            <span className="text-[10px] uppercase tracking-tighter opacity-60">{tr("wellness.availableEntry")}</span>
                           </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="overline mb-3 block">{tr("booking.chooseDates")}</label>
-                    <div
-                      className="bg-white border border-slate-200 rounded-xl p-2 flex justify-center"
-                      data-testid="booking-calendar"
-                    >
-                      <DayPicker
-                        mode="range"
-                        selected={range}
-                        onSelect={setRange}
-                        numberOfMonths={1}
-                        disabled={{ before: new Date() }}
-                      />
-                    </div>
-                    <div className="mt-3 flex justify-between text-sm">
-                      <Mini label={tr("booking.checkin")} value={range.from?.toLocaleDateString()} />
-                      <Mini label={tr("booking.checkout")} value={range.to?.toLocaleDateString()} />
-                      <Mini label={tr("booking.nights")} value={nights} />
-                    </div>
-                    {nights === 1 && (
-                      <div className="mt-2 text-xs text-[color:var(--accent)]">
-                        min. 2 nights (1-night fee: €5 / person applies)
+                        ))}
                       </div>
-                    )}
-                  </div>
-                </div>
-              )}
+                    </div>
+                  </motion.div>
+                )}
 
-              {step === 2 && (
-                <div className="grid md:grid-cols-2 gap-8">
-                  <div>
-                    <label className="overline mb-3 block">{tr("booking.adults")}</label>
-                    <Counter value={adults} onChange={setAdults} min={1} max={selectedRoom?.capacity || 4} testid="adults" />
-                    <label className="overline mt-6 mb-3 block">{tr("booking.children")}</label>
-                    <Counter value={children} onChange={setChildren} min={0} max={4} testid="children" />
-                  </div>
-                  <div className="space-y-4">
-                    <CheckboxRow checked={wellness} onChange={setWellness} label={tr("booking.wellness")} testid="wellness" />
-                    <CheckboxRow checked={halfBoard} onChange={setHalfBoard} label={tr("booking.halfBoard")} testid="halfboard" />
-
-                    <div className="mt-6 p-5 rounded-xl border border-slate-200 bg-[color:var(--bg-soft)]">
-                      <div className="overline mb-3">{tr("booking.summary")}</div>
-                      <SummaryRow label={tr("booking.room")} value={selectedRoom?.[`name_${lang}`] || selectedRoom?.name_sk} />
-                      <SummaryRow label={tr("booking.nights")} value={nights} />
-                      <SummaryRow label={tr("booking.adults")} value={adults} />
-                      <SummaryRow label={tr("booking.children")} value={children} />
-                      <div className="mt-4 pt-4 border-t border-slate-200 flex items-end justify-between">
-                        <div className="text-slate-500 text-xs tracking-[0.15em] uppercase">
-                          {tr("booking.total")}
-                        </div>
-                        <div className="font-display text-2xl font-semibold text-[color:var(--accent)]">
-                          €{total.toFixed(2)}
+                {/* KROK 2: Počet osôb a Súhrn */}
+                {step === 2 && (
+                  <motion.div 
+                    initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}
+                    className="grid lg:grid-cols-2 gap-10"
+                  >
+                    <div className="space-y-8">
+                      <div className="space-y-4">
+                        <label className="flex items-center gap-2 text-xs font-bold text-slate-500 uppercase tracking-wider">
+                          <Users size={14} className="text-indigo-500" /> {tr("wellness.adults")} (15€)
+                        </label>
+                        <Counter value={adults} onChange={setAdults} min={1} max={MAX_CAPACITY - children} />
+                      </div>
+                      <div className="space-y-4">
+                        <label className="flex items-center gap-2 text-xs font-bold text-slate-500 uppercase tracking-wider">
+                           {tr("wellness.children")} (8€)
+                        </label>
+                        <Counter value={children} onChange={setChildren} min={0} max={MAX_CAPACITY - adults} />
+                      </div>
+                      <div className="p-5 bg-amber-50 border border-amber-100 rounded-2xl flex gap-4">
+                        <div className="w-8 h-8 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center shrink-0 font-bold">!</div>
+                        <p className="text-amber-800 text-sm leading-snug">{tr("wellness.capacityNote")}</p>
+                      </div>
+                    </div>
+                    
+                    <div className="p-8 rounded-3xl border border-slate-200 bg-slate-50/50 relative overflow-hidden">
+                      <div className="absolute top-0 right-0 p-4 opacity-5">
+                        <Users size={120} />
+                      </div>
+                      <div className="text-xs font-black text-slate-400 uppercase tracking-widest mb-6">{tr("wellness.summary")}</div>
+                      <div className="space-y-4 relative z-10">
+                        <SummaryRow label={tr("wellness.date")} value={selectedDate?.toLocaleDateString(lang === 'sk' ? 'sk-SK' : 'en-US')} />
+                        <SummaryRow label={tr("wellness.time")} value={selectedTime} />
+                        <SummaryRow label={tr("wellness.capacity")} value={`${adults + children} / ${MAX_CAPACITY} ${tr("wellness.persons")}`} />
+                        <div className="pt-6 mt-6 border-t border-slate-200 flex items-center justify-between">
+                          <div className="text-xs font-bold text-slate-400 uppercase">{tr("wellness.totalPrice")}</div>
+                          <div className="text-4xl font-black text-indigo-600">€{total.toFixed(2)}</div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                </div>
-              )}
+                  </motion.div>
+                )}
 
-              {step === 3 && (
-                <div className="grid md:grid-cols-2 gap-8">
-                  <div className="space-y-4">
-                    <InputRow label={tr("booking.firstName")} value={contact.first_name} onChange={(v) => setContact({ ...contact, first_name: v })} testid="first_name" />
-                    <InputRow label={tr("booking.lastName")} value={contact.last_name} onChange={(v) => setContact({ ...contact, last_name: v })} testid="last_name" />
-                    <InputRow label={tr("booking.email")} value={contact.email} onChange={(v) => setContact({ ...contact, email: v })} type="email" testid="email" />
-                    <InputRow label={tr("booking.phone")} value={contact.phone} onChange={(v) => setContact({ ...contact, phone: v })} testid="phone" />
-                    <div>
-                      <label className="overline mb-2 block">{tr("booking.notes")}</label>
-                      <textarea
-                        className="input-light min-h-[90px]"
-                        value={contact.notes}
-                        onChange={(e) => setContact({ ...contact, notes: e.target.value })}
-                        data-testid="booking-notes"
-                      />
-                    </div>
-                  </div>
-                  <div className="p-5 rounded-xl border border-slate-200 bg-[color:var(--bg-soft)] h-fit">
-                    <div className="overline mb-3">{tr("booking.summary")}</div>
-                    <SummaryRow label={tr("booking.room")} value={selectedRoom?.[`name_${lang}`] || selectedRoom?.name_sk} />
-                    <SummaryRow label={tr("booking.checkin")} value={range.from?.toLocaleDateString()} />
-                    <SummaryRow label={tr("booking.checkout")} value={range.to?.toLocaleDateString()} />
-                    <SummaryRow label={tr("booking.nights")} value={nights} />
-                    <SummaryRow label={tr("booking.adults")} value={adults} />
-                    <SummaryRow label={tr("booking.children")} value={children} />
-                    <SummaryRow label={tr("booking.wellness")} value={wellness ? "✓" : "—"} />
-                    <SummaryRow label={tr("booking.halfBoard")} value={halfBoard ? "✓" : "—"} />
-                    <div className="mt-4 pt-4 border-t border-slate-200 flex items-end justify-between">
-                      <div className="text-slate-500 text-xs tracking-[0.15em] uppercase">
-                        {tr("booking.total")}
+                {/* KROK 3: Kontaktné údaje */}
+                {step === 3 && (
+                  <motion.div 
+                    initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}
+                    className="grid lg:grid-cols-2 gap-10"
+                  >
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <InputRow label={tr("wellness.firstName")} value={contact.first_name} onChange={(v) => setContact({ ...contact, first_name: v })} />
+                      <InputRow label={tr("wellness.lastName")} value={contact.last_name} onChange={(v) => setContact({ ...contact, last_name: v })} />
+                      <div className="md:col-span-2">
+                        <InputRow label={tr("wellness.email")} value={contact.email} onChange={(v) => setContact({ ...contact, email: v })} type="email" />
                       </div>
-                      <div className="font-display text-2xl font-semibold text-[color:var(--accent)]">
-                        €{total.toFixed(2)}
+                      <div className="md:col-span-2">
+                        <InputRow label={tr("wellness.phone")} value={contact.phone} onChange={(v) => setContact({ ...contact, phone: v })} />
                       </div>
                     </div>
-                  </div>
-                </div>
-              )}
 
-              <div className="mt-8 flex items-center justify-between">
-                <button
-                  onClick={() => setStep((s) => Math.max(1, s - 1))}
-                  disabled={step === 1}
-                  data-testid="booking-back-btn"
-                  className="btn-outline disabled:opacity-40 text-sm"
-                >
-                  <ChevronLeft size={16} /> {tr("booking.back")}
-                </button>
+                    <div className="p-8 rounded-3xl bg-indigo-600 text-white shadow-2xl shadow-indigo-200 flex flex-col justify-between">
+                      <div>
+                        <div className="text-[10px] font-black uppercase tracking-[0.2em] text-indigo-200 mb-6">{tr("wellness.finalSummary")}</div>
+                        <div className="space-y-5">
+                          <div className="flex flex-col gap-1">
+                            <span className="text-indigo-200 text-[10px] uppercase font-bold">{tr("wellness.date")} & {tr("wellness.time")}</span>
+                            <span className="text-xl font-bold">{selectedDate?.toLocaleDateString(lang === 'sk' ? 'sk-SK' : 'en-US')} @ {selectedTime}</span>
+                          </div>
+                          <div className="flex flex-col gap-1">
+                            <span className="text-indigo-200 text-[10px] uppercase font-bold">{tr("wellness.guests")}</span>
+                            <span className="text-xl font-bold">{adults} {tr("wellness.adultsShort")}, {children} {tr("wellness.childrenShort")}</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="mt-10 pt-8 border-t border-indigo-500/50 flex items-center justify-between">
+                        <div className="text-indigo-100 font-medium">{tr("wellness.payAtPlace")}</div>
+                        <div className="text-4xl font-black italic">€{total.toFixed(2)}</div>
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </div>
+            )}
+          </div>
 
-                {step < 3 && (
+          {/* Navigačná pätka */}
+          {!done && (
+            <div className="p-6 md:p-8 bg-slate-50 border-t border-slate-100 flex items-center justify-between gap-4">
+              <button
+                onClick={() => setStep((s) => Math.max(1, s - 1))}
+                disabled={step === 1}
+                className="flex items-center gap-2 px-6 py-3 text-slate-500 font-bold hover:text-slate-900 disabled:opacity-0 transition-all"
+              >
+                <ChevronLeft size={20} /> {tr("wellness.back")}
+              </button>
+
+              <div className="flex gap-3">
+                {step < 3 ? (
                   <button
                     onClick={() => setStep((s) => s + 1)}
                     disabled={(step === 1 && !canProceed1) || (step === 2 && !canProceed2)}
-                    data-testid="booking-next-btn"
-                    className="btn-primary disabled:opacity-50 text-sm"
+                    className="bg-slate-900 text-white px-10 py-4 rounded-2xl font-bold flex items-center gap-3 hover:bg-indigo-600 disabled:bg-slate-200 disabled:cursor-not-allowed transition-all shadow-xl shadow-slate-200"
                   >
-                    {tr("booking.next")} <ChevronRight size={16} />
+                    {tr("wellness.continue")} <ChevronRight size={20} />
                   </button>
-                )}
-                {step === 3 && (
+                ) : (
                   <button
                     onClick={submit}
                     disabled={!canSubmit || submitting}
-                    data-testid="booking-submit-btn"
-                    className="btn-primary disabled:opacity-50 text-sm"
+                    className="bg-indigo-600 text-white px-12 py-4 rounded-2xl font-black flex items-center gap-3 hover:bg-indigo-700 disabled:bg-slate-200 transition-all shadow-xl shadow-indigo-200 tracking-wide uppercase text-sm"
                   >
-                    {submitting ? "..." : tr("booking.confirm")}
+                    {submitting ? tr("wellness.submitting") : tr("wellness.confirm")}
                   </button>
                 )}
               </div>
             </div>
           )}
         </motion.div>
-      </motion.div>
+      </div>
     </AnimatePresence>
   );
 }
 
-// Pomocné komponenty zostávajú nezmenené
-function Counter({ value, onChange, min = 0, max = 10, testid }) {
+// Sub-komponenty
+function Counter({ value, onChange, min, max }) {
   return (
-    <div className="inline-flex items-center border border-slate-200 rounded-xl bg-white" data-testid={`counter-${testid}`}>
-      <button
-        onClick={() => onChange(Math.max(min, value - 1))}
-        className="px-4 py-3 text-slate-500 hover:text-slate-900 hover:bg-slate-50 rounded-l-xl"
-        data-testid={`counter-${testid}-minus`}
+    <div className="flex items-center gap-6 bg-white border border-slate-200 p-2 rounded-2xl w-fit shadow-sm">
+      <button 
+        type="button"
+        onClick={() => onChange(Math.max(min, value - 1))} 
+        className="w-12 h-12 flex items-center justify-center rounded-xl bg-slate-50 text-slate-600 hover:bg-red-50 hover:text-red-600 transition-all disabled:opacity-20"
+        disabled={value <= min}
       >
         −
       </button>
-      <div className="px-6 py-3 font-display font-semibold text-lg min-w-[60px] text-center text-slate-900">
-        {value}
-      </div>
-      <button
-        onClick={() => onChange(Math.min(max, value + 1))}
-        className="px-4 py-3 text-slate-500 hover:text-slate-900 hover:bg-slate-50 rounded-r-xl"
-        data-testid={`counter-${testid}-plus`}
+      <div className="w-8 text-center text-2xl font-black text-slate-900">{value}</div>
+      <button 
+        type="button"
+        onClick={() => onChange(Math.min(max, value + 1))} 
+        className="w-12 h-12 flex items-center justify-center rounded-xl bg-slate-50 text-slate-600 hover:bg-emerald-50 hover:text-emerald-600 transition-all disabled:opacity-20"
+        disabled={value >= max}
       >
         +
       </button>
@@ -353,35 +358,16 @@ function Counter({ value, onChange, min = 0, max = 10, testid }) {
   );
 }
 
-function CheckboxRow({ checked, onChange, label, testid }) {
+function InputRow({ label, value, onChange, type = "text" }) {
   return (
-    <label className="flex items-start gap-3 cursor-pointer select-none">
-      <button
-        type="button"
-        onClick={() => onChange(!checked)}
-        className={`mt-0.5 w-5 h-5 rounded-md border flex items-center justify-center transition ${
-          checked ? "bg-[color:var(--accent)] border-[color:var(--accent)]" : "border-slate-300"
-        }`}
-        data-testid={`checkbox-${testid}`}
-      >
-        {checked && <Check size={14} className="text-white" />}
-      </button>
-      <span className="text-sm text-slate-700">{label}</span>
-    </label>
-  );
-}
-
-function InputRow({ label, value, onChange, type = "text", testid }) {
-  return (
-    <div>
-      <label className="overline mb-2 block">{label}</label>
-      <input
-        className="input-light"
-        type={type}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        required
-        data-testid={`booking-${testid}`}
+    <div className="space-y-1.5">
+      <label className="text-[10px] uppercase font-black text-slate-400 tracking-widest ml-1">{label}</label>
+      <input 
+        className="w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 focus:bg-white outline-none transition-all text-slate-900 font-medium" 
+        type={type} 
+        value={value} 
+        onChange={(e) => onChange(e.target.value)} 
+        placeholder="..."
       />
     </div>
   );
@@ -389,18 +375,9 @@ function InputRow({ label, value, onChange, type = "text", testid }) {
 
 function SummaryRow({ label, value }) {
   return (
-    <div className="flex justify-between py-1.5 text-sm">
-      <span className="text-slate-500">{label}</span>
-      <span className="text-slate-900 text-right max-w-[60%] truncate">{value ?? "—"}</span>
-    </div>
-  );
-}
-
-function Mini({ label, value }) {
-  return (
-    <div>
-      <div className="text-slate-500 text-xs">{label}</div>
-      <div className="font-display font-semibold text-slate-900">{value || "—"}</div>
+    <div className="flex justify-between py-3 border-b border-slate-200/50 last:border-0 items-center">
+      <span className="text-slate-400 text-xs font-bold uppercase tracking-tight">{label}</span>
+      <span className="text-slate-900 font-bold">{value ?? "—"}</span>
     </div>
   );
 }

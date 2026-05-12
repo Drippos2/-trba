@@ -7,7 +7,6 @@ import Rooms from "@/components/Rooms";
 import Wellness from "@/components/Wellness";
 import Audiences from "@/components/Audiences";
 // SEM PRIDAJ TENTO IMPORT:
-import Pricing from "@/components/Pricing"; 
 import Services from "@/components/Services";
 import Location from "@/components/Location";
 import Reviews from "@/components/Reviews";
@@ -40,9 +39,6 @@ export default function Home() {
       <Rooms onBookRoom={(id) => openBooking(id)} />
       <Wellness onBookClick={() => openBooking(null)} />
       <Audiences onBookClick={() => openBooking(null)} />
-
-      {/* TU JE NOVÝ CENNÍK - MEDZI POBYTMI A SLUŽBAMI */}
-      <Pricing />
 
       <Services />
       <Location />

@@ -1,13 +1,24 @@
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { ArrowDown, MapPin, ParkingCircle, Star } from "lucide-react";
 import { useLang } from "@/contexts/LangContext";
+import BookingDialog from "./BookingDialog";
 
 const HERO_IMAGE =
   "https://customer-assets.emergentagent.com/job_mountain-escape-23/artifacts/wnn6gm19_IMG_6789.jpg";
 
-export default function Hero({ onBookClick }) {
+export default function Hero() {
   const { tr } = useLang();
+  const [isWellnessOpen, setIsWellnessOpen] = useState(false);
+
+  // Funkcia pre plynulý posun na sekciu rezervácií
+  const scrollToRooms = (e) => {
+    e.preventDefault();
+    const section = document.querySelector('#rooms');
+    if (section) {
+      section.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   return (
     <section
@@ -17,7 +28,7 @@ export default function Hero({ onBookClick }) {
       <div className="absolute inset-0">
         <motion.img
           src={HERO_IMAGE}
-          alt="Vysoké Tatry — 8 km od Štrbského Plesa"
+          alt="Vysoké Tatry"
           className="absolute inset-0 w-full h-full object-cover hero-photo"
           initial={{ opacity: 0, scale: 1.04 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -28,20 +39,6 @@ export default function Hero({ onBookClick }) {
         <div className="absolute inset-0 bg-gradient-to-t from-white/40 via-transparent to-white/10" />
       </div>
 
-      {/* Floating price tag (desktop) */}
-      <div
-        data-testid="hero-price-tag"
-        className="hidden md:flex absolute z-20 right-8 lg:right-14 top-1/3 flex-col items-end"
-      >
-        <div className="surface-card !bg-white/90 backdrop-blur-md p-5 rounded-2xl">
-          <div className="overline">{tr("hero.priceTagLabel")}</div>
-          <div className="font-display text-3xl lg:text-4xl font-semibold text-[color:var(--accent)] mt-1">
-            {tr("hero.priceTag")}
-          </div>
-          <div className="text-xs text-slate-500 mt-1">{tr("hero.kmTag")}</div>
-        </div>
-      </div>
-
       <div className="relative z-10 max-w-[1400px] mx-auto w-full px-6 md:px-10 pb-20 md:pb-32 pt-36">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -49,7 +46,7 @@ export default function Hero({ onBookClick }) {
           transition={{ duration: 0.9, ease: [0.2, 0.8, 0.2, 1] }}
           className="max-w-3xl"
         >
-          {/* Eyebrow with stars + headline copy */}
+          {/* Eyebrow s ikonami */}
           <div className="flex flex-wrap items-center gap-2 mb-5" data-testid="hero-overline">
             <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-50 text-amber-600 text-xs font-semibold">
               <Star size={12} fill="currentColor" />
@@ -75,18 +72,43 @@ export default function Hero({ onBookClick }) {
             <span className="block">{tr("hero.title1")}</span>
             <span className="block text-[color:var(--accent)]">{tr("hero.title2")}</span>
           </h1>
+          
           <p className="mt-7 max-w-xl text-slate-700 text-base md:text-lg leading-relaxed font-bold">
             {tr("hero.subtitle")}
           </p>
 
-          <div className="mt-9 flex flex-wrap gap-3 items-center">
-            {/* OPRAVENÉ: Tu som odstránil bodku a cenu */}
-            <button data-testid="hero-cta-btn" onClick={onBookClick} className="btn-primary">
-              {tr("hero.cta")}
-            </button>
-            <a href="#about" className="btn-outline" data-testid="hero-secondary-btn">
-              {tr("hero.ctaSecondary")}
-            </a>
+          <div className="mt-9 flex flex-col gap-4">
+            <div className="flex items-center gap-3 bg-white/60 backdrop-blur-md border border-white/40 w-fit px-4 py-1.5 rounded-full">
+               <span className="text-[10px] uppercase tracking-[0.15em] font-bold text-slate-500">
+                 {tr("hero.priceTagLabel")}
+               </span>
+               <span className="text-lg font-bold text-[color:var(--accent)]">
+                 {tr("hero.priceTag")}
+               </span>
+            </div>
+
+            <div className="flex flex-wrap gap-3 items-center">
+              {/* TLAČIDLO PRE IZBY - Teraz plynulo scrolluje na sekciu #rooms */}
+              <button 
+                data-testid="hero-cta-btn" 
+                onClick={scrollToRooms} 
+                className="btn-primary"
+              >
+                {tr("hero.cta")}
+              </button>
+
+              {/* TLAČIDLO PRE WELLNESS - Otvára interný BookingDialog */}
+              <button 
+                onClick={() => setIsWellnessOpen(true)}
+                className="bg-white hover:bg-slate-50 text-slate-900 border border-slate-200 px-6 py-3 rounded-xl font-semibold transition-all shadow-sm flex items-center gap-2"
+              >
+                {tr("hero.ctaWellness")}
+              </button>
+
+              <a href="#about" className="btn-outline" data-testid="hero-secondary-btn">
+                {tr("hero.ctaSecondary")}
+              </a>
+            </div>
           </div>
         </motion.div>
 
@@ -100,6 +122,12 @@ export default function Hero({ onBookClick }) {
           </motion.span>
         </a>
       </div>
+
+      {/* Wellness rezervačný dialóg */}
+      <BookingDialog 
+        open={isWellnessOpen} 
+        onClose={() => setIsWellnessOpen(false)} 
+      />
     </section>
   );
 }

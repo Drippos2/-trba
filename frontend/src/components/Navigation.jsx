@@ -4,19 +4,19 @@ import { useLang } from "@/contexts/LangContext";
 import LanguageSwitcher from "./LanguageSwitcher";
 import Logo from "./Logo";
 
+// Definícia odkazov v menu
 const links = [
   { href: "#about", key: "nav.about" },
   { href: "#rooms", key: "nav.rooms" },
   { href: "#wellness", key: "nav.wellness" },
   { href: "#audiences", key: "nav.audiences" },
-  { href: "#pricing", key: "nav.pricing" }, 
   { href: "#services", key: "nav.services" },
   { href: "#location", key: "nav.location" },
   { href: "#reviews", key: "nav.reviews" },
   { href: "#contact", key: "nav.contact" },
 ];
 
-export default function Navigation({ onBookClick }) {
+export default function Navigation() {
   const { tr } = useLang();
   const [scrolled, setScrolled] = useState(false);
 
@@ -34,11 +34,12 @@ export default function Navigation({ onBookClick }) {
       }`}
     >
       <div className="max-w-[1400px] mx-auto flex items-center justify-between px-6 md:px-10 h-20 md:h-24">
+        {/* Logo s návratom na vrch stránky */}
         <a href="#top" data-testid="brand-logo" className="flex items-center gap-3">
           <Logo size={64} />
         </a>
 
-        {/* Desktop menu - ostáva skryté na mobiloch (lg:flex) */}
+        {/* Desktop menu */}
         <nav className="hidden lg:flex items-center gap-7 text-sm text-slate-600">
           {links.map((l) => (
             <a
@@ -54,21 +55,9 @@ export default function Navigation({ onBookClick }) {
 
         <div className="flex items-center gap-4">
           <LanguageSwitcher />
-          
-          {/* Tlačidlo rezervácie - teraz viditeľné aj na mobile (odstránené hidden md:inline-flex) */}
-          <button
-            data-testid="nav-book-btn"
-            onClick={onBookClick}
-            className="btn-primary flex !py-2.5 !px-5 text-sm"
-          >
-            {tr("nav.book")}
-          </button>
-
-          {/* TRI ČIARKY (MOBILE TOGGLE) BOLI ODSTRÁNENÉ */}
+          {/* Tlačidlo Rezervovať bolo úspešne odstránené */}
         </div>
       </div>
-
-      {/* MOBILNÉ MENU (OVERLAY) BOLO ODSTRÁNENÉ */}
     </header>
   );
 }
