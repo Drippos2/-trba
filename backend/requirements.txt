@@ -1,32 +1,18 @@
-# Web server a API framework
 fastapi
 uvicorn
 python-multipart
-
-# Odosielanie mailov
 resend
-
-# Správa premenných prostredia
 python-dotenv
-
-# Databáza (MongoDB)
 pymongo
 motor
-
-# Validácia dát a nastavenia
 pydantic
 pydantic-settings
-
-# Deployment (Server pre Render)
+email-validator
 gunicorn
-
-# Bezpečnosť, Hashing a Tokeny (JWT)
+requests
 bcrypt
 passlib
 PyJWT
 python-jose[cryptography]
 cryptography
-
-# Ostatné utility
-requests
 python-dateutil
