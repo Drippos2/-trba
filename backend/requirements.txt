@@ -1,4 +1,4 @@
-# Web server a API
+# Web server a API framework
 fastapi
 uvicorn
 python-multipart
@@ -6,20 +6,27 @@ python-multipart
 # Odosielanie mailov
 resend
 
-# Premenné prostredia
+# Správa premenných prostredia
 python-dotenv
 
-# Databáza a Utility
+# Databáza (MongoDB)
 pymongo
 motor
+
+# Validácia dát a nastavenia
 pydantic
 pydantic-settings
 
-# Deployment (Povinné pre Render)
+# Deployment (Server pre Render)
 gunicorn
 
-# Základné knižnice (bez verzií, aby sa predišlo konfliktom)
-requests
-python-jose
+# Bezpečnosť, Hashing a Tokeny (JWT)
 bcrypt
 passlib
+PyJWT
+python-jose[cryptography]
+cryptography
+
+# Ostatné utility
+requests
+python-dateutil
