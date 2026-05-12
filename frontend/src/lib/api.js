@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BACKEND_URL = "http://localhost:8000";
+const BACKEND_URL = "https://trba.onrender.com/api";
 export const API = `${BACKEND_URL}/api`;
 
 export const api = axios.create({ baseURL: API });
