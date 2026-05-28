@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { api } from "@/lib/api"; // PRIDANÝ IMPORT
+import { api } from "@/lib/api";
 
 const AuthContext = createContext(null);
 
@@ -13,8 +13,9 @@ export function AuthProvider({ children }) {
       setReady(true);
       return;
     }
+    // OPRAVENÉ: Pridané /api pred /auth/me
     api
-      .get("/auth/me")
+      .get("/api/auth/me")
       .then((r) => setUser(r.data))
       .catch(() => {
         localStorage.removeItem("ps_token");
@@ -24,7 +25,8 @@ export function AuthProvider({ children }) {
   }, []);
 
   const login = async (email, password) => {
-    const { data } = await api.post("/auth/login", { email, password });
+    // OPRAVENÉ: Pridané /api pred /auth/login
+    const { data } = await api.post("/api/auth/login", { email, password });
     localStorage.setItem("ps_token", data.access_token);
     setUser(data.user);
     return data.user;
