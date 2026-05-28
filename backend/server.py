@@ -31,7 +31,7 @@ app = FastAPI(title="Penzión Štrba API")
 # Povolenie CORS pre tvoj frontend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], 
+    allow_origins=["https://trba.vercel.app"], 
     allow_methods=["*"],
     allow_headers=["*"],
 )
