@@ -1,7 +1,7 @@
 import axios from "axios";
 
 // Základná URL bez /api, pretože ju pridávame pri každom volaní v dashboarde
-const BACKEND_URL = "https://trba-1.onrender.com";
+const BACKEND_URL = "https://trba.onrender.com";
 
 export const api = axios.create({
   baseURL: BACKEND_URL,

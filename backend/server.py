@@ -28,13 +28,20 @@ db = client[db_name]
 
 app = FastAPI(title="Penzión Štrba API")
 
-# Povolenie CORS pre tvoj frontend
+# ÚPLNE PRVÝ MIDDLEWARE
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://trba.vercel.app"], 
-    allow_methods=["*"],
+    allow_origins=["https://trba.vercel.app"],
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
+    expose_headers=["*"],
 )
+
+# Pridaj túto trasu, aby server odpovedal na "preflight" požiadavky
+@api_router.api_route("/wellness-reservations", methods=["GET", "POST", "OPTIONS"])
+async def wellness_preflight(payload: dict = None):
+    return {"status": "ok"}
 
 api_router = APIRouter(prefix="/api")
 security = HTTPBearer(auto_error=False)
