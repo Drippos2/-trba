@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { LogOut, Calendar, MessageSquare, Trash2, Check, X, Loader2 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLang } from "@/contexts/LangContext";
-import { api } from "@/lib/api";
+import { api } from "@/lib/api"; // Uisti sa, že cesta k api.js je správna
 import Logo from "@/components/Logo";
 
 const STATUS_BADGE = {
@@ -25,6 +25,7 @@ export default function AdminDashboard() {
 
   const load = async () => {
     try {
+      // Všetky cesty začínajú /api/ podľa tvojho server.py
       const [s, r, c] = await Promise.all([
         api.get("/api/admin/stats"),
         api.get("/api/reservations"),
@@ -195,4 +196,4 @@ function TabBtn({ active, onClick, icon: Icon, children }) {
       <Icon size={15} /> {children}
     </button>
   );
-} 
+}
