@@ -17,19 +17,16 @@ export default function AdminLogin() {
   if (!ready) return null;
   if (user) return <Navigate to="/admin" replace />;
 
-  const submit = async (e) => {
-    e.preventDefault();
+  const submit = async () => {
     setLoading(true);
     
-    console.log("--- STARTUJEM PRIAMY DOPYT ---");
-    console.log("Posielam na:", "https://trba-1.onrender.com/api/auth/login");
+    console.log("--- TLAČIDLO KLIKNUTÉ, STARTUJEM DOPYT ---");
+    console.log("Cieľ:", "https://trba-1.onrender.com/api/auth/login");
 
     try {
       const response = await fetch("https://trba-1.onrender.com/api/auth/login", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
 
@@ -39,8 +36,8 @@ export default function AdminLogin() {
 
       if (response.ok) {
         toast.success("Prihlásenie úspešné!");
-        // Ak to prejde, môžeme skúsiť tvoj pôvodný login proces:
-        window.location.reload(); 
+        // Po úspechu môžeme presmerovať
+        navigate("/admin");
       } else {
         toast.error(`Chyba: ${data.detail || "Neznáma chyba"}`);
       }
@@ -57,8 +54,7 @@ export default function AdminLogin() {
       <div className="absolute top-6 right-6">
         <LanguageSwitcher />
       </div>
-      <form
-        onSubmit={submit}
+      <div
         data-testid="admin-login-form"
         className="w-full max-w-md surface-card p-8 md:p-10"
       >
@@ -76,7 +72,6 @@ export default function AdminLogin() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              data-testid="admin-email-input"
             />
           </div>
           <div>
@@ -87,20 +82,20 @@ export default function AdminLogin() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              data-testid="admin-password-input"
             />
           </div>
         </div>
 
         <button
           disabled={loading}
-          type="submit"
+          type="button" // ZMENENÉ NA BUTTON - toto zabráni refreshu
+          onClick={submit} // Manuálne voláme funkciu
           data-testid="admin-login-btn"
           className="btn-primary w-full justify-center mt-8 disabled:opacity-60"
         >
           {loading ? "..." : tr("admin.signIn")}
         </button>
-      </form>
+      </div>
     </div> 
   );
 }
