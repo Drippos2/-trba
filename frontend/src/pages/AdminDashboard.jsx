@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { LogOut, Calendar, MessageSquare, Trash2, Check, X, Loader2 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLang } from "@/contexts/LangContext";
-import { api } from "@/lib/api"; // Uisti sa, že cesta k api.js je správna
+import { api } from "@/lib/api"; 
 import Logo from "@/components/Logo";
 
 const STATUS_BADGE = {
@@ -23,9 +23,14 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [processingId, setProcessingId] = useState(null);
 
+  // Debug log
+  useEffect(() => {
+    console.log("Dashboard - User:", user, "Ready:", ready);
+  }, [user, ready]);
+
   const load = async () => {
     try {
-      // Všetky cesty začínajú /api/ podľa tvojho server.py
+      setLoading(true);
       const [s, r, c] = await Promise.all([
         api.get("/api/admin/stats"),
         api.get("/api/reservations"),
@@ -35,17 +40,23 @@ export default function AdminDashboard() {
       setReservations(r.data);
       setMessages(c.data);
     } catch (err) {
-      toast.error(err.response?.data?.detail || err.message);
+      console.error("Chyba načítania dát:", err);
+      toast.error("Nepodarilo sa načítať dáta z backendu.");
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    if (ready && user) load();
+    if (ready && user) {
+      load();
+    }
   }, [ready, user]);
 
-  if (!ready) return null;
+  // Ak sa aplikácia ešte inicializuje, neukazuj nič
+  if (!ready) return <div className="p-12 text-white">Načítavam...</div>;
+  
+  // Ak nie je používateľ, presmeruj na login
   if (!user) return <Navigate to="/admin/login" replace />;
 
   const updateStatus = async (id, status) => {
@@ -53,22 +64,22 @@ export default function AdminDashboard() {
     try {
       await api.patch(`/api/reservations/${id}`, { status });
       await load();
-      toast.success("Status updated");
+      toast.success("Status aktualizovaný");
     } catch (err) {
-      toast.error(err.response?.data?.detail || "Error updating status");
+      toast.error("Chyba pri aktualizácii");
     } finally {
       setProcessingId(null);
     }
   };
 
   const remove = async (id) => {
-    if (!window.confirm("Delete this reservation?")) return;
+    if (!window.confirm("Zmazať túto rezerváciu?")) return;
     try {
       await api.delete(`/api/reservations/${id}`);
       await load();
-      toast.success("Reservation deleted");
+      toast.success("Rezervácia zmazaná");
     } catch (err) {
-      toast.error(err.response?.data?.detail || "Error deleting");
+      toast.error("Chyba pri mazaní");
     }
   };
 
@@ -98,12 +109,8 @@ export default function AdminDashboard() {
         </div>
 
         <div className="flex gap-2 mb-6">
-          <TabBtn active={tab === "reservations"} onClick={() => setTab("reservations")} icon={Calendar}>
-            {tr("admin.reservations")}
-          </TabBtn>
-          <TabBtn active={tab === "messages"} onClick={() => setTab("messages")} icon={MessageSquare}>
-            {tr("admin.messages")}
-          </TabBtn>
+          <TabBtn active={tab === "reservations"} onClick={() => setTab("reservations")} icon={Calendar}>{tr("admin.reservations")}</TabBtn>
+          <TabBtn active={tab === "messages"} onClick={() => setTab("messages")} icon={MessageSquare}>{tr("admin.messages")}</TabBtn>
         </div>
 
         {loading ? (
@@ -123,40 +130,22 @@ export default function AdminDashboard() {
               <tbody className="divide-y divide-neutral-800">
                 {reservations.map((r) => (
                   <tr key={r.id} className="hover:bg-neutral-800/50 transition">
-                    <td className="p-4">
-                      <div className="font-medium">{r.first_name} {r.last_name}</div>
-                      <div className="text-neutral-500 text-xs">{r.email}</div>
-                    </td>
-                    <td className="p-4 text-neutral-400">
-                      <div>{r.check_in}</div>
-                      <div className="text-xs">{r.nights} nights</div>
-                    </td>
+                    <td className="p-4"><div className="font-medium">{r.first_name} {r.last_name}</div><div className="text-neutral-500 text-xs">{r.email}</div></td>
+                    <td className="p-4 text-neutral-400"><div>{r.check_in}</div><div className="text-xs">{r.nights} nights</div></td>
                     <td className="p-4">{r.room_name}</td>
-                    <td className="p-4">
-                      <span className={`px-2 py-1 rounded border text-[10px] uppercase ${STATUS_BADGE[r.status] || ""}`}>{r.status}</span>
-                    </td>
+                    <td className="p-4"><span className={`px-2 py-1 rounded border text-[10px] uppercase ${STATUS_BADGE[r.status] || ""}`}>{r.status}</span></td>
                     <td className="p-4 text-right space-x-2">
                       {r.status !== "confirmed" && (
-                        <button 
-                          disabled={processingId === r.id}
-                          onClick={() => updateStatus(r.id, "confirmed")} 
-                          className="text-emerald-500 hover:text-emerald-300 disabled:opacity-50"
-                        >
+                        <button disabled={processingId === r.id} onClick={() => updateStatus(r.id, "confirmed")} className="text-emerald-500 hover:text-emerald-300 disabled:opacity-50">
                           {processingId === r.id ? <Loader2 size={16} className="animate-spin" /> : <Check size={16} />}
                         </button>
                       )}
                       {r.status !== "cancelled" && (
-                        <button 
-                          disabled={processingId === r.id}
-                          onClick={() => updateStatus(r.id, "cancelled")} 
-                          className="text-rose-500 hover:text-rose-300 disabled:opacity-50"
-                        >
+                        <button disabled={processingId === r.id} onClick={() => updateStatus(r.id, "cancelled")} className="text-rose-500 hover:text-rose-300 disabled:opacity-50">
                           <X size={16} />
                         </button>
                       )}
-                      <button onClick={() => remove(r.id)} className="text-neutral-500 hover:text-neutral-300">
-                        <Trash2 size={16} />
-                      </button>
+                      <button onClick={() => remove(r.id)} className="text-neutral-500 hover:text-neutral-300"><Trash2 size={16} /></button>
                     </td>
                   </tr>
                 ))}
@@ -190,9 +179,7 @@ function Stat({ title, value, accent }) {
 
 function TabBtn({ active, onClick, icon: Icon, children }) {
   return (
-    <button onClick={onClick} className={`px-4 py-2 rounded-xl text-sm font-medium border transition flex items-center gap-2 ${
-      active ? "bg-yellow-600 text-black border-yellow-600 font-bold" : "bg-neutral-900 border-neutral-800 text-white hover:border-yellow-600"
-    }`}>
+    <button onClick={onClick} className={`px-4 py-2 rounded-xl text-sm font-medium border transition flex items-center gap-2 ${active ? "bg-yellow-600 text-black border-yellow-600 font-bold" : "bg-neutral-900 border-neutral-800 text-white hover:border-yellow-600"}`}>
       <Icon size={15} /> {children}
     </button>
   );

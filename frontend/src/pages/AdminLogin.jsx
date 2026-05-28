@@ -1,49 +1,42 @@
 import React, { useState } from "react";
-import { useNavigate, Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { useAuth } from "@/contexts/AuthContext";
-import { useLang } from "@/contexts/LangContext";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import Logo from "@/components/Logo";
 
 export default function AdminLogin() {
-  const { user, ready } = useAuth();
-  const { tr } = useLang();
-  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-
-  if (!ready) return null;
-  if (user) return <Navigate to="/admin" replace />;
+  const navigate = useNavigate();
 
   const submit = async () => {
     setLoading(true);
-    
-    console.log("--- TLAČIDLO KLIKNUTÉ, STARTUJEM DOPYT ---");
-    console.log("Cieľ:", "https://trba-1.onrender.com/api/auth/login");
+    console.log("Pokúšam sa o pripojenie na:", "https://trba-1.onrender.com/api/auth/login");
 
     try {
       const response = await fetch("https://trba-1.onrender.com/api/auth/login", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        mode: "cors", // KĽÚČOVÉ PRE CORS
+        headers: { 
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
         body: JSON.stringify({ email, password }),
       });
 
       const data = await response.json();
       console.log("Odpoveď servera:", data);
-      console.log("Status kód:", response.status);
 
       if (response.ok) {
         toast.success("Prihlásenie úspešné!");
-        // Po úspechu môžeme presmerovať
         navigate("/admin");
       } else {
         toast.error(`Chyba: ${data.detail || "Neznáma chyba"}`);
       }
     } catch (err) {
-      console.error("Sieťová chyba (CORS/nedostupnosť):", err);
-      toast.error("Server neodpovedá, skontroluj konzolu (F12).");
+      console.error("KRITICKÁ CHYBA (CORS/Network):", err);
+      toast.error("Prehliadač zablokoval spojenie. Skontroluj konzolu (F12).");
     } finally {
       setLoading(false);
     }
@@ -51,51 +44,27 @@ export default function AdminLogin() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[color:var(--bg-soft)] text-slate-900 px-4">
-      <div className="absolute top-6 right-6">
-        <LanguageSwitcher />
-      </div>
-      <div
-        data-testid="admin-login-form"
-        className="w-full max-w-md surface-card p-8 md:p-10"
-      >
+      <div className="absolute top-6 right-6"><LanguageSwitcher /></div>
+      <div className="w-full max-w-md surface-card p-8 md:p-10">
         <Logo size={64} className="mb-6" />
-        <div className="overline mb-3">PENZIÓN ŠTRBA — ADMIN</div>
-        <h1 className="font-display text-3xl font-semibold tracking-tight">{tr("admin.login")}</h1>
-        <p className="mt-2 text-slate-500 text-sm">admin@penzion-strba.sk</p>
-
-        <div className="mt-8 space-y-4">
-          <div>
-            <label className="overline block mb-2">{tr("admin.email")}</label>
-            <input
-              type="email"
-              className="input-light"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </div>
-          <div>
-            <label className="overline block mb-2">{tr("admin.password")}</label>
-            <input
-              type="password"
-              className="input-light"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </div>
-        </div>
-
-        <button
-          disabled={loading}
-          type="button" // ZMENENÉ NA BUTTON - toto zabráni refreshu
-          onClick={submit} // Manuálne voláme funkciu
-          data-testid="admin-login-btn"
-          className="btn-primary w-full justify-center mt-8 disabled:opacity-60"
-        >
-          {loading ? "..." : tr("admin.signIn")}
+        <h1 className="text-3xl font-semibold">Prihlásenie</h1>
+        <input type="email" className="input-light mt-4" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
+        <input type="password" className="input-light mt-4" placeholder="Heslo" value={password} onChange={(e) => setPassword(e.target.value)} />
+        <button type="button" onClick={submit} className="btn-primary w-full mt-8" disabled={loading}>
+          {loading ? "Čakám..." : "Prihlásiť sa"}
         </button>
       </div>
     </div> 
   );
+}
+
+// Do AdminLogin.jsx pridaj toto:
+const { login } = useAuth(); // Získame funkciu login z kontextu
+
+// Vnútri funkcie submit po úspešnom response.ok:
+if (response.ok) {
+    const userData = await response.json(); // predpokladám, že server vráti dáta
+    login(userData); // TOTO JE KĽÚČOVÉ: uloženie používateľa do stavu
+    toast.success("Prihlásenie úspešné!");
+    navigate("/admin"); // Presmerovanie
 }
