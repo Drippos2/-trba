@@ -23,14 +23,10 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [processingId, setProcessingId] = useState(null);
 
-  // Debug log
-  useEffect(() => {
-    console.log("Dashboard - User:", user, "Ready:", ready);
-  }, [user, ready]);
-
   const load = async () => {
     try {
       setLoading(true);
+      // Voláme endpointy definované v server.py
       const [s, r, c] = await Promise.all([
         api.get("/api/admin/stats"),
         api.get("/api/reservations"),
@@ -53,10 +49,7 @@ export default function AdminDashboard() {
     }
   }, [ready, user]);
 
-  // Ak sa aplikácia ešte inicializuje, neukazuj nič
   if (!ready) return <div className="p-12 text-white">Načítavam...</div>;
-  
-  // Ak nie je používateľ, presmeruj na login
   if (!user) return <Navigate to="/admin/login" replace />;
 
   const updateStatus = async (id, status) => {
