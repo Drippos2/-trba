@@ -13,7 +13,8 @@ export function AuthProvider({ children }) {
       setReady(true);
       return;
     }
-    // OPRAVENÉ: Pridané /api pred /auth/me
+
+    // Overenie existujúceho tokenu pri každom načítaní stránky
     api
       .get("/api/auth/me")
       .then((r) => setUser(r.data))
@@ -25,7 +26,7 @@ export function AuthProvider({ children }) {
   }, []);
 
   const login = async (email, password) => {
-    // OPRAVENÉ: Pridané /api pred /auth/login
+    // Prihlásenie a uloženie tokenu
     const { data } = await api.post("/api/auth/login", { email, password });
     localStorage.setItem("ps_token", data.access_token);
     setUser(data.user);

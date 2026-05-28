@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { toast } from "sonner";
 import { Phone, Mail, MapPin, Send } from "lucide-react";
-import { api } from "@/lib/api";
+import { api, formatApiError } from "@/lib/api"; // PRIDANÝ IMPORT formatApiError
 
 import { useLang } from "@/contexts/LangContext";
 
@@ -11,11 +11,13 @@ export default function ContactSection() {
   const [loading, setLoading] = useState(false);
 
   const onChange = (e) => setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
+  
   const onSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     try {
-      await api.post("/contact", { ...form, language: lang });
+      // OPRAVA: Prefix /api/
+      await api.post("/api/contact", { ...form, language: lang });
       toast.success(tr("contact.sent"));
       setForm({ name: "", email: "", phone: "", subject: "", message: "" });
     } catch (err) {
@@ -29,7 +31,6 @@ export default function ContactSection() {
     <section id="contact" className="section bg-white">
       <div className="max-w-[1400px] mx-auto grid lg:grid-cols-12 gap-12">
         <div className="lg:col-span-5">
-          {/* ZMENA: Overline upravený do našej korporátnej zlatej farby */}
           <div className="overline mb-5 text-[#dfb144]">{tr("contact.overline")}</div>
           <h2 className="font-display font-semibold text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight text-zinc-900">
             {tr("contact.title")}
@@ -41,7 +42,6 @@ export default function ContactSection() {
               className="flex items-center gap-4 group hover:text-zinc-950 transition-colors"
               data-testid="contact-phone"
             >
-              {/* ZMENA: Obal ikony preklopený zo starého modrého akcentu do jemného zlatého tónu (bg-[#dfb144]/10 a text-[#cc9f37]) */}
               <div className="w-11 h-11 rounded-xl bg-[#dfb144]/10 flex items-center justify-center text-[#cc9f37] shrink-0 group-hover:scale-105 transition-all duration-300 group-hover:bg-[#dfb144] group-hover:text-zinc-950">
                 <Phone size={18} />
               </div>
@@ -55,7 +55,6 @@ export default function ContactSection() {
               className="flex items-center gap-4 group hover:text-zinc-950 transition-colors"
               data-testid="contact-email"
             >
-              {/* ZMENA: Obal ikony preklopený do zlatého tónu */}
               <div className="w-11 h-11 rounded-xl bg-[#dfb144]/10 flex items-center justify-center text-[#cc9f37] shrink-0 group-hover:scale-105 transition-all duration-300 group-hover:bg-[#dfb144] group-hover:text-zinc-950">
                 <Mail size={18} />
               </div>
@@ -65,7 +64,6 @@ export default function ContactSection() {
               </div>
             </a>
             <div className="flex items-start gap-4">
-              {/* ZMENA: Obal ikony adresného špendlíka preklopený do zlatého tónu */}
               <div className="w-11 h-11 rounded-xl bg-[#dfb144]/10 flex items-center justify-center text-[#cc9f37] shrink-0">
                 <MapPin size={18} />
               </div>
@@ -80,7 +78,6 @@ export default function ContactSection() {
 
         <form
           onSubmit={onSubmit}
-          /* ZMENA: Pridaný jemný border pre kartu formulára s decentným prechodom do zlatej pri aktívnej práci */
           className="lg:col-span-7 surface-card p-7 md:p-10 space-y-4 border border-zinc-100 hover:border-[#dfb144]/20 transition-colors duration-300 shadow-sm"
           data-testid="contact-form"
         >
@@ -136,7 +133,6 @@ export default function ContactSection() {
             type="submit"
             disabled={loading}
             data-testid="contact-submit"
-            /* Globálna trieda btn-primary automaticky reflektuje nový čierno-zlatý luxusný štýl */
             className="btn-primary disabled:opacity-60 transition-all duration-300"
           >
             {loading ? "..." : tr("contact.send")} <Send size={15} />
