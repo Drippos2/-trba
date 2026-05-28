@@ -91,6 +91,10 @@ async def login(payload: LoginIn):
     if not user or not verify_password(payload.password, user["password_hash"]): raise HTTPException(status_code=401, detail="Invalid")
     return {"access_token": create_access_token(user["id"], user["email"]), "token_type": "bearer", "user": {"id": user["id"], "email": user["email"], "name": user["name"], "role": user["role"]}}
 
+@api_router.get("/auth/me")
+async def get_me(current: dict = Depends(get_current_admin)):
+    return {"id": current["id"], "email": current["email"], "name": current["name"], "role": current["role"]}
+
 @api_router.get("/admin/stats")
 async def admin_stats(current: dict = Depends(get_current_admin)):
     return {"total": await db.reservations.count_documents({}), "pending": await db.reservations.count_documents({"status": "pending"}), "confirmed": await db.reservations.count_documents({"status": "confirmed"}), "cancelled": await db.reservations.count_documents({"status": "cancelled"}), "revenue": 0}
