@@ -70,15 +70,15 @@ export default function BookingDialog({ open, onClose }) {
       const correctedDate = new Date(selectedDate.getTime() - (offset * 60 * 1000));
       const dateStr = correctedDate.toISOString().split('T')[0];
 
-      // TU JE OPRAVENÝ ZÁPIS:
-      await api.post("/wellness-reservations", {
+      // OTVORENIE ZÁTVORKY A SLOŽENEJ ZÁTVORKY TU:
+      await api.post("/api/wellness-reservations", {
         ...contact,
         date: dateStr,
         time: selectedTime,
         guests_adults: adults,
         guests_children: children,
         language: lang,
-      }); // <--- Táto zátvorka a bodkočiarka tu musia byť!
+      }); // ZATVORENIE SLOŽENEJ ZÁTVORKY A ZÁTVORKY FUNKCIE TU
 
       setDone(true);
     } catch (err) {

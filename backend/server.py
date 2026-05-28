@@ -121,11 +121,23 @@ async def get_all_messages(current: dict = Depends(get_current_admin)):
     for m in msgs: m["_id"] = str(m["_id"])
     return msgs
 
+# Pridaj toto pre formulár kontaktu
+@api_router.post("/contact")
+async def save_contact_message(payload: dict):
+    # Logika na uloženie správy do DB
+    await db.contact_messages.insert_one(payload)
+    return {"ok": True}
+
+# Pridaj toto pre wellness (ak tam ešte nie je)
 @api_router.post("/wellness-reservations")
 async def create_wellness_reservation(payload: dict):
-    # Tu bude logika na uloženie do databázy
-    # Napríklad:
-    # await db.wellness_reservations.insert_one(payload)
+    await db.wellness_reservations.insert_one(payload)
+    return {"ok": True}
+
+@api_router.post("/wellness-reservations")
+async def create_wellness_reservation(payload: dict):
+    # Logika na uloženie (dočasne len vráti úspech, aby si videl, že to funguje)
+    await db.wellness_reservations.insert_one(payload)
     return {"status": "success"}
 
 # --- Startup ---
