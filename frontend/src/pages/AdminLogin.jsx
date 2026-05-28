@@ -3,12 +3,11 @@ import { useNavigate, Navigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLang } from "@/contexts/LangContext";
-import { formatApiError, api } from "@/lib/api"; // Uisti sa, že importuješ aj 'api'
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import Logo from "@/components/Logo";
 
 export default function AdminLogin() {
-  const { user, login, ready } = useAuth();
+  const { user, ready } = useAuth();
   const { tr } = useLang();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
@@ -20,20 +19,34 @@ export default function AdminLogin() {
 
   const submit = async (e) => {
     e.preventDefault();
-    console.log("Klikol si na prihlásenie!");
-    console.log("Adresa backendu (baseURL):", api.defaults.baseURL);
-    
     setLoading(true);
+    
+    console.log("--- STARTUJEM PRIAMY DOPYT ---");
+    console.log("Posielam na:", "https://trba-1.onrender.com/api/auth/login");
+
     try {
-      await login(email, password);
-      console.log("Login úspešný, presmerovávam...");
-      navigate("/admin");
-    } catch (err) {
-      console.error("Chyba pri prihlásení:", err);
-      if (err.response) {
-        console.error("Detail chyby od servera:", err.response.data);
+      const response = await fetch("https://trba-1.onrender.com/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+      console.log("Odpoveď servera:", data);
+      console.log("Status kód:", response.status);
+
+      if (response.ok) {
+        toast.success("Prihlásenie úspešné!");
+        // Ak to prejde, môžeme skúsiť tvoj pôvodný login proces:
+        window.location.reload(); 
+      } else {
+        toast.error(`Chyba: ${data.detail || "Neznáma chyba"}`);
       }
-      toast.error(formatApiError(err.response?.data?.detail) || err.message);
+    } catch (err) {
+      console.error("Sieťová chyba (CORS/nedostupnosť):", err);
+      toast.error("Server neodpovedá, skontroluj konzolu (F12).");
     } finally {
       setLoading(false);
     }
