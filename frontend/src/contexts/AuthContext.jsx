@@ -1,10 +1,10 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-
+import { api } from "@/lib/api"; // PRIDANÝ IMPORT
 
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null); // null = unknown/not auth'd
+  const [user, setUser] = useState(null);
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
