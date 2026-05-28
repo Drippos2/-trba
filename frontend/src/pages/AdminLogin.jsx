@@ -80,6 +80,6 @@ export default function AdminLogin() {
           {loading ? "..." : tr("admin.signIn")}
         </button>
       </form>
-    </div> ô
+    </div> 
   );
 }
