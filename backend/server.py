@@ -13,7 +13,7 @@ from fastapi import FastAPI, APIRouter, HTTPException, Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
-from pydantic import BaseModel, Field, EmailStr, ConfigDict, field_validator
+from pydantic import BaseModel, EmailStr, ConfigDict
 from dotenv import load_dotenv
 
 # ---------- Setup ----------
@@ -39,8 +39,6 @@ db = client[db_name]
 JWT_ALGORITHM = "HS256"
 JWT_EXPIRE_HOURS = 24
 RESEND_API_KEY = os.environ.get("RESEND_API_KEY", "").strip()
-SENDER_EMAIL = os.environ.get("SENDER_EMAIL", "onboarding@resend.dev")
-NOTIFICATION_EMAIL = os.environ.get("NOTIFICATION_EMAIL", "info@penzion-strba.sk")
 
 if RESEND_API_KEY: resend.api_key = RESEND_API_KEY
 
@@ -48,26 +46,10 @@ app = FastAPI(title="Penzión Štrba API")
 api_router = APIRouter(prefix="/api")
 security = HTTPBearer(auto_error=False)
 
-ROOM_TYPES = [
-    {"id": "double-extra", "name_sk": "Dvojposteľová s prístelkou", "price_per_night": 89},
-    {"id": "double", "name_sk": "Dvojposteľová izba", "price_per_night": 59},
-    {"id": "triple-kitchen", "name_sk": "Trojposteľová s kuchynským kútikom", "price_per_night": 109},
-]
-
 # ---------- Models ----------
 class LoginIn(BaseModel):
     email: EmailStr
     password: str
-
-class ReservationIn(BaseModel):
-    model_config = ConfigDict(extra="ignore")
-    first_name: str; last_name: str; email: EmailStr; phone: str
-    check_in: str; check_out: str; room_type_id: str
-    guests_adults: int; guests_children: int = 0
-    wellness: bool = False; half_board: bool = False; notes: Optional[str] = None
-
-class ReservationOut(ReservationIn):
-    id: str; status: str; total_price: float; nights: int; room_name: str; created_at: str
 
 # ---------- Helpers ----------
 def hash_password(password: str) -> str: return bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
@@ -105,38 +87,13 @@ async def get_all_reservations(current: dict = Depends(get_current_admin)):
     for r in res: r["_id"] = str(r["_id"])
     return res
 
-@api_router.patch("/reservations/{res_id}")
-async def update_reservation(res_id: str, payload: dict, current: dict = Depends(get_current_admin)):
-    await db.reservations.update_one({"id": res_id}, {"$set": {"status": payload["status"]}})
-    return {"ok": True}
-
-@api_router.delete("/reservations/{res_id}")
-async def delete_reservation(res_id: str, current: dict = Depends(get_current_admin)):
-    await db.reservations.delete_one({"id": res_id})
-    return {"ok": True}
-
-@api_router.get("/contact")
-async def get_all_messages(current: dict = Depends(get_current_admin)):
-    msgs = await db.contact_messages.find({}).to_list(length=1000)
-    for m in msgs: m["_id"] = str(m["_id"])
-    return msgs
-
-# Pridaj toto pre formulár kontaktu
 @api_router.post("/contact")
 async def save_contact_message(payload: dict):
-    # Logika na uloženie správy do DB
     await db.contact_messages.insert_one(payload)
     return {"ok": True}
 
-# Pridaj toto pre wellness (ak tam ešte nie je)
 @api_router.post("/wellness-reservations")
 async def create_wellness_reservation(payload: dict):
-    await db.wellness_reservations.insert_one(payload)
-    return {"ok": True}
-
-@api_router.post("/wellness-reservations")
-async def create_wellness_reservation(payload: dict):
-    # Logika na uloženie (dočasne len vráti úspech, aby si videl, že to funguje)
     await db.wellness_reservations.insert_one(payload)
     return {"status": "success"}
 
@@ -152,5 +109,3 @@ app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], all
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
-
-    
