@@ -106,6 +106,10 @@ async def startup_db():
 app.include_router(api_router, prefix="/api")
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
 
+@api_router.get("/test")
+async def test_route():
+    return {"message": "Server funguje!"}
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
