@@ -1,6 +1,7 @@
 import React from "react";
 import { useLang } from "@/contexts/LangContext";
 import { SUPPORTED_LANGS } from "@/lib/i18n";
+import { api } from "@/lib/api";
 
 const LABELS = { sk: "SK", en: "EN", de: "DE" };
 

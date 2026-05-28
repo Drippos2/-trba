@@ -1,6 +1,7 @@
 import React from "react";
 import { useLang } from "@/contexts/LangContext";
 import Logo from "./Logo";
+import { api } from "@/lib/api";
 
 export default function Footer() {
   const { tr } = useLang();

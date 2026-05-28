@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Star, Quote } from "lucide-react";
 import { useLang } from "@/contexts/LangContext";
+import { api } from "@/lib/api";
 
 // Tvoje recenzie ako hlavný zdroj dát, aby sme sa vyhli errorom z API
 const FALLBACK_REVIEWS = [

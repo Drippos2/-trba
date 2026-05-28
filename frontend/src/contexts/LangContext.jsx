@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { SUPPORTED_LANGS, dict } from "@/lib/i18n";
+import { api } from "@/lib/api";
 
 const LangContext = createContext(null);
 

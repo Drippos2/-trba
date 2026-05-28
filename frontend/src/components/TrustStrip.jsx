@@ -1,6 +1,7 @@
 import React from "react";
 import { Star, MapPin, ParkingCircle, CalendarDays } from "lucide-react";
 import { useLang } from "@/contexts/LangContext";
+import { api } from "@/lib/api";
 
 export default function TrustStrip() {
   const { tr } = useLang();

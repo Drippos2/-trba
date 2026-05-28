@@ -1,6 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { useLang } from "@/contexts/LangContext";
+import { api } from "@/lib/api";
 
 const fade = {
   hidden: { opacity: 0, y: 24 },

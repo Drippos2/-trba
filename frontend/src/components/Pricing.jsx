@@ -1,6 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { Check, Info, Calendar } from "lucide-react";
+import { api } from "@/lib/api";
 
 export default function Pricing() {
   const pricingData = [

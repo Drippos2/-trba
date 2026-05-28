@@ -2,6 +2,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { Users, Briefcase, Sparkles, Check, ArrowRight } from "lucide-react";
 import { useLang } from "@/contexts/LangContext";
+import { api } from "@/lib/api";
 
 const ICONS = [Users, Briefcase, Sparkles];
 

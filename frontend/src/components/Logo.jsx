@@ -1,4 +1,5 @@
 import React from "react";
+import { api } from "@/lib/api";
 
 const LOGO_URL =
   "https://customer-assets.emergentagent.com/job_mountain-escape-23/artifacts/rrbwu1nr_Penzion%20%C5%A1trba%20logo.jpg";

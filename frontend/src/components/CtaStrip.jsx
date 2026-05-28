@@ -2,6 +2,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { useLang } from "@/contexts/LangContext";
+import { api } from "@/lib/api";
 
 export default function CtaStrip({ onBookClick }) {
   const { tr } = useLang();

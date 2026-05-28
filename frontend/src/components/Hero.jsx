@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { useLang } from "@/contexts/LangContext";
 import BookingDialog from "./BookingDialog";
+import { api } from "@/lib/api";
 
 const HERO_IMAGE =
   "https://customer-assets.emergentagent.com/job_mountain-escape-23/artifacts/wnn6gm19_IMG_6789.jpg";

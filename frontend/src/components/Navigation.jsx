@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useLang } from "@/contexts/LangContext";
 import LanguageSwitcher from "./LanguageSwitcher";
 import Logo from "./Logo";
+import { api } from "@/lib/api";
 
 // Definícia odkazov v menu - kompletne zachovaná pôvodná štruktúra sekcií
 const links = [

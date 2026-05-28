@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Sun, Snowflake, Sparkles, MapPin, ExternalLink } from "lucide-react";
 import { useLang } from "@/contexts/LangContext";
+import { api } from "@/lib/api";
 
 export default function Location() {
   const { tr } = useLang();

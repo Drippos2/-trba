@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { useLang } from "@/contexts/LangContext";
+import { api } from "@/lib/api";
 
 export default function Rooms() {
   const { tr } = useLang();
