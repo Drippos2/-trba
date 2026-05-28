@@ -7,6 +7,7 @@ import { X, Check, ChevronLeft, ChevronRight, Clock, Users, Calendar } from "luc
 
 import { useLang } from "@/contexts/LangContext";
 import { toast } from "sonner";
+import { api } from "@/lib/api";
 
 export default function BookingDialog({ open, onClose }) {
   const { lang, tr } = useLang();
