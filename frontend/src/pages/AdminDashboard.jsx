@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { LogOut, Calendar, MessageSquare, Trash2, Check, X, Loader2 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLang } from "@/contexts/LangContext";
+import { api } from "@/lib/api";
 import Logo from "@/components/Logo";
 
 const STATUS_BADGE = {
@@ -25,9 +26,9 @@ export default function AdminDashboard() {
   const load = async () => {
     try {
       const [s, r, c] = await Promise.all([
-        api.get("/admin/stats"),
-        api.get("/reservations"),
-        api.get("/contact"),
+        api.get("/api/admin/stats"),
+        api.get("/api/reservations"),
+        api.get("/api/contact"),
       ]);
       setStats(s.data);
       setReservations(r.data);
@@ -49,7 +50,7 @@ export default function AdminDashboard() {
   const updateStatus = async (id, status) => {
     setProcessingId(id);
     try {
-      await api.patch(`/reservations/${id}`, { status });
+      await api.patch(`/api/reservations/${id}`, { status });
       await load();
       toast.success("Status updated");
     } catch (err) {
@@ -62,7 +63,7 @@ export default function AdminDashboard() {
   const remove = async (id) => {
     if (!window.confirm("Delete this reservation?")) return;
     try {
-      await api.delete(`/reservations/${id}`);
+      await api.delete(`/api/reservations/${id}`);
       await load();
       toast.success("Reservation deleted");
     } catch (err) {
@@ -92,7 +93,7 @@ export default function AdminDashboard() {
           <Stat title={tr("admin.pending")} value={stats.pending} />
           <Stat title={tr("admin.confirmed")} value={stats.confirmed} />
           <Stat title={tr("admin.cancelled")} value={stats.cancelled} />
-          <Stat title={tr("admin.revenue")} value={`€${stats.revenue.toFixed(0)}`} accent />
+          <Stat title={tr("admin.revenue")} value={`€${stats.revenue ? stats.revenue.toFixed(0) : 0}`} accent />
         </div>
 
         <div className="flex gap-2 mb-6">
@@ -131,7 +132,7 @@ export default function AdminDashboard() {
                     </td>
                     <td className="p-4">{r.room_name}</td>
                     <td className="p-4">
-                      <span className={`px-2 py-1 rounded border text-[10px] uppercase ${STATUS_BADGE[r.status]}`}>{r.status}</span>
+                      <span className={`px-2 py-1 rounded border text-[10px] uppercase ${STATUS_BADGE[r.status] || ""}`}>{r.status}</span>
                     </td>
                     <td className="p-4 text-right space-x-2">
                       {r.status !== "confirmed" && (

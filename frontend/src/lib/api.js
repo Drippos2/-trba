@@ -1,9 +1,8 @@
 import axios from "axios";
 
-// 1. Nastavenie základnej URL
-const BACKEND_URL = "https://trba.onrender.com/api";
+// Základná URL bez /api, pretože ju pridávame pri každom volaní v dashboarde
+const BACKEND_URL = "https://trba-1.onrender.com";
 
-// 2. Vytvorenie inštancie axios
 export const api = axios.create({
   baseURL: BACKEND_URL,
   headers: {
@@ -11,8 +10,6 @@ export const api = axios.create({
   },
 });
 
-// 3. Interceptor na automatické pridávanie tokenu
-// Tento kúsok zabezpečí, že každý request od admina bude mať v sebe token
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem("ps_token");
   if (token) {
@@ -23,7 +20,6 @@ api.interceptors.request.use((config) => {
   return Promise.reject(error);
 });
 
-// 4. Funkcia na formátovanie chýb (zostáva tvoja)
 export function formatApiError(detail) {
   if (detail == null) return "Something went wrong. Please try again.";
   if (typeof detail === "string") return detail;
