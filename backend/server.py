@@ -121,6 +121,13 @@ async def get_all_messages(current: dict = Depends(get_current_admin)):
     for m in msgs: m["_id"] = str(m["_id"])
     return msgs
 
+@api_router.post("/wellness-reservations")
+async def create_wellness_reservation(payload: dict):
+    # Tu bude logika na uloženie do databázy
+    # Napríklad:
+    # await db.wellness_reservations.insert_one(payload)
+    return {"status": "success"}
+
 # --- Startup ---
 @app.on_event("startup")
 async def startup_db():
@@ -133,3 +140,5 @@ app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], all
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
+
+    
