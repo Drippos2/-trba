@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { useAuth } from "@/contexts/AuthContext"; // Importujeme useAuth
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import Logo from "@/components/Logo";
 
 export default function AdminLogin() {
+  const { login } = useAuth(); // Získame funkciu login z kontextu
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -17,7 +19,7 @@ export default function AdminLogin() {
     try {
       const response = await fetch("https://trba-1.onrender.com/api/auth/login", {
         method: "POST",
-        mode: "cors", // KĽÚČOVÉ PRE CORS
+        mode: "cors",
         headers: { 
           "Content-Type": "application/json",
           "Accept": "application/json"
@@ -29,13 +31,17 @@ export default function AdminLogin() {
       console.log("Odpoveď servera:", data);
 
       if (response.ok) {
+        // Tu voláme login z AuthContext, aby aplikácia vedela, že si prihlásený
+        // Predpokladám, že 'data' obsahuje token alebo informácie o userovi
+        login(data); 
+        
         toast.success("Prihlásenie úspešné!");
         navigate("/admin");
       } else {
         toast.error(`Chyba: ${data.detail || "Neznáma chyba"}`);
       }
     } catch (err) {
-      console.error("KRITICKÁ CHYBA (CORS/Network):", err);
+      console.error("KRITICKÁ CHYBA:", err);
       toast.error("Prehliadač zablokoval spojenie. Skontroluj konzolu (F12).");
     } finally {
       setLoading(false);
@@ -56,15 +62,4 @@ export default function AdminLogin() {
       </div>
     </div> 
   );
-}
-
-// Do AdminLogin.jsx pridaj toto:
-const { login } = useAuth(); // Získame funkciu login z kontextu
-
-// Vnútri funkcie submit po úspešnom response.ok:
-if (response.ok) {
-    const userData = await response.json(); // predpokladám, že server vráti dáta
-    login(userData); // TOTO JE KĽÚČOVÉ: uloženie používateľa do stavu
-    toast.success("Prihlásenie úspešné!");
-    navigate("/admin"); // Presmerovanie
 }
