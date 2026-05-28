@@ -3,7 +3,7 @@ import { useNavigate, Navigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLang } from "@/contexts/LangContext";
-import { formatApiError } from "@/lib/api";
+import { formatApiError, api } from "@/lib/api"; // Uisti sa, že importuješ aj 'api'
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import Logo from "@/components/Logo";
 
@@ -20,11 +20,19 @@ export default function AdminLogin() {
 
   const submit = async (e) => {
     e.preventDefault();
+    console.log("Klikol si na prihlásenie!");
+    console.log("Adresa backendu (baseURL):", api.defaults.baseURL);
+    
     setLoading(true);
     try {
       await login(email, password);
+      console.log("Login úspešný, presmerovávam...");
       navigate("/admin");
     } catch (err) {
+      console.error("Chyba pri prihlásení:", err);
+      if (err.response) {
+        console.error("Detail chyby od servera:", err.response.data);
+      }
       toast.error(formatApiError(err.response?.data?.detail) || err.message);
     } finally {
       setLoading(false);
