@@ -28,11 +28,13 @@ export default function Pricing() {
   ];
 
   return (
-    <section id="pricing" className="py-20 bg-slate-50">
+    /* ZMENA: Pozadie sekcie jemne upravené zo slate-50 na čistejšie biele/neutrálne pozadie podčiarkujúce luxusný štýl */
+    <section id="pricing" className="py-20 bg-white">
       <div className="max-w-[1400px] mx-auto px-4">
         <div className="text-center mb-16">
-          <span className="text-[color:var(--accent)] font-bold tracking-widest uppercase text-sm">Ceny a podmienky</span>
-          <h2 className="text-4xl md:text-5xl font-semibold mt-4">Cenník ubytovania</h2>
+          {/* ZMENA: Podnadpis prepnutý zo starej premennej na našu korporátnu zlatú farbu */}
+          <span className="text-[#dfb144] font-bold tracking-widest uppercase text-sm">Ceny a podmienky</span>
+          <h2 className="text-4xl md:text-5xl font-semibold mt-4 text-zinc-900">Cenník ubytovania</h2>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -41,29 +43,38 @@ export default function Pricing() {
               key={index}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              className={`p-8 rounded-3xl bg-white border ${item.highlight ? "border-slate-900 shadow-xl scale-105" : "border-slate-100 shadow-sm"}`}
+              /* ZMENA: Zvýraznená karta (Hlavná Sezóna) preklopená do luxusnej čiernej (bg-zinc-950) so zlatým tieňom, ostatné karty majú jemný čistý border */
+              className={`p-8 rounded-3xl border transition-all duration-300 ${
+                item.highlight 
+                  ? "bg-zinc-950 text-white border-zinc-950 shadow-xl shadow-zinc-200/50 scale-105" 
+                  : "bg-white text-zinc-900 border-zinc-100 shadow-sm hover:border-[#dfb144]/30"
+              }`}
             >
               <h3 className="text-xl font-bold mb-2">{item.category}</h3>
-              <p className="text-sm text-slate-500 mb-6 flex items-center gap-2"><Calendar size={14} /> {item.period}</p>
+              {/* ZMENA: Farba kalendára a textu upravená na neutrálne odtiene pre svetlú aj tmavú kartu */}
+              <p className={`text-sm mb-6 flex items-center gap-2 ${item.highlight ? "text-zinc-400" : "text-zinc-500"}`}>
+                <Calendar size={14} className="text-[#dfb144]" /> {item.period}
+              </p>
               <div className="mb-8">
                 <span className="text-5xl font-bold">{item.price}</span>
-                <span className="text-slate-500"> / noc</span>
+                <span className={item.highlight ? "text-zinc-400" : "text-zinc-500"}> / noc</span>
               </div>
               <ul className="space-y-4 mb-8">
                 {item.features.map((f, i) => (
-                  <li key={i} className="flex items-center gap-3 text-sm text-slate-600">
-                    <Check size={16} className="text-green-500" /> {f}
+                  <li key={i} className={`flex items-center gap-3 text-sm ${item.highlight ? "text-zinc-300" : "text-zinc-600"}`}>
+                    {/* ZMENA: Ikonka fajky (Check) upravená na zlatú farbu namiesto zelenej, aby nenútene ladila */}
+                    <Check size={16} className="text-[#dfb144]" /> {f}
                   </li>
                 ))}
               </ul>
               
-              {/* ZMENA: Tlačidlo je teraz odkaz na #contact */}
+              {/* ZMENA: Tlačidlá preklopené – na tmavej zvýraznenej karte svieti zlaté tlačidlo, na bielych kartách čisté elegantné čierne tlačidlo */}
               <a 
                 href="#contact"
-                className={`block w-full py-4 rounded-xl font-bold text-center transition-all ${
+                className={`block w-full py-4 rounded-xl font-bold text-center transition-all duration-300 ${
                   item.highlight 
-                    ? "bg-slate-900 text-white hover:bg-slate-800" 
-                    : "bg-slate-100 text-slate-900 hover:bg-slate-200"
+                    ? "bg-[#dfb144] text-zinc-900 hover:bg-[#cc9f37]" 
+                    : "bg-zinc-950 text-white hover:bg-zinc-800"
                 }`}
               >
                 Overiť dostupnosť

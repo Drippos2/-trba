@@ -5,8 +5,10 @@ const LangContext = createContext(null);
 
 export function LangProvider({ children }) {
   const [lang, setLang] = useState(() => {
-    const saved = localStorage.getItem("ps_lang");
-    if (saved && SUPPORTED_LANGS.includes(saved)) return saved;
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("ps_lang");
+      if (saved && SUPPORTED_LANGS.includes(saved)) return saved;
+    }
     return "sk";
   });
 
@@ -15,13 +17,24 @@ export function LangProvider({ children }) {
     document.documentElement.lang = lang;
   }, [lang]);
 
+  // Vylepšená funkcia na preklady, ktorá bezpečne vracia texty aj polia (napr. wellness.items)
   const tr = (path) => {
+    if (!path) return "";
+    
     const parts = path.split(".");
     let cur = dict[lang] || dict.sk;
+    
     for (const p of parts) {
       if (cur == null) return "";
       cur = cur[p];
     }
+    
+    // Ak je výsledok pole alebo objekt, vrátime ho priamo (aby .map() vo Wellness fungovalo)
+    if (Array.isArray(cur) || (cur !== null && typeof cur === "object")) {
+      return cur;
+    }
+    
+    // Inak vrátime string, prípadne prázdny reťazec ako fallback
     return cur ?? "";
   };
 

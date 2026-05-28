@@ -20,8 +20,9 @@ export default function About() {
           viewport={{ once: true, amount: 0.4 }}
           variants={fade}
         >
-          <div className="overline mb-6">{tr("about.overline")}</div>
-          <h2 className="font-display font-semibold text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight">
+          {/* ZMENA: Vynútené preklopenie overline do korporátnej zlatej farby pomocou !text-[#dfb144] */}
+          <div className="overline mb-6 !text-[#dfb144]">{tr("about.overline")}</div>
+          <h2 className="font-display font-semibold text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight text-zinc-900">
             {tr("about.title")}
           </h2>
         </motion.div>
@@ -42,12 +43,13 @@ export default function About() {
               <div
                 key={i}
                 data-testid={`about-stat-${i}`}
-                className="surface-card p-6"
+                /* ZMENA: Pridané jemné orámovanie a plynulý prechod pre zjednotenie dizajnu štatistických boxov */
+                className="surface-card p-6 border border-zinc-100 hover:border-[#dfb144]/20 transition-all duration-300 shadow-sm"
               >
-                <div className="font-display text-3xl md:text-4xl text-slate-900 tracking-tight font-semibold">
+                <div className="font-display text-3xl md:text-4xl text-zinc-900 tracking-tight font-semibold">
                   {s.value}
                 </div>
-                <div className="mt-2 text-xs tracking-[0.18em] uppercase text-slate-500">
+                <div className="mt-2 text-xs tracking-[0.18em] uppercase text-zinc-400 font-medium">
                   {s.label}
                 </div>
               </div>

@@ -8,6 +8,7 @@ const ICONS = [Flame, Droplets, Waves, Sparkles];
 export default function Wellness({ onBookClick }) {
   const { tr } = useLang();
   const items = tr("wellness.items");
+
   return (
     <section id="wellness" className="section bg-white">
       <div className="max-w-[1400px] mx-auto grid lg:grid-cols-12 gap-12 items-start">
@@ -18,17 +19,22 @@ export default function Wellness({ onBookClick }) {
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
         >
-          <div className="overline mb-5">{tr("wellness.overline")}</div>
-          <h2 className="font-display font-semibold text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight">
+          {/* Použitý priamy Tailwind namiesto problematickej globálnej triedy */}
+          <div className="text-xs font-semibold tracking-wider uppercase mb-5 text-[#dfb144]">
+            {tr("wellness.overline")}
+          </div>
+          <h2 className="font-display font-semibold text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight text-zinc-900">
             {tr("wellness.title")}
           </h2>
           <p className="mt-6 text-slate-600 text-base md:text-lg max-w-md">
             {tr("wellness.subtitle")}
           </p>
 
-          <div className="mt-10 surface-card p-6 inline-block">
-            <div className="overline mb-2">price</div>
-            <div className="font-display text-[color:var(--accent)] text-3xl md:text-4xl font-semibold">
+          <div className="mt-10 p-6 inline-block border border-zinc-100 bg-zinc-50/50 shadow-sm rounded-2xl">
+            <div className="text-[10px] font-semibold tracking-wider uppercase mb-2 text-[#dfb144]">
+              price
+            </div>
+            <div className="font-display text-[#cc9f37] text-3xl md:text-4xl font-semibold">
               {tr("wellness.price")}
             </div>
             <div className="mt-1 text-slate-500 text-sm">{tr("wellness.note")}</div>
@@ -37,7 +43,7 @@ export default function Wellness({ onBookClick }) {
           <button
             data-testid="wellness-book-btn"
             onClick={onBookClick}
-            className="btn-primary mt-8"
+            className="mt-8 inline-flex items-center gap-2 bg-zinc-900 hover:bg-[#dfb144] text-white hover:text-zinc-950 px-6 py-3 rounded-xl font-medium transition-all duration-300 shadow-sm"
           >
             {tr("nav.book")} <ArrowRight size={16} />
           </button>
@@ -56,13 +62,13 @@ export default function Wellness({ onBookClick }) {
               <div
                 key={i}
                 data-testid={`wellness-item-${i}`}
-                className="surface-card p-6 md:p-7 min-h-[180px] flex flex-col justify-between group"
+                className="p-6 md:p-7 min-h-[180px] flex flex-col justify-between group border border-zinc-100 bg-white rounded-2xl hover:border-[#dfb144]/30 transition-all duration-300 shadow-sm"
               >
-                <div className="w-11 h-11 rounded-xl bg-[color:var(--accent-soft)] flex items-center justify-center text-[color:var(--accent)]">
+                <div className="w-11 h-11 rounded-xl bg-[#dfb144]/10 flex items-center justify-center text-[#cc9f37] transition-colors duration-300 group-hover:bg-[#dfb144] group-hover:text-zinc-950">
                   <Icon size={20} />
                 </div>
                 <div>
-                  <div className="font-display text-lg md:text-xl font-semibold tracking-tight text-slate-900">
+                  <div className="font-display text-lg md:text-xl font-semibold tracking-tight text-zinc-900">
                     {it.t}
                   </div>
                   <div className="mt-1.5 text-slate-500 text-sm">{it.d}</div>

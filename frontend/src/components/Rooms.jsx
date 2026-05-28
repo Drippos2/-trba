@@ -31,14 +31,16 @@ export default function Rooms() {
   }, []);
 
   return (
-    <section id="rooms" className="section bg-[color:var(--bg-soft)]">
+    <section id="rooms" className="section bg-white">
       <div className="max-w-[1400px] mx-auto px-4">
         
-        {/* Tvoje texty */}
         <div className="flex items-end justify-between flex-wrap gap-6 mb-14">
           <div className="max-w-2xl">
-            <div className="overline mb-5">{tr("rooms.overline")}</div>
-            <h2 className="font-display font-semibold text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight">
+            {/* Vyčistené od starých nánosov, farbu riadi priamo Tailwind */}
+            <div className="text-xs font-semibold tracking-wider uppercase mb-5 text-[#dfb144]">
+              {tr("rooms.overline")}
+            </div>
+            <h2 className="font-display font-semibold text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight text-zinc-900">
               {tr("rooms.title")}
             </h2>
             <p className="text-slate-600 mt-6 text-lg">
@@ -47,8 +49,7 @@ export default function Rooms() {
           </div>
         </div>
 
-        {/* TOTO TU MUSÍ BYŤ, aby Previo vedelo, kam sa má vykresliť */}
-        {/* Je to úplne bez štýlov, aby to nepridávalo žiaden box navyše */}
+        {/* Previo kontajner */}
         <div id="previo-booking-engine"></div>
 
       </div>

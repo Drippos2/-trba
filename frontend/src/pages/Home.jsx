@@ -14,16 +14,14 @@ import CtaStrip from "@/components/CtaStrip";
 import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
 import BookingDialog from "@/components/BookingDialog";
-import { api } from "@/lib/api";
+
 
 export default function Home() {
   const [bookingOpen, setBookingOpen] = useState(false);
   const [initialRoomId, setInitialRoomId] = useState(null);
   const [rooms, setRooms] = useState([]);
 
-  useEffect(() => {
-    api.get("/rooms").then((r) => setRooms(r.data)).catch(() => {});
-  }, []);
+
 
   const openBooking = (roomId) => {
     setInitialRoomId(roomId ?? null);

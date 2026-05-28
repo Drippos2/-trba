@@ -18,8 +18,9 @@ export default function Location() {
     <section id="location" className="section bg-white">
       <div className="max-w-[1400px] mx-auto">
         <div className="max-w-3xl mb-12">
-          <div className="overline mb-5">{tr("location.overline")}</div>
-          <h2 className="font-display font-semibold text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight">
+          {/* ZMENA: Overline jemne podfarbený do našej zlatej */}
+          <div className="overline mb-5 text-[#dfb144]">{tr("location.overline")}</div>
+          <h2 className="font-display font-semibold text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight text-slate-900">
             {tr("location.title")}
           </h2>
           <p className="mt-5 text-slate-600 text-base md:text-lg">{tr("location.subtitle")}</p>
@@ -36,11 +37,11 @@ export default function Location() {
                 onClick={() => setTab(t.id)}
                 className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium transition-all border ${
                   active
-                    ? "bg-[color:var(--accent)] text-white border-[color:var(--accent)] shadow-md shadow-sky-200"
-                    : "bg-white border-slate-200 text-slate-600 hover:border-slate-300"
+                    ? "bg-zinc-950 text-white border-zinc-950 shadow-md shadow-zinc-200"
+                    : "bg-white border-slate-200 text-slate-600 hover:border-[#dfb144] hover:text-slate-900"
                 }`}
               >
-                <Icon size={15} />
+                <Icon size={15} className={active ? "text-[#dfb144]" : ""} />
                 {tr(t.labelKey)}
               </button>
             );
@@ -60,9 +61,9 @@ export default function Location() {
               <div
                 key={item}
                 data-testid={`location-item-${tab}-${i}`}
-                className="surface-card p-6 min-h-[140px] flex flex-col justify-between"
+                className="surface-card p-6 min-h-[140px] flex flex-col justify-between border border-slate-100 hover:border-[#dfb144]/40 transition-colors duration-300"
               >
-                <div className="overline">0{i + 1}</div>
+                <div className="overline text-[#dfb144]">0{i + 1}</div>
                 <div className="font-display text-lg md:text-xl font-semibold tracking-tight text-slate-900">{item}</div>
               </div>
             ))}
@@ -72,11 +73,11 @@ export default function Location() {
         <div className="mt-12 grid lg:grid-cols-12 gap-6">
           <div className="lg:col-span-5 surface-card p-6 md:p-8 flex flex-col justify-center">
             <div className="flex items-start gap-4">
-              <div className="w-11 h-11 rounded-xl bg-[color:var(--accent-soft)] flex items-center justify-center text-[color:var(--accent)] shrink-0">
+              <div className="w-11 h-11 rounded-xl bg-[#dfb144]/10 flex items-center justify-center text-[#cc9f37] shrink-0">
                 <MapPin size={20} />
               </div>
               <div>
-                <div className="overline mb-1">Adresa</div>
+                <div className="overline mb-1 text-[#dfb144]">Adresa</div>
                 <div className="font-display text-2xl font-semibold text-slate-900">Horská 1130/31</div>
                 <div className="text-slate-500 mt-1">059 41 Tatranská Štrba, Slovensko</div>
               </div>
@@ -103,7 +104,7 @@ export default function Location() {
               href="https://maps.google.com/?q=Horská+1130/31,+Tatranská+Štrba"
               target="_blank"
               rel="noreferrer"
-              className="btn-outline text-sm mt-6 self-start"
+              className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full border border-slate-300 text-slate-700 hover:bg-zinc-950 hover:text-white hover:border-zinc-950 text-sm font-semibold transition-all duration-300 mt-6 self-start"
             >
               Otvoriť v Google Maps <ExternalLink size={14} />
             </a>
@@ -113,6 +114,7 @@ export default function Location() {
             <iframe
               data-testid="location-map-embed"
               title="Penzión Štrba — Google Maps"
+              /* SEM VLOŽ SVOJ REÁLNY EMBED LINK Z GOOGLE MAPS */
               src="https://www.google.com/maps?q=Horsk%C3%A1+1130%2F31%2C+059+41+Tatransk%C3%A1+%C5%A0trba&output=embed"
               width="100%"
               height="100%"
@@ -120,6 +122,7 @@ export default function Location() {
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
               allowFullScreen
+              sandbox="allow-scripts allow-same-origin allow-forms"
             />
           </div>
         </div>

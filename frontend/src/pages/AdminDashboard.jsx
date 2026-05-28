@@ -1,16 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { Navigate, Link } from "react-router-dom";
 import { toast } from "sonner";
-import { LogOut, Calendar, MessageSquare, Trash2, Check, X } from "lucide-react";
-import { api, formatApiError } from "@/lib/api";
+import { LogOut, Calendar, MessageSquare, Trash2, Check, X, Loader2 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLang } from "@/contexts/LangContext";
 import Logo from "@/components/Logo";
 
 const STATUS_BADGE = {
-  pending: "bg-amber-50 text-amber-700 border-amber-200",
-  confirmed: "bg-emerald-50 text-emerald-700 border-emerald-200",
-  cancelled: "bg-rose-50 text-rose-700 border-rose-200",
+  pending: "bg-amber-900/20 text-amber-500 border-amber-800",
+  confirmed: "bg-emerald-900/20 text-emerald-500 border-emerald-800",
+  cancelled: "bg-rose-900/20 text-rose-500 border-rose-800",
 };
 
 export default function AdminDashboard() {
@@ -21,6 +20,7 @@ export default function AdminDashboard() {
   const [reservations, setReservations] = useState([]);
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [processingId, setProcessingId] = useState(null);
 
   const load = async () => {
     try {
@@ -33,7 +33,7 @@ export default function AdminDashboard() {
       setReservations(r.data);
       setMessages(c.data);
     } catch (err) {
-      toast.error(formatApiError(err.response?.data?.detail) || err.message);
+      toast.error(err.response?.data?.detail || err.message);
     } finally {
       setLoading(false);
     }
@@ -47,165 +47,127 @@ export default function AdminDashboard() {
   if (!user) return <Navigate to="/admin/login" replace />;
 
   const updateStatus = async (id, status) => {
+    setProcessingId(id);
     try {
       await api.patch(`/reservations/${id}`, { status });
       await load();
       toast.success("Status updated");
     } catch (err) {
-      toast.error(formatApiError(err.response?.data?.detail) || err.message);
+      toast.error(err.response?.data?.detail || "Error updating status");
+    } finally {
+      setProcessingId(null);
     }
   };
 
   const remove = async (id) => {
-    if (!window.confirm("Delete reservation?")) return;
+    if (!window.confirm("Delete this reservation?")) return;
     try {
       await api.delete(`/reservations/${id}`);
       await load();
+      toast.success("Reservation deleted");
     } catch (err) {
-      toast.error(formatApiError(err.response?.data?.detail) || err.message);
+      toast.error(err.response?.data?.detail || "Error deleting");
     }
   };
 
   return (
-    <div className="min-h-screen bg-[color:var(--bg-soft)] text-slate-800">
-      <header className="bg-white border-b border-slate-200">
+    <div className="min-h-screen bg-black text-white">
+      <header className="bg-neutral-900 border-b border-yellow-600/30">
         <div className="max-w-[1400px] mx-auto flex items-center justify-between px-6 py-4">
-          <Link to="/" className="flex items-center gap-3" data-testid="admin-home-link">
+          <Link to="/" className="flex items-center gap-3">
             <Logo size={40} />
-            <div className="hidden sm:block pl-3 border-l border-slate-200">
-              <div className="text-[10px] tracking-[0.3em] text-slate-500">ADMIN PANEL</div>
+            <div className="pl-3 border-l border-yellow-600">
+              <div className="text-[10px] tracking-[0.3em] text-yellow-500">ADMIN PANEL</div>
             </div>
           </Link>
-          <div className="flex items-center gap-4 text-sm text-slate-600">
-            <span className="hidden sm:block">{user.email}</span>
-            <button
-              onClick={logout}
-              className="btn-ghost inline-flex items-center gap-2 text-sm"
-              data-testid="admin-logout-btn"
-            >
-              <LogOut size={14} /> {tr("admin.logout")}
-            </button>
-          </div>
+          <button onClick={logout} className="text-white hover:text-yellow-500 transition flex items-center gap-2 text-sm">
+            <LogOut size={14} /> {tr("admin.logout")}
+          </button>
         </div>
       </header>
 
       <div className="max-w-[1400px] mx-auto p-6 md:p-10">
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
-          <Stat title={tr("admin.total")} value={stats.total} testid="stat-total" />
-          <Stat title={tr("admin.pending")} value={stats.pending} testid="stat-pending" />
-          <Stat title={tr("admin.confirmed")} value={stats.confirmed} testid="stat-confirmed" />
-          <Stat title={tr("admin.cancelled")} value={stats.cancelled} testid="stat-cancelled" />
-          <Stat title={tr("admin.revenue")} value={`€${stats.revenue.toFixed(0)}`} testid="stat-revenue" accent />
+          <Stat title={tr("admin.total")} value={stats.total} />
+          <Stat title={tr("admin.pending")} value={stats.pending} />
+          <Stat title={tr("admin.confirmed")} value={stats.confirmed} />
+          <Stat title={tr("admin.cancelled")} value={stats.cancelled} />
+          <Stat title={tr("admin.revenue")} value={`€${stats.revenue.toFixed(0)}`} accent />
         </div>
 
         <div className="flex gap-2 mb-6">
-          <TabBtn active={tab === "reservations"} onClick={() => setTab("reservations")} icon={Calendar} testid="tab-reservations">
-            {tr("admin.reservations")} ({reservations.length})
+          <TabBtn active={tab === "reservations"} onClick={() => setTab("reservations")} icon={Calendar}>
+            {tr("admin.reservations")}
           </TabBtn>
-          <TabBtn active={tab === "messages"} onClick={() => setTab("messages")} icon={MessageSquare} testid="tab-messages">
-            {tr("admin.messages")} ({messages.length})
+          <TabBtn active={tab === "messages"} onClick={() => setTab("messages")} icon={MessageSquare}>
+            {tr("admin.messages")}
           </TabBtn>
         </div>
 
         {loading ? (
-          <div className="text-slate-500 p-6">Loading…</div>
+          <div className="flex justify-center p-12 text-yellow-500"><Loader2 className="animate-spin" /></div>
         ) : tab === "reservations" ? (
-          <div className="surface-card overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm" data-testid="reservations-table">
-                <thead className="bg-slate-50 text-left text-xs tracking-[0.15em] uppercase text-slate-500">
-                  <tr>
-                    <th className="p-4 font-medium">{tr("admin.guest")}</th>
-                    <th className="p-4 font-medium">{tr("admin.dates")}</th>
-                    <th className="p-4 font-medium">Room</th>
-                    <th className="p-4 font-medium">{tr("admin.price")}</th>
-                    <th className="p-4 font-medium">{tr("admin.status")}</th>
-                    <th className="p-4 font-medium text-right">{tr("admin.actions")}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {reservations.length === 0 && (
-                    <tr>
-                      <td colSpan="6" className="p-8 text-center text-slate-400">No reservations yet.</td>
-                    </tr>
-                  )}
-                  {reservations.map((r) => (
-                    <tr
-                      key={r.id}
-                      className="border-t border-slate-100 hover:bg-slate-50/50"
-                      data-testid={`reservation-row-${r.id}`}
-                    >
-                      <td className="p-4">
-                        <div className="font-display font-semibold text-slate-900">
-                          {r.first_name} {r.last_name}
-                        </div>
-                        <div className="text-slate-500 text-xs">{r.email}</div>
-                        <div className="text-slate-500 text-xs">{r.phone}</div>
-                      </td>
-                      <td className="p-4 text-slate-700">
-                        <div>{r.check_in}</div>
-                        <div className="text-slate-500">→ {r.check_out}</div>
-                        <div className="text-slate-400 text-xs">{r.nights} nights</div>
-                      </td>
-                      <td className="p-4 text-slate-700">
-                        {r.room_name}
-                        <div className="text-slate-500 text-xs">{r.guests_adults} + {r.guests_children}</div>
-                      </td>
-                      <td className="p-4 font-display font-semibold text-[color:var(--accent)]">
-                        €{r.total_price.toFixed(2)}
-                      </td>
-                      <td className="p-4">
-                        <span
-                          className={`inline-block text-xs px-2 py-1 rounded-md border uppercase tracking-wider font-medium ${STATUS_BADGE[r.status] || ""}`}
+          <div className="bg-neutral-900 border border-neutral-800 rounded-2xl overflow-hidden">
+            <table className="w-full text-sm">
+              <thead className="bg-neutral-800 text-yellow-500 uppercase text-[10px] tracking-widest">
+                <tr>
+                  <th className="p-4 text-left">{tr("admin.guest")}</th>
+                  <th className="p-4 text-left">{tr("admin.dates")}</th>
+                  <th className="p-4 text-left">Room</th>
+                  <th className="p-4 text-left">{tr("admin.status")}</th>
+                  <th className="p-4 text-right">{tr("admin.actions")}</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-neutral-800">
+                {reservations.map((r) => (
+                  <tr key={r.id} className="hover:bg-neutral-800/50 transition">
+                    <td className="p-4">
+                      <div className="font-medium">{r.first_name} {r.last_name}</div>
+                      <div className="text-neutral-500 text-xs">{r.email}</div>
+                    </td>
+                    <td className="p-4 text-neutral-400">
+                      <div>{r.check_in}</div>
+                      <div className="text-xs">{r.nights} nights</div>
+                    </td>
+                    <td className="p-4">{r.room_name}</td>
+                    <td className="p-4">
+                      <span className={`px-2 py-1 rounded border text-[10px] uppercase ${STATUS_BADGE[r.status]}`}>{r.status}</span>
+                    </td>
+                    <td className="p-4 text-right space-x-2">
+                      {r.status !== "confirmed" && (
+                        <button 
+                          disabled={processingId === r.id}
+                          onClick={() => updateStatus(r.id, "confirmed")} 
+                          className="text-emerald-500 hover:text-emerald-300 disabled:opacity-50"
                         >
-                          {r.status}
-                        </span>
-                      </td>
-                      <td className="p-4 text-right space-x-2 whitespace-nowrap">
-                        {r.status !== "confirmed" && (
-                          <button
-                            onClick={() => updateStatus(r.id, "confirmed")}
-                            className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 text-xs"
-                            data-testid={`confirm-${r.id}`}
-                          >
-                            <Check size={12} /> {tr("admin.markConfirmed")}
-                          </button>
-                        )}
-                        {r.status !== "cancelled" && (
-                          <button
-                            onClick={() => updateStatus(r.id, "cancelled")}
-                            className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-rose-200 bg-rose-50 text-rose-700 hover:bg-rose-100 text-xs"
-                            data-testid={`cancel-${r.id}`}
-                          >
-                            <X size={12} /> {tr("admin.markCancelled")}
-                          </button>
-                        )}
-                        <button
-                          onClick={() => remove(r.id)}
-                          className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-slate-200 text-slate-500 hover:bg-slate-50 text-xs"
-                          data-testid={`delete-${r.id}`}
-                        >
-                          <Trash2 size={12} />
+                          {processingId === r.id ? <Loader2 size={16} className="animate-spin" /> : <Check size={16} />}
                         </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                      )}
+                      {r.status !== "cancelled" && (
+                        <button 
+                          disabled={processingId === r.id}
+                          onClick={() => updateStatus(r.id, "cancelled")} 
+                          className="text-rose-500 hover:text-rose-300 disabled:opacity-50"
+                        >
+                          <X size={16} />
+                        </button>
+                      )}
+                      <button onClick={() => remove(r.id)} className="text-neutral-500 hover:text-neutral-300">
+                        <Trash2 size={16} />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         ) : (
-          <div className="grid md:grid-cols-2 gap-4" data-testid="messages-list">
-            {messages.length === 0 && <div className="text-slate-400 p-6">No messages.</div>}
+          <div className="grid md:grid-cols-2 gap-4">
             {messages.map((m) => (
-              <div key={m.id} className="surface-card p-6" data-testid={`message-${m.id}`}>
-                <div className="flex justify-between">
-                  <div className="font-display font-semibold text-slate-900">{m.name}</div>
-                  <div className="text-xs text-slate-400">{new Date(m.created_at).toLocaleString()}</div>
-                </div>
-                <div className="text-slate-500 text-xs mt-1">{m.email} · {m.phone || "—"}</div>
-                {m.subject && <div className="text-[color:var(--accent)] text-sm mt-3 font-medium">{m.subject}</div>}
-                <p className="mt-3 text-slate-700 leading-relaxed text-sm">{m.message}</p>
+              <div key={m.id} className="bg-neutral-900 border border-neutral-800 p-6 rounded-2xl">
+                <div className="font-bold">{m.name}</div>
+                <div className="text-xs text-neutral-500 mb-3">{m.email}</div>
+                <p className="text-sm text-neutral-300 leading-relaxed">{m.message}</p>
               </div>
             ))}
           </div>
@@ -215,34 +177,21 @@ export default function AdminDashboard() {
   );
 }
 
-function Stat({ title, value, testid, accent }) {
+function Stat({ title, value, accent }) {
   return (
-    <div className="surface-card p-5 md:p-6" data-testid={testid}>
-      <div className="text-xs tracking-[0.18em] uppercase text-slate-500">{title}</div>
-      <div
-        className={`mt-2 font-display text-2xl md:text-3xl font-semibold ${
-          accent ? "text-[color:var(--accent)]" : "text-slate-900"
-        }`}
-      >
-        {value}
-      </div>
+    <div className="bg-neutral-900 border border-neutral-800 p-5 rounded-2xl">
+      <div className="text-[10px] uppercase text-neutral-500 tracking-widest">{title}</div>
+      <div className={`text-2xl font-bold mt-1 ${accent ? "text-yellow-500" : "text-white"}`}>{value}</div>
     </div>
   );
 }
 
-function TabBtn({ active, onClick, icon: Icon, children, testid }) {
+function TabBtn({ active, onClick, icon: Icon, children }) {
   return (
-    <button
-      data-testid={testid}
-      onClick={onClick}
-      className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium border transition ${
-        active
-          ? "bg-[color:var(--accent)] text-white border-[color:var(--accent)] shadow-md shadow-sky-200"
-          : "bg-white border-slate-200 text-slate-600 hover:border-slate-300"
-      }`}
-    >
-      <Icon size={15} />
-      {children}
+    <button onClick={onClick} className={`px-4 py-2 rounded-xl text-sm font-medium border transition flex items-center gap-2 ${
+      active ? "bg-yellow-600 text-black border-yellow-600 font-bold" : "bg-neutral-900 border-neutral-800 text-white hover:border-yellow-600"
+    }`}>
+      <Icon size={15} /> {children}
     </button>
   );
 }

@@ -36,7 +36,7 @@ const FALLBACK_REVIEWS = [
   { 
     id: "f5", 
     name: "Miloš Villem", 
-    text_sk: "Hotel má pekné moderné izby. Všetko je pekne prerobené a čisté. Dobrá poloha, kúsok od zubačky. Výborné raňajky aj večera.", 
+    text_sk: "Hotel má pekné moderné izby. Všetko je pekne prerobené and čisté. Dobrá poloha, kúsok od zubačky. Výborné raňajky aj večera.", 
     rating: 5, 
     country: "Google Recenzia" 
   }
@@ -57,11 +57,13 @@ export default function Reviews() {
   const scrollData = [...reviews, ...reviews];
 
   return (
-    <section id="reviews" className="py-24 bg-[color:var(--bg-soft)] overflow-hidden">
+    /* ZMENA: Pozadie sekcie preklopené zo starého var(--bg-soft) na čistú elegantnú bielu */
+    <section id="reviews" className="py-24 bg-white overflow-hidden">
       <div className="max-w-[1400px] mx-auto px-6 mb-16">
         <div className="max-w-3xl">
-          <div className="overline mb-5 text-[color:var(--accent)]">{tr("reviews.overline")}</div>
-          <h2 className="font-display font-semibold text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight text-slate-900">
+          {/* ZMENA: Overline prepnutý zo starej premennej na našu korporátnu zlatú farbu */}
+          <div className="overline mb-5 text-[#dfb144]">{tr("reviews.overline")}</div>
+          <h2 className="font-display font-semibold text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight text-zinc-900">
             {tr("reviews.title") || "Čo o nás hovoria hostia?"}
           </h2>
         </div>
@@ -85,34 +87,38 @@ export default function Reviews() {
             {scrollData.map((rev, i) => (
               <div
                 key={`${rev.id}-${i}`}
-                className="w-[380px] md:w-[500px] flex-shrink-0 surface-card p-8 flex flex-col gap-6 bg-white shadow-sm border border-slate-100 rounded-[2rem]"
+                /* ZMENA: Karty majú jemnejší zinc border a pri hoveri získajú decentný zlatý akcent */
+                className="w-[380px] md:w-[500px] flex-shrink-0 p-8 flex flex-col gap-6 bg-white shadow-sm border border-zinc-100 rounded-[2rem] hover:border-[#dfb144]/30 transition-colors duration-300"
               >
                 <div className="flex justify-between items-start">
-                  <Quote className="text-[color:var(--accent)] opacity-30" size={32} />
+                  {/* ZMENA: Ikona úvodzoviek (Quote) preklopená do našej zlatej */}
+                  <Quote className="text-[#dfb144] opacity-25" size={32} />
                   <div className="flex gap-0.5">
                     {[...Array(Number(rev.rating) || 5)].map((_, s) => (
                       <Star
                         key={s}
                         size={14}
-                        className="fill-[color:var(--accent)] text-[color:var(--accent)]"
+                        /* ZMENA: Hviezdičky ratingu zafarbené na zlato */
+                        className="fill-[#dfb144] text-[#dfb144]"
                       />
                     ))}
                   </div>
                 </div>
                 
-                <p className="text-slate-700 leading-relaxed text-lg flex-1 italic">
+                <p className="text-zinc-700 leading-relaxed text-lg flex-1 italic">
                   "{rev[`text_${lang}`] || rev.text_sk || "Bez textu"}"
                 </p>
 
-                <div className="flex items-center gap-4 border-t border-slate-50 pt-6">
-                  <div className="w-10 h-10 rounded-full bg-[color:var(--accent)] flex items-center justify-center text-white font-bold">
+                <div className="flex items-center gap-4 border-t border-zinc-100 pt-6">
+                  {/* ZMENA: Kruhový avatar preklopený do luxusného tmavého pozadia so zlatým textom iniciály */}
+                  <div className="w-10 h-10 rounded-full bg-zinc-950 flex items-center justify-center text-[#dfb144] font-bold text-sm">
                     {rev.name?.charAt(0) || "H"}
                   </div>
                   <div>
-                    <div className="font-display font-semibold text-slate-900 leading-none">
+                    <div className="font-display font-semibold text-zinc-900 leading-none">
                       {rev.name || "Hosť"}
                     </div>
-                    <div className="text-slate-400 text-xs mt-1.5 font-medium uppercase tracking-wider">
+                    <div className="text-zinc-400 text-xs mt-1.5 font-medium uppercase tracking-wider">
                       {rev.country || "Google Recenzia"}
                     </div>
                   </div>
@@ -122,14 +128,17 @@ export default function Reviews() {
           </motion.div>
         )}
 
-        <div className="pointer-events-none absolute inset-y-0 left-0 w-24 md:w-64 bg-gradient-to-r from-[color:var(--bg-soft)] via-[color:var(--bg-soft)]/50 to-transparent z-10" />
-        <div className="pointer-events-none absolute inset-y-0 right-0 w-24 md:w-64 bg-gradient-to-l from-[color:var(--bg-soft)] via-[color:var(--bg-soft)]/50 to-transparent z-10" />
+        {/* ZMENA: Bočné prekrývacie gradienty upravené z var(--bg-soft) na čistú bielu (white) tak, aby nekonečný pás plynule mizol do bieleho pozadia sekcie */}
+        <div className="pointer-events-none absolute inset-y-0 left-0 w-24 md:w-64 bg-gradient-to-r from-white via-white/50 to-transparent z-10" />
+        <div className="pointer-events-none absolute inset-y-0 right-0 w-24 md:w-64 bg-gradient-to-l from-white via-white/50 to-transparent z-10" />
       </div>
 
       <div className="mt-16 text-center">
-        <div className="inline-flex items-center gap-3 px-6 py-3 bg-white shadow-sm rounded-full border border-slate-100">
-           <span className="text-sm font-semibold text-slate-700">
-             Vynikajúce hodnotenie 4.9/5 na Google Maps
+        {/* ZMENA: Spodný odznak preklopený do čistého štýlu s jemným zinc okrajom */}
+        <div className="inline-flex items-center gap-3 px-6 py-3 bg-white shadow-sm rounded-full border border-zinc-100">
+           {/* ZMENA: "4.9/5" jemne vytiahnuté do zlata pre prémiový dojem */}
+           <span className="text-sm font-semibold text-zinc-700">
+             Vynikajúce hodnotenie <span className="text-[#cc9f37] font-bold">4.9/5</span> na Google Maps
            </span>
         </div>
       </div>
