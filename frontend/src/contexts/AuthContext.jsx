@@ -8,12 +8,6 @@ export function AuthProvider({ children }) {
   const [ready, setReady] = useState(false);
 
   // Nastavenie interceptora, aby sa token posielal ku každej požiadavke
-  useEffect(() => {
-    const token = localStorage.getItem("ps_token");
-    if (token) {
-      api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-    }
-  }, []);
 
   useEffect(() => {
     const token = localStorage.getItem("ps_token");
