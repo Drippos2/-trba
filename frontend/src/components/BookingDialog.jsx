@@ -61,7 +61,7 @@ export default function BookingDialog({ open, onClose }) {
   const canProceed2 = (adults + children) >= 1 && (adults + children) <= MAX_CAPACITY;
   const canSubmit = contact.first_name && contact.last_name && contact.email && contact.phone;
 
-  const submit = async () => {
+    const submit = async () => {
     if (!canSubmit) return;
     setSubmitting(true);
     
@@ -70,15 +70,16 @@ export default function BookingDialog({ open, onClose }) {
       const correctedDate = new Date(selectedDate.getTime() - (offset * 60 * 1000));
       const dateStr = correctedDate.toISOString().split('T')[0];
 
-      // OPRAVA: Pridaný prefix /api/
-      await api.post("/api/wellness-reservations", {
+      // TU JE OPRAVENÝ ZÁPIS:
+      await api.post("/wellness-reservations", {
         ...contact,
         date: dateStr,
         time: selectedTime,
         guests_adults: adults,
         guests_children: children,
         language: lang,
-      });
+      }); // <--- Táto zátvorka a bodkočiarka tu musia byť!
+
       setDone(true);
     } catch (err) {
       const msg = err.response?.data?.detail || err.message;

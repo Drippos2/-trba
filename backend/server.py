@@ -127,7 +127,7 @@ async def startup_db():
     if not await db.users.find_one({"email": ADMIN_EMAIL}):
         await db.users.insert_one({"id": str(uuid.uuid4()), "email": ADMIN_EMAIL, "password_hash": hash_password(ADMIN_PASSWORD), "role": "admin"})
 
-app.include_router(api_router)
+app.include_router(api_router, prefix="/api")
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
 
 if __name__ == "__main__":
