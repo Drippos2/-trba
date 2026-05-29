@@ -70,11 +70,16 @@ async def admin_stats(current: dict = Depends(get_current_admin)):
     total_res = await db.reservations.count_documents({})
     return {"total": total_res, "status": "ok"}
 
+
 @api_router.get("/reservations")
 async def get_reservations(current: dict = Depends(get_current_admin)):
+    # Vytiahneme všetky dáta z kolekcie 'reservations'
     res = await db.reservations.find().sort("created_at", -1).to_list(length=1000)
+    
+    # Debugovanie: Toto uvidíš v logoch na Renderi
+    print(f"DEBUG: Našiel som {len(res)} rezervácií v databáze.")
+    
     for r in res: r["_id"] = str(r["_id"])
-    # Zbalenie do objektu 'reservations' pre AdminDashboard.jsx
     return {"reservations": res}
 
 @api_router.get("/contact")
