@@ -88,6 +88,7 @@ async def startup_db():
         pw_hash = bcrypt.hashpw(ADMIN_PASSWORD.encode(), bcrypt.gensalt()).decode()
         await db.users.insert_one({"id": str(uuid.uuid4()), "email": ADMIN_EMAIL, "password_hash": pw_hash, "role": "admin"})
 
+api = APIRouter(prefix="/api")
 app.include_router(api)
 
 if __name__ == "__main__":
