@@ -10,8 +10,14 @@ export const api = axios.create({
   },
 });
 
-// Interceptor sa postará o automatické pridávanie tokenu ku každej požiadavke
+// Interceptor: pridá token a zaistí, že cesty začínajú /api
 api.interceptors.request.use((config) => {
+  // Pridanie prefixu /api, ak tam náhodou chýba
+  if (!config.url.startsWith('/api/')) {
+    config.url = `/api${config.url.startsWith('/') ? '' : '/'}${config.url}`;
+  }
+
+  // Automatické pridanie tokenu z localStorage
   const token = localStorage.getItem("ps_token");
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;

@@ -90,6 +90,7 @@ async def startup_db():
     if not await db.users.find_one({"email": ADMIN_EMAIL}):
         await db.users.insert_one({"id": str(uuid.uuid4()), "email": ADMIN_EMAIL, "password_hash": hash_password(ADMIN_PASSWORD), "role": "admin"})
 
+api_router = APIRouter(prefix="/api")
 app.include_router(api_router)
 
 if __name__ == "__main__":
