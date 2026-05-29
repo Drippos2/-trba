@@ -109,7 +109,7 @@ export const dict = {
         { t: "Požičovňa lyží", d: "Zľava pre hostí" },
         { t: "Kuchynky na poschodí", d: "Plne vybavené" },
         { t: "Školiaca miestnosť", d: "Kapacita až 40 osôb" },
-        { t: "Detský kútik", d: "TRX, pingpongový stôl" },
+        { t: "Detský kútik", },
       ],
     },
     location: {
