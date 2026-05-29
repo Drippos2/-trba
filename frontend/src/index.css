@@ -4,34 +4,32 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  /* Brand - Elegantná hlboká modrá */
-  --bg: #ffffff;
-  --bg-soft: #f8fafc;
-  --bg-mute: #f1f5f9;
-  --border: #e2e8f0;
-  --border-soft: #eef2f7;
-  --text: #475569;
-  --text-strong: #0f172a;
-  --text-muted: #64748b;
-  --text-faint: #94a3b8;
-  
-  /* Hlavná akcentná farba */
-  --accent: #0f172a;
-  --accent-hover: #334155;
-  --accent-soft: #e2e8f0;
-}
-
 @layer base {
   :root {
+    /* Brand farby */
+    --bg: #ffffff;
+    --bg-soft: #f8fafc;
+    --bg-mute: #f1f5f9;
+    --border: #e2e8f0;
+    --border-soft: #eef2f7;
+    --text: #475569;
+    --text-strong: #0f172a;
+    --text-muted: #64748b;
+    --text-faint: #94a3b8;
+    
+    /* Akcentné farby */
+    --accent: #0f172a;
+    --accent-hover: #334155;
+    --accent-soft: #e2e8f0;
+
+    /* UI komponenty */
     --background: 0 0% 100%;
     --foreground: 215 25% 27%;
     --card: 0 0% 100%;
     --card-foreground: 215 25% 27%;
     --popover: 0 0% 100%;
     --popover-foreground: 215 25% 27%;
-    
-    --primary: 222 47% 11%; 
+    --primary: 222 47% 11%;
     --primary-foreground: 0 0% 100%;
     --secondary: 210 40% 96%;
     --secondary-foreground: 215 25% 27%;
@@ -45,7 +43,11 @@
     --radius: 0.75rem;
   }
 
-  * { @apply border-border; box-sizing: border-box; }
+  /* Toto musí byť vnútri @layer base, aby VS Code nehlásilo chybu */
+  * { 
+    @apply border-border; 
+    box-sizing: border-box; 
+  }
 
   html, body {
     max-width: 100%;
@@ -57,7 +59,7 @@
 
   body {
     margin: 0;
-    font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: "Inter", sans-serif;
     background: var(--bg);
     color: var(--text);
     -webkit-font-smoothing: antialiased;
@@ -83,8 +85,9 @@
   }
 }
 
+/* ===== Ostatné štýly ===== */
 .font-display { font-family: "Inter", sans-serif; }
-.font-body    { font-family: "Inter", sans-serif; }
+.font-body { font-family: "Inter", sans-serif; }
 
 .overline {
   font-size: 0.72rem;
@@ -94,7 +97,6 @@
   font-weight: 600;
 }
 
-/* ===== Surfaces ===== */
 .surface-card {
   background: #ffffff;
   border: 1px solid var(--border);
@@ -116,7 +118,6 @@
   width: 100%;
 }
 
-/* ===== Buttons ===== */
 .btn-primary {
   background: var(--accent);
   color: #ffffff;
@@ -155,7 +156,6 @@
   border-color: #94a3b8;
 }
 
-/* ===== Inputs ===== */
 .input-light {
   width: 100%;
   background: #ffffff;
@@ -187,7 +187,6 @@
 .room-card img { transition: transform 1s cubic-bezier(0.2, 0.8, 0.2, 1); }
 .room-card:hover img { transform: scale(1.06); }
 
-/* Scrollbar */
 ::-webkit-scrollbar { width: 8px; height: 8px; }
 ::-webkit-scrollbar-track { background: var(--bg-soft); }
 ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
@@ -195,7 +194,6 @@
 
 ::selection { background: var(--accent-soft); color: var(--accent-hover); }
 
-/* Calendar */
 .rdp { --rdp-cell-size: 38px; }
 .rdp-day_selected,
 .rdp-day_selected:focus-visible,
