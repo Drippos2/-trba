@@ -65,7 +65,6 @@ async def login(payload: dict):
 async def get_me(current: dict = Depends(get_current_admin)):
     return {"email": current["email"], "role": current["role"]}
 
-# PRIDANÉ TRASY PRE DASHBOARD
 @api_router.get("/admin/stats")
 async def admin_stats(current: dict = Depends(get_current_admin)):
     total_res = await db.reservations.count_documents({})
@@ -73,15 +72,17 @@ async def admin_stats(current: dict = Depends(get_current_admin)):
 
 @api_router.get("/reservations")
 async def get_reservations(current: dict = Depends(get_current_admin)):
-    res = await db.reservations.find().to_list(length=1000)
+    res = await db.reservations.find().sort("created_at", -1).to_list(length=1000)
     for r in res: r["_id"] = str(r["_id"])
-    return res
+    # Zbalenie do objektu 'reservations' pre AdminDashboard.jsx
+    return {"reservations": res}
 
 @api_router.get("/contact")
 async def get_contacts(current: dict = Depends(get_current_admin)):
-    contacts = await db.contact_messages.find().to_list(length=1000)
+    contacts = await db.contact_messages.find().sort("created_at", -1).to_list(length=1000)
     for c in contacts: c["_id"] = str(c["_id"])
-    return contacts
+    # Zbalenie do objektu 'messages' (podľa štruktúry dashboardu)
+    return {"messages": contacts}
 
 @api_router.post("/wellness-reservations")
 async def create_wellness(payload: dict):
