@@ -65,7 +65,12 @@ async def login(payload: dict):
 async def get_me(current: dict = Depends(get_current_admin)):
     return {"email": current["email"], "role": current["role"]}
 
-# Tieto trasy tvoj AdminDashboard.jsx hľadá:
+# PRIDANÉ TRASY PRE DASHBOARD
+@api_router.get("/admin/stats")
+async def admin_stats(current: dict = Depends(get_current_admin)):
+    total_res = await db.reservations.count_documents({})
+    return {"total": total_res, "status": "ok"}
+
 @api_router.get("/reservations")
 async def get_reservations(current: dict = Depends(get_current_admin)):
     res = await db.reservations.find().to_list(length=1000)
