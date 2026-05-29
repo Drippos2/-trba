@@ -68,9 +68,9 @@ export default function AdminDashboard() {
               <tbody className="divide-y divide-neutral-800">
                 {messages.map((item) => (
                   <tr key={item._id} className="hover:bg-neutral-800/30">
-                    <td className="p-4 font-semibold">
-                      {item.first_name} {item.last_name}
-                    </td>
+                   <td className="p-4 font-semibold">
+                    {item.first_name || item.last_name ? `${item.first_name || ''} ${item.last_name || ''}`.trim() : (item.name || "Neznámy klient")}
+                   </td>
                     <td className="p-4 text-neutral-400 text-sm">
                       <div>{item.email}</div>
                       <div>{item.phone}</div>
