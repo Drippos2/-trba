@@ -10,7 +10,6 @@ from fastapi import FastAPI, APIRouter, HTTPException, Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
-from pydantic import BaseModel
 from dotenv import load_dotenv
 
 # ---------- Setup ----------
@@ -28,7 +27,7 @@ db = client[db_name]
 
 app = FastAPI(title="Penzión Štrba API")
 
-# ---------- Middleware (CORS) ----------
+# ---------- Middleware ----------
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["https://trba.vercel.app"],
@@ -37,14 +36,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ---------- Router ----------
-# DEFINUJEME ROUTER S PREFIXOM /api
 api_router = APIRouter(prefix="/api")
 security = HTTPBearer(auto_error=False)
 
 # ---------- Helpers ----------
-def hash_password(password: str) -> str: return bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
-def verify_password(plain: str, hashed: str) -> bool: return bcrypt.checkpw(plain.encode("utf-8"), hashed.encode("utf-8"))
 def create_access_token(user_id: str, email: str) -> str:
     return jwt.encode({"sub": user_id, "email": email, "exp": datetime.now(timezone.utc) + timedelta(hours=24)}, JWT_SECRET, algorithm="HS256")
 
@@ -57,16 +52,12 @@ async def get_current_admin(credentials: HTTPAuthorizationCredentials = Depends(
         return user
     except: raise HTTPException(status_code=401, detail="Invalid token")
 
-# ---------- Routes (PRIRADENÉ K api_router) ----------
-@app.get("/")
-async def root(): return {"status": "online"}
-
+# ---------- Routes ----------
 @api_router.post("/auth/login")
 async def login(payload: dict):
     email = payload.get("email", "").lower().strip()
-    password = payload.get("password", "")
     user = await db.users.find_one({"email": email})
-    if not user or not verify_password(password, user["password_hash"]): 
+    if not user or not bcrypt.checkpw(payload.get("password", "").encode(), user["password_hash"].encode()):
         raise HTTPException(status_code=401, detail="Invalid credentials")
     return {"access_token": create_access_token(user["id"], user["email"]), "token_type": "bearer", "user": {"email": user["email"]}}
 
@@ -74,12 +65,21 @@ async def login(payload: dict):
 async def get_me(current: dict = Depends(get_current_admin)):
     return {"email": current["email"], "role": current["role"]}
 
-@api_router.get("/admin/stats")
-async def admin_stats(current: dict = Depends(get_current_admin)):
-    return {"total": await db.reservations.count_documents({}), "status": "ok"}
+# Tieto trasy tvoj AdminDashboard.jsx hľadá:
+@api_router.get("/reservations")
+async def get_reservations(current: dict = Depends(get_current_admin)):
+    res = await db.reservations.find().to_list(length=1000)
+    for r in res: r["_id"] = str(r["_id"])
+    return res
+
+@api_router.get("/contact")
+async def get_contacts(current: dict = Depends(get_current_admin)):
+    contacts = await db.contact_messages.find().to_list(length=1000)
+    for c in contacts: c["_id"] = str(c["_id"])
+    return contacts
 
 @api_router.post("/wellness-reservations")
-async def create_wellness_reservation(payload: dict):
+async def create_wellness(payload: dict):
     await db.wellness_reservations.insert_one(payload)
     return {"status": "success"}
 
@@ -87,9 +87,9 @@ async def create_wellness_reservation(payload: dict):
 @app.on_event("startup")
 async def startup_db():
     if not await db.users.find_one({"email": ADMIN_EMAIL}):
-        await db.users.insert_one({"id": str(uuid.uuid4()), "email": ADMIN_EMAIL, "password_hash": hash_password(ADMIN_PASSWORD), "role": "admin"})
+        pw_hash = bcrypt.hashpw(ADMIN_PASSWORD.encode(), bcrypt.gensalt()).decode()
+        await db.users.insert_one({"id": str(uuid.uuid4()), "email": ADMIN_EMAIL, "password_hash": pw_hash, "role": "admin"})
 
-# REGISTRÁCIA ROUTERA DO APLIKÁCIE
 app.include_router(api_router)
 
 if __name__ == "__main__":
