@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { toast } from "sonner";
 import { Phone, Mail, MapPin, Send } from "lucide-react";
-import { api, formatApiError } from "@/lib/api"; // PRIDANÝ IMPORT formatApiError
+import { api, formatApiError } from "@/lib/api";
 
 import { useLang } from "@/contexts/LangContext";
 
@@ -16,9 +16,10 @@ export default function ContactSection() {
     e.preventDefault();
     setLoading(true);
     try {
-      // OPRAVA: Prefix /api/
+      // API požiadavka
       await api.post("/api/contact", { ...form, language: lang });
       toast.success(tr("contact.sent"));
+      // Vyčistenie formulára po úspešnom odoslaní
       setForm({ name: "", email: "", phone: "", subject: "", message: "" });
     } catch (err) {
       toast.error(formatApiError(err.response?.data?.detail) || err.message);
@@ -83,27 +84,28 @@ export default function ContactSection() {
         >
           <div className="grid md:grid-cols-2 gap-4">
             <input
+              required
               className="input-light focus:border-[#dfb144] focus:ring-1 focus:ring-[#dfb144] transition-all"
               name="name"
               placeholder={tr("contact.name")}
               value={form.name}
               onChange={onChange}
-              required
               data-testid="contact-name"
             />
             <input
+              required
+              type="email"
               className="input-light focus:border-[#dfb144] focus:ring-1 focus:ring-[#dfb144] transition-all"
               name="email"
-              type="email"
               placeholder={tr("contact.email")}
               value={form.email}
               onChange={onChange}
-              required
               data-testid="contact-email-input"
             />
           </div>
           <div className="grid md:grid-cols-2 gap-4">
             <input
+              required
               className="input-light focus:border-[#dfb144] focus:ring-1 focus:ring-[#dfb144] transition-all"
               name="phone"
               placeholder={tr("contact.phone")}
@@ -112,6 +114,7 @@ export default function ContactSection() {
               data-testid="contact-phone-input"
             />
             <input
+              required
               className="input-light focus:border-[#dfb144] focus:ring-1 focus:ring-[#dfb144] transition-all"
               name="subject"
               placeholder={tr("contact.subject")}
@@ -121,12 +124,12 @@ export default function ContactSection() {
             />
           </div>
           <textarea
+            required
             className="input-light min-h-[160px] resize-y focus:border-[#dfb144] focus:ring-1 focus:ring-[#dfb144] transition-all"
             name="message"
             placeholder={tr("contact.message")}
             value={form.message}
             onChange={onChange}
-            required
             data-testid="contact-message"
           />
           <button
@@ -135,7 +138,11 @@ export default function ContactSection() {
             data-testid="contact-submit"
             className="btn-primary disabled:opacity-60 transition-all duration-300"
           >
-            {loading ? "..." : tr("contact.send")} <Send size={15} />
+            {loading ? "Odosielam..." : (
+              <>
+                {tr("contact.send")} <Send size={15} />
+              </>
+            )}
           </button>
         </form>
       </div>
