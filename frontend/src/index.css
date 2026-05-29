@@ -5,7 +5,7 @@
 @tailwind utilities;
 
 :root {
-  /* Brand - Upravené na elegantnejšiu hlbokú modrú */
+  /* Brand - Elegantná hlboká modrá */
   --bg: #ffffff;
   --bg-soft: #f8fafc;
   --bg-mute: #f1f5f9;
@@ -16,10 +16,10 @@
   --text-muted: #64748b;
   --text-faint: #94a3b8;
   
-  /* TU JE ZMENA: Elegantná modrá (namiesto krikľavej sky-500) */
-  --accent: #0f172a;        /* Hlavná farba (tmavo bridlicová) */
-  --accent-hover: #334155;  /* Hover stav */
-  --accent-soft: #e2e8f0;   /* Jemná verzia */
+  /* Hlavná akcentná farba */
+  --accent: #0f172a;
+  --accent-hover: #334155;
+  --accent-soft: #e2e8f0;
 }
 
 @layer base {
@@ -31,25 +31,20 @@
     --popover: 0 0% 100%;
     --popover-foreground: 215 25% 27%;
     
-    /* Zosúladenie s novou farbou */
     --primary: 222 47% 11%; 
     --primary-foreground: 0 0% 100%;
     --secondary: 210 40% 96%;
     --secondary-foreground: 215 25% 27%;
     --muted: 210 40% 96%;
     --muted-foreground: 215 16% 47%;
-    --accent: 222 47% 11%;
     --accent-foreground: 0 0% 100%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
-    --border: 214 32% 91%;
     --input: 214 32% 91%;
     --ring: 222 47% 11%;
     --radius: 0.75rem;
   }
-}
 
-@layer base {
   * { @apply border-border; box-sizing: border-box; }
 
   html, body {
@@ -76,6 +71,15 @@
     font-family: "Inter", sans-serif;
     letter-spacing: -0.025em;
     overflow-wrap: break-word;
+  }
+}
+
+/* ===== Mobilná optimalizácia ===== */
+@media (max-width: 640px) {
+  .lang-switcher { display: none !important; }
+  .btn-availability {
+    width: auto !important;
+    white-space: nowrap !important;
   }
 }
 
@@ -124,13 +128,13 @@
   transition: background 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
   white-space: nowrap;
 }
 .btn-primary:hover {
   background: var(--accent-hover);
   transform: translateY(-1px);
-  /* Upravený tieň podľa novej farby */
   box-shadow: 0 12px 28px -10px rgba(15, 23, 42, 0.3);
 }
 
@@ -151,7 +155,7 @@
   border-color: #94a3b8;
 }
 
-/* ===== Inputs & Others (zvyšok ponechaný pôvodný) ===== */
+/* ===== Inputs ===== */
 .input-light {
   width: 100%;
   background: #ffffff;
@@ -163,6 +167,7 @@
 }
 .input-light:focus {
   border-color: var(--accent);
+  outline: none;
   box-shadow: 0 0 0 4px rgba(15, 23, 42, 0.1);
 }
 
@@ -182,7 +187,7 @@
 .room-card img { transition: transform 1s cubic-bezier(0.2, 0.8, 0.2, 1); }
 .room-card:hover img { transform: scale(1.06); }
 
-/* Scrollbar a ostatné */
+/* Scrollbar */
 ::-webkit-scrollbar { width: 8px; height: 8px; }
 ::-webkit-scrollbar-track { background: var(--bg-soft); }
 ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
