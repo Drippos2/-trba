@@ -7,14 +7,15 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [ready, setReady] = useState(false);
 
-  // Nastavenie interceptora, aby sa token posielal ku každej požiadavke
-
   useEffect(() => {
     const token = localStorage.getItem("ps_token");
     if (!token) {
       setReady(true);
       return;
     }
+    
+    // Nastavíme autorizáciu pri štarte, ak máme token
+    api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
     api
       .get("/api/auth/me")
@@ -28,30 +29,30 @@ export function AuthProvider({ children }) {
   }, []);
 
   const login = async (email, password) => {
-    // 1. Pošleme prihlasovacie údaje
+    // 1. Prihlásenie
     const { data } = await api.post("/api/auth/login", { email, password });
     
-    // 2. Uložíme token do localStorage
+    // 2. Uloženie tokenu
     localStorage.setItem("ps_token", data.access_token);
-    
-    // 3. Nastavíme token do axios inštancie, aby ho server videl v budúcich volaniach
     api.defaults.headers.common["Authorization"] = `Bearer ${data.access_token}`;
     
-    // 4. Nastavíme užívateľa zo získaných dát (backend vracia objekt 'user')
-    setUser(data.user);
-    return data.user;
+    // 3. Po úspešnom logine načítame profil, aby sme mali 'user' objekt
+    const profile = await api.get("/api/auth/me");
+    setUser(profile.data);
+    
+    return profile.data;
   };
 
   const logout = () => {
     localStorage.removeItem("ps_token");
     delete api.defaults.headers.common["Authorization"];
     setUser(null);
-    window.location.href = "/login"; // Force reload na reset stavu
+    window.location.href = "/admin/login"; 
   };
 
   return (
     <AuthContext.Provider value={{ user, login, logout, ready }}>
-      {ready ? children : null}
+      {ready ? children : <div className="min-h-screen flex items-center justify-center bg-black text-white">Načítavam...</div>}
     </AuthContext.Provider>
   );
 }
