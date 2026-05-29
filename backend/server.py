@@ -10,7 +10,7 @@ from fastapi import FastAPI, APIRouter, HTTPException, Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel
 from dotenv import load_dotenv
 
 # ---------- Setup ----------
@@ -28,7 +28,7 @@ db = client[db_name]
 
 app = FastAPI(title="Penzión Štrba API")
 
-# ÚPLNE PRVÝ MIDDLEWARE
+# ---------- Middleware ----------
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["https://trba.vercel.app"],
@@ -37,11 +37,6 @@ app.add_middleware(
     allow_headers=["*"],
     expose_headers=["*"],
 )
-
-# Pridaj túto trasu, aby server odpovedal na "preflight" požiadavky
-@api_router.api_route("/wellness-reservations", methods=["GET", "POST", "OPTIONS"])
-async def wellness_preflight(payload: dict = None):
-    return {"status": "ok"}
 
 api_router = APIRouter(prefix="/api")
 security = HTTPBearer(auto_error=False)
@@ -84,10 +79,10 @@ async def save_contact(payload: dict):
     await db.contact_messages.insert_one(payload)
     return {"status": "success"}
 
-@api_router.post("/wellness-reservations")
-async def create_wellness_reservation(payload: dict):
-    await db.wellness_reservations.insert_one(payload)
-    return {"status": "success"}
+@api_router.api_route("/wellness-reservations", methods=["GET", "POST", "OPTIONS"])
+async def handle_wellness(payload: Optional[dict] = None):
+    if payload: await db.wellness_reservations.insert_one(payload)
+    return {"status": "ok"}
 
 # --- Startup ---
 @app.on_event("startup")
@@ -99,4 +94,5 @@ app.include_router(api_router)
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run(app, host="0.0.0.0", port=port)
