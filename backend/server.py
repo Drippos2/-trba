@@ -28,16 +28,17 @@ db = client[db_name]
 
 app = FastAPI(title="Penzión Štrba API")
 
-# ---------- Middleware ----------
+# ---------- Middleware (CORS) ----------
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["https://trba.vercel.app"],
     allow_credentials=True,
-    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_methods=["*"],
     allow_headers=["*"],
-    expose_headers=["*"],
 )
 
+# ---------- Router ----------
+# DEFINUJEME ROUTER S PREFIXOM /api
 api_router = APIRouter(prefix="/api")
 security = HTTPBearer(auto_error=False)
 
@@ -56,10 +57,9 @@ async def get_current_admin(credentials: HTTPAuthorizationCredentials = Depends(
         return user
     except: raise HTTPException(status_code=401, detail="Invalid token")
 
-# ---------- Routes ----------
+# ---------- Routes (PRIRADENÉ K api_router) ----------
 @app.get("/")
-async def root():
-    return {"status": "online"}
+async def root(): return {"status": "online"}
 
 @api_router.post("/auth/login")
 async def login(payload: dict):
@@ -68,21 +68,20 @@ async def login(payload: dict):
     user = await db.users.find_one({"email": email})
     if not user or not verify_password(password, user["password_hash"]): 
         raise HTTPException(status_code=401, detail="Invalid credentials")
-    return {"access_token": create_access_token(user["id"], user["email"]), "token_type": "bearer"}
+    return {"access_token": create_access_token(user["id"], user["email"]), "token_type": "bearer", "user": {"email": user["email"]}}
+
+@api_router.get("/auth/me")
+async def get_me(current: dict = Depends(get_current_admin)):
+    return {"email": current["email"], "role": current["role"]}
 
 @api_router.get("/admin/stats")
 async def admin_stats(current: dict = Depends(get_current_admin)):
     return {"total": await db.reservations.count_documents({}), "status": "ok"}
 
-@api_router.post("/contact")
-async def save_contact(payload: dict):
-    await db.contact_messages.insert_one(payload)
+@api_router.post("/wellness-reservations")
+async def create_wellness_reservation(payload: dict):
+    await db.wellness_reservations.insert_one(payload)
     return {"status": "success"}
-
-@api_router.api_route("/wellness-reservations", methods=["GET", "POST", "OPTIONS"])
-async def handle_wellness(payload: Optional[dict] = None):
-    if payload: await db.wellness_reservations.insert_one(payload)
-    return {"status": "ok"}
 
 # --- Startup ---
 @app.on_event("startup")
@@ -90,7 +89,7 @@ async def startup_db():
     if not await db.users.find_one({"email": ADMIN_EMAIL}):
         await db.users.insert_one({"id": str(uuid.uuid4()), "email": ADMIN_EMAIL, "password_hash": hash_password(ADMIN_PASSWORD), "role": "admin"})
 
-api_router = APIRouter(prefix="/api")
+# REGISTRÁCIA ROUTERA DO APLIKÁCIE
 app.include_router(api_router)
 
 if __name__ == "__main__":
