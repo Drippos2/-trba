@@ -60,8 +60,9 @@ async def get_me(current=Depends(get_current_admin)):
 
 @api.get("/admin/stats")
 async def admin_stats(current=Depends(get_current_admin)):
-    total = await db.reservations.count_documents({})
-    return {"total": total}
+    total_res = await db.reservations.count_documents({})
+    total_msg = await db.contact_messages.count_documents({})
+    return {"total_reservations": total_res, "total_messages": total_msg}
 
 @api.get("/reservations")
 async def get_reservations(current=Depends(get_current_admin)):
@@ -74,6 +75,16 @@ async def delete_reservation(res_id: str, current=Depends(get_current_admin)):
     await db.reservations.delete_one({"_id": ObjectId(res_id)})
     return {"status": "success"}
 
+# --- Kontaktný formulár (zobrazuje sa pani v admine) ---
+@api.post("/contact")
+async def create_contact(payload: dict):
+    # Uloží všetko, čo pošleš z frontendu (Meno, Priezvisko, Email, Telefón, Predmet, Správa)
+    await db.contact_messages.insert_one({
+        **payload,
+        "created_at": datetime.now(timezone.utc)
+    })
+    return {"status": "success"}
+
 @api.get("/contact")
 async def get_contacts(current=Depends(get_current_admin)):
     contacts = await db.contact_messages.find().sort("_id", -1).to_list(1000)
@@ -83,12 +94,6 @@ async def get_contacts(current=Depends(get_current_admin)):
 @api.delete("/contact/{msg_id}")
 async def delete_contact(msg_id: str, current=Depends(get_current_admin)):
     await db.contact_messages.delete_one({"_id": ObjectId(msg_id)})
-    return {"status": "success"}
-
-# --- TOTO CHÝBALO: Wellness rezervácie ---
-@api.post("/wellness-reservations")
-async def create_wellness(payload: dict):
-    await db.wellness_reservations.insert_one(payload)
     return {"status": "success"}
 
 @app.on_event("startup")

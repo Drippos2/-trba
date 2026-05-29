@@ -2,11 +2,10 @@ import React from "react";
 import { motion } from "framer-motion";
 import { Flame, Droplets, Waves, Sparkles, ArrowRight } from "lucide-react";
 import { useLang } from "@/contexts/LangContext";
-import { api } from "@/lib/api";
 
 const ICONS = [Flame, Droplets, Waves, Sparkles];
 
-export default function Wellness({ onBookClick }) {
+export default function Wellness() {
   const { tr } = useLang();
   const items = tr("wellness.items");
 
@@ -20,7 +19,6 @@ export default function Wellness({ onBookClick }) {
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
         >
-          {/* Použitý priamy Tailwind namiesto problematickej globálnej triedy */}
           <div className="text-xs font-semibold tracking-wider uppercase mb-5 text-[#dfb144]">
             {tr("wellness.overline")}
           </div>
@@ -41,13 +39,12 @@ export default function Wellness({ onBookClick }) {
             <div className="mt-1 text-slate-500 text-sm">{tr("wellness.note")}</div>
           </div>
 
-          <button
-            data-testid="wellness-book-btn"
-            onClick={onBookClick}
+          <a
+            href="#contact"
             className="mt-8 inline-flex items-center gap-2 bg-zinc-900 hover:bg-[#dfb144] text-white hover:text-zinc-950 px-6 py-3 rounded-xl font-medium transition-all duration-300 shadow-sm"
           >
             {tr("nav.book")} <ArrowRight size={16} />
-          </button>
+          </a>
         </motion.div>
 
         <motion.div
