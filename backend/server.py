@@ -29,7 +29,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-api = APIRouter(prefix="/api")
+# --- Router ---
+api_router = APIRouter(prefix="/api")
 security = HTTPBearer(auto_error=False)
 
 # --- Helper funkcie ---
@@ -46,7 +47,7 @@ async def get_current_admin(credentials: HTTPAuthorizationCredentials = Depends(
 @app.get("/")
 def root(): return {"status": "ok"}
 
-@api.post("/auth/login")
+@api_router.post("/auth/login")
 async def login(payload: dict):
     user = await db.users.find_one({"email": payload.get("email", "").lower().strip()})
     if not user or not bcrypt.checkpw(payload.get("password", "").encode(), user["password_hash"].encode()):
@@ -54,29 +55,29 @@ async def login(payload: dict):
     token = jwt.encode({"sub": user["id"], "exp": datetime.now(timezone.utc) + timedelta(hours=24)}, JWT_SECRET, algorithm="HS256")
     return {"access_token": token, "token_type": "bearer"}
 
-@api.get("/admin/stats")
+@api_router.get("/admin/stats")
 async def admin_stats(current=Depends(get_current_admin)):
     total = await db.reservations.count_documents({})
     return {"total": total}
 
-@api.get("/reservations")
+@api_router.get("/reservations")
 async def get_reservations(current=Depends(get_current_admin)):
     res = await db.reservations.find().sort("_id", -1).to_list(1000)
     for r in res: r["_id"] = str(r["_id"])
     return {"reservations": res}
 
-@api.delete("/reservations/{res_id}")
+@api_router.delete("/reservations/{res_id}")
 async def delete_reservation(res_id: str, current=Depends(get_current_admin)):
     await db.reservations.delete_one({"_id": ObjectId(res_id)})
     return {"status": "success"}
 
-@api.get("/contact")
+@api_router.get("/contact")
 async def get_contacts(current=Depends(get_current_admin)):
     contacts = await db.contact_messages.find().sort("_id", -1).to_list(1000)
     for c in contacts: c["_id"] = str(c["_id"])
     return {"messages": contacts}
 
-@api.delete("/contact/{msg_id}")
+@api_router.delete("/contact/{msg_id}")
 async def delete_contact(msg_id: str, current=Depends(get_current_admin)):
     await db.contact_messages.delete_one({"_id": ObjectId(msg_id)})
     return {"status": "success"}
@@ -88,8 +89,7 @@ async def startup_db():
         pw_hash = bcrypt.hashpw(ADMIN_PASSWORD.encode(), bcrypt.gensalt()).decode()
         await db.users.insert_one({"id": str(uuid.uuid4()), "email": ADMIN_EMAIL, "password_hash": pw_hash, "role": "admin"})
 
-api = APIRouter(prefix="/api")
-app.include_router(api)
+app.include_router(api_router)
 
 if __name__ == "__main__":
     import uvicorn
