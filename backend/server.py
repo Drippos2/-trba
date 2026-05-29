@@ -2,6 +2,7 @@ import os
 import uuid
 import bcrypt
 import jwt
+import resend
 from datetime import datetime, timezone, timedelta
 from fastapi import FastAPI, APIRouter, HTTPException, Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
@@ -17,6 +18,9 @@ db = client[os.environ.get("DB_NAME", "penzion_db")]
 JWT_SECRET = os.environ.get("JWT_SECRET", "super-secret-key-change-me")
 ADMIN_EMAIL = os.environ.get("ADMIN_EMAIL", "admin@penzion-strba.sk").lower().strip()
 ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "Penzionstrba1")
+
+# Nastavenie Resend API kľúča
+resend.api_key = os.environ.get("RESEND_API_KEY")
 
 app = FastAPI(title="Penzion Strba API")
 
@@ -75,14 +79,42 @@ async def delete_reservation(res_id: str, current=Depends(get_current_admin)):
     await db.reservations.delete_one({"_id": ObjectId(res_id)})
     return {"status": "success"}
 
-# --- Kontaktný formulár (zobrazuje sa pani v admine) ---
+# --- Kontaktný formulár s e-mailovými notifikáciami ---
 @api.post("/contact")
 async def create_contact(payload: dict):
-    # Uloží všetko, čo pošleš z frontendu (Meno, Priezvisko, Email, Telefón, Predmet, Správa)
+    # 1. Uložíme do databázy
     await db.contact_messages.insert_one({
         **payload,
         "created_at": datetime.now(timezone.utc)
     })
+    
+    try:
+        # 2. E-mail pre zákazníka (Potvrdenie)
+        resend.Emails.send({
+            "from": "Penzion Štrba <info@penzion-strba.sk>",
+            "to": payload.get("email"),
+            "subject": "Potvrdenie o prijatí vašej správy",
+            "html": f"<p>Dobrý deň,</p><p>Ďakujeme za kontaktovanie Penziónu Štrba. Vašu správu sme úspešne prijali a čoskoro vás budeme kontaktovať.</p><p>S pozdravom,<br>Penzión Štrba</p>"
+        })
+        
+        # 3. E-mail pre teba (Notifikácia o novej správe)
+        resend.Emails.send({
+            "from": "Web Formulár <info@penzion-strba.sk>",
+            "to": "info@penzion-strba.sk",
+            "subject": f"Nová správa: {payload.get('subject', 'Bez predmetu')}",
+            "html": f"""
+                <h3>Máte novú správu z webu:</h3>
+                <p><b>Meno:</b> {payload.get('first_name')} {payload.get('last_name')}</p>
+                <p><b>Email:</b> {payload.get('email')}</p>
+                <p><b>Telefón:</b> {payload.get('phone')}</p>
+                <p><b>Predmet:</b> {payload.get('subject')}</p>
+                <p><b>Správa:</b> {payload.get('message')}</p>
+            """
+        })
+    except Exception as e:
+        print(f"Chyba pri odosielaní e-mailu: {e}")
+        # Správu sme do DB uložili, takže aj keď e-mail zlyhá, klient o správu neprišiel.
+
     return {"status": "success"}
 
 @api.get("/contact")
