@@ -10,6 +10,7 @@ from motor.motor_asyncio import AsyncIOMotorClient
 from dotenv import load_dotenv
 from bson import ObjectId
 
+# --- Setup ---
 load_dotenv()
 client = AsyncIOMotorClient(os.environ.get("MONGO_URL"))
 db = client[os.environ.get("DB_NAME", "penzion_db")]
@@ -19,6 +20,7 @@ ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "Penzionstrba1")
 
 app = FastAPI(title="Penzion Strba API")
 
+# --- Middleware ---
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["https://trba.vercel.app"],
@@ -30,6 +32,7 @@ app.add_middleware(
 api = APIRouter(prefix="/api")
 security = HTTPBearer(auto_error=False)
 
+# --- Helper funkcie ---
 async def get_current_admin(credentials: HTTPAuthorizationCredentials = Depends(security)):
     if not credentials: raise HTTPException(status_code=401)
     try:
@@ -39,6 +42,7 @@ async def get_current_admin(credentials: HTTPAuthorizationCredentials = Depends(
         return user
     except: raise HTTPException(status_code=401)
 
+# --- Endpoints ---
 @app.get("/")
 def root(): return {"status": "ok"}
 
@@ -79,6 +83,12 @@ async def get_contacts(current=Depends(get_current_admin)):
 @api.delete("/contact/{msg_id}")
 async def delete_contact(msg_id: str, current=Depends(get_current_admin)):
     await db.contact_messages.delete_one({"_id": ObjectId(msg_id)})
+    return {"status": "success"}
+
+# --- TOTO CHÝBALO: Wellness rezervácie ---
+@api.post("/wellness-reservations")
+async def create_wellness(payload: dict):
+    await db.wellness_reservations.insert_one(payload)
     return {"status": "success"}
 
 @app.on_event("startup")
