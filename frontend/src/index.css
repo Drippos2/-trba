@@ -65,7 +65,7 @@
   }
 }
 
-/* ===== MOBILNÁ NAVIGÁCIA (Toto zabezpečí zarovnanie) ===== */
+/* ===== MOBILNÁ NAVIGÁCIA (Optimalizované) ===== */
 @media (max-width: 640px) {
   .lang-switcher { display: none !important; }
   
@@ -74,19 +74,23 @@
     flex-direction: row !important;
     align-items: center !important;
     justify-content: space-between !important;
-    gap: 8px !important;
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+    gap: 4px !important;
     width: 100% !important;
+    overflow: hidden !important;
   }
 
   .btn-availability {
-    padding: 0.5rem 0.75rem !important;
-    font-size: 0.75rem !important;
+    padding: 0.35rem 0.55rem !important;
+    font-size: 0.7rem !important;
     white-space: nowrap !important;
+    transform: scale(0.9);
   }
 
   .mobile-socials {
     display: flex !important;
-    gap: 10px !important;
+    gap: 6px !important;
   }
 }
 
