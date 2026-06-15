@@ -19,6 +19,8 @@ const links = [
 export default function Navigation() {
   const { tr } = useLang();
   const [scrolled, setScrolled] = useState(false);
+  // Stav pre otvorenie/zatvorenie mobilného menu
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 30);
@@ -26,21 +28,34 @@ export default function Navigation() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // Blokovanie scrollovania pozadia, keď je menu otvorené
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [isMobileMenuOpen]);
+
   return (
     <header
       data-testid="site-nav"
       className={`fixed top-0 inset-x-0 z-50 transition-all duration-500 ${
-        scrolled ? "bg-black/80 backdrop-blur-md shadow-lg" : "bg-transparent"
+        scrolled || isMobileMenuOpen ? "bg-black/80 backdrop-blur-md shadow-lg" : "bg-transparent"
       }`}
     >
-      <div className="nav-container max-w-[1400px] mx-auto h-20 md:h-24">
+      {/* Hlavný kontajner - pridané flex a justify-between pre správne zarovnanie prvkov */}
+      <div className="nav-container max-w-[1400px] mx-auto h-20 md:h-24 px-4 flex items-center justify-between gap-4">
         
         {/* Logo */}
-        <a href="#top" data-testid="brand-logo" className="flex items-center gap-3 shrink-0">
+        <a href="#top" data-testid="brand-logo" className="flex items-center gap-3 shrink-0 z-50">
           <Logo size={64} />
         </a>
 
-        {/* Desktop menu */}
+        {/* Desktop menu - Skryté na všetkom, čo je menšie ako lg (large) obrazovka */}
         <nav className="hidden lg:flex items-center gap-7 text-sm font-medium text-white">
           {links.map((l) => (
             <a
@@ -54,21 +69,25 @@ export default function Navigation() {
           ))}
         </nav>
 
-        {/* Pravá časť: Sociálne siete, Jazyky a Tlačidlo */}
-        <div className="flex items-center gap-3 sm:gap-4 shrink-0">
+        {/* Pravá časť pre PC: Sociálne siete, Jazyky a Tlačidlo */}
+        <div className="hidden lg:flex items-center gap-3 sm:gap-4 shrink-0">
           
-          {/* Sociálne siete - Teraz viditeľné vždy */} 
+          {/* Sociálne siete */} 
           <div className="flex items-center gap-3 text-white">
-            <a href="https://www.facebook.com/penzion.strba/" target="_blank" rel="noopener noreferrer" className="hover:text-[#dfb144] transition-colors"><svg className="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.57 6 13.5 6H16v3h-2c-.55 0-1 .45-1 1v2h3v3h-3v6.95c4.56-.93 8-4.96 8-9.8z"/></svg></a>
-            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="hover:text-[#dfb144] transition-colors"><svg className="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></a>
+            <a href="https://www.facebook.com/penzion.strba/" target="_blank" rel="noopener noreferrer" className="hover:text-[#dfb144] transition-colors">
+              <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.57 6 13.5 6H16v3h-2c-.55 0-1 .45-1 1v2h3v3h-3v6.95c4.56-.93 8-4.96 8-9.8z"/></svg>
+            </a>
+            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="hover:text-[#dfb144] transition-colors">
+              <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+            </a>
           </div>
 
           {/* Jazyky */}
-          <div className="lang-switcher hidden sm:block">
+          <div className="lang-switcher">
             <LanguageSwitcher />
           </div>
 
-          {/* Tlačidlo */}
+          {/* Tlačidlo rezervácie */}
           <a 
             href="https://booking.previo.cz/stay/index/step-2/?hotId=41403&currency=EUR&lang=sk&redirectType=iframe&PHPSESSID=1bjsr5lq8rasqn6vqjrj236ed8&stayId=65505&singleStay=1" 
             target="_blank"
@@ -77,6 +96,76 @@ export default function Navigation() {
           >
             Overiť dostupnosť
           </a>
+        </div>
+
+        {/* LIŠTA PRE MOBIL (Zobrazuje sa len na mobile a tablete: lg:hidden) */}
+        <div className="flex lg:hidden items-center gap-4 z-50">
+          
+          {/* Rýchle tlačidlo dostupnosti viditeľné aj na mobile pre konverzie */}
+          <a 
+            href="https://booking.previo.cz/stay/index/step-2/?hotId=41403&currency=EUR&lang=sk&redirectType=iframe&PHPSESSID=1bjsr5lq8rasqn6vqjrj236ed8&stayId=65505&singleStay=1" 
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-3 py-1.5 text-slate-900 bg-[#dfb144] rounded-full font-bold text-[11px] uppercase tracking-wider shadow-sm"
+          >
+            Overiť dostupnosť
+          </a>
+
+          {/* HAMBURGER TLAČIDLO */}
+          <button
+            onClick={() => setIsOpen(!isMobileMenuOpen)}
+            className="text-white focus:outline-none p-2"
+            aria-label="Menu"
+          >
+            {isMobileMenuOpen ? (
+              <span className="text-2xl font-bold font-mono block transition-transform duration-300 rotate-90">✕</span>
+            ) : (
+              <span className="text-2xl font-bold font-mono block">☰</span>
+            )}
+          </button>
+        </div>
+
+      </div>
+
+      {/* MOBILNÉ MENU - Fullscreen overlay s plynulým prechodom (slide in) */}
+      <div
+        className={`
+          fixed inset-0 top-0 left-0 h-screen w-screen bg-black/95 backdrop-blur-xl flex flex-col items-center justify-center transition-all duration-300 ease-in-out z-40
+          ${isMobileMenuOpen ? "opacity-100 translate-x-0" : "opacity-0 translate-x-full pointer-events-none"} 
+          lg:hidden
+        `}
+      >
+        {/* Odkazy menu na mobile */}
+        <nav className="flex flex-col items-center gap-5 text-lg font-medium text-white text-center">
+          {links.map((l) => (
+            <a
+              key={l.href}
+              href={l.href}
+              onClick={() => setIsMobileMenuOpen(false)} // Po kliknutí na odkaz menu zatvoríme
+              className="hover:text-[#dfb144] transition-colors duration-200 py-1 block"
+            >
+              {tr(l.key)}
+            </a>
+          ))}
+        </nav>
+
+        {/* Doplnky na spodku mobilného menu (Jazyky a Sociálne siete) */}
+        <div className="mt-8 pt-6 border-t border-zinc-800 w-48 flex flex-col items-center gap-6">
+          
+          {/* Prepínač jazykov pre mobil */}
+          <div className="scale-110">
+            <LanguageSwitcher />
+          </div>
+
+          {/* Sociálne siete pre mobil */}
+          <div className="flex items-center gap-5 text-white">
+            <a href="https://www.facebook.com/penzion.strba/" target="_blank" rel="noopener noreferrer" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-[#dfb144] transition-colors">
+              <svg className="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.57 6 13.5 6H16v3h-2c-.55 0-1 .45-1 1v2h3v3h-3v6.95c4.56-.93 8-4.96 8-9.8z"/></svg>
+            </a>
+            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-[#dfb144] transition-colors">
+              <svg className="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+            </a>
+          </div>
 
         </div>
       </div>
