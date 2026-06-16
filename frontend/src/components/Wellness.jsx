@@ -5,7 +5,7 @@ import { useLang } from "@/contexts/LangContext";
 
 const ICONS = [Flame, Droplets, Waves, Sparkles];
 
-// OPRAVA: Presné názvy súborov. Pre Vírivú vaňu (index 1) dávame null, keďže majiteľ fotku nedodal.
+// Presné názvy súborov. Pre Vírivú vaňu (index 1) dávame null, keďže majiteľ fotku nedodal.
 const WELLNESS_IMAGES = [
   "/sauna.jpg",      // 1. Infra sauna
   null,              // 2. Vírivá vaňa (bez obrázka)
@@ -99,9 +99,9 @@ export default function Wellness() {
                     <Icon size={20} />
                   </div>
 
-                  {/* ÚPRAVA: Zväčšená výška na h-52, aby bola lokálne fotka vidieť oveľa lepšie a celá */}
+                  {/* OPRAVA: Responzívna výška. Na mobile h-52, na PC (md:) jemnejších h-36 */}
                   {imagePath && (
-                    <div className="w-full h-52 rounded-2xl overflow-hidden mb-4 bg-zinc-50 relative flex items-center justify-center border border-zinc-100/50">
+                    <div className="w-full h-52 md:h-36 rounded-2xl overflow-hidden mb-4 bg-zinc-50 relative flex items-center justify-center border border-zinc-100/50">
                       <img 
                         src={imagePath} 
                         alt={it.t} 
@@ -153,9 +153,9 @@ export default function Wellness() {
                 ✕
               </button>
 
-              {/* ÚPRAVA: Použitie object-contain a čierneho pozadia, čím sa fotka zobrazí na 100% CELÁ bez orezu */}
+              {/* OPRAVA: Zmenšená max. výška na PC pomocou max-h-[450px], aby okno nepôsobilo giganticky */}
               {activeItem.image ? (
-                <div className="w-full h-72 md:h-96 bg-zinc-950 flex items-center justify-center relative p-2">
+                <div className="w-full h-72 md:h-[450px] bg-zinc-950 flex items-center justify-center relative p-2">
                   <img 
                     src={activeItem.image} 
                     alt={activeItem.t} 
