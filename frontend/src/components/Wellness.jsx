@@ -6,28 +6,27 @@ import { useLang } from "@/contexts/LangContext";
 // Základné ikony pre pôvodné wellness položky
 const ICONS = [Flame, Droplets, Waves, Sparkles];
 
-// Kompletné pole obrázkov vrátane nových troch súborov a, b, c
+// OPRAVENÉ POLE: Presne kopíruje poradie položiek, ktoré spájame nižšie
 const WELLNESS_IMAGES = [
   "/sauna.jpg",      // 1. Infra sauna
   null,              // 2. Vírivá vaňa (bez obrázka)
   "/oddychova.jpg",  // 3. Oddychová zóna
-  null,              // 4. Záložná karta ak existuje
-  "/a.jpg",          // 5. Nová fotka A
-  "/b.jpg",          // 6. Nová fotka B
-  "/c.jpg",          // 7. Nová fotka C
+  null,              // 4. Záložná karta ak existuje v JSON
+  "/a.jpg",          // 5. Priradené k: Penzión Štrba - Pohľad spredu
+  "/b.jpg",          // 6. Priradené k: Areál penziónu
+  "/c.jpg",          // 7. Priradené k: Ubytovacie krídlo
 ];
 
 export default function Wellness() {
   const { tr } = useLang();
   const rawItems = tr("wellness.items");
   
-  // Zabezpečíme, že máme pole pôvodných položiek
+  // Zabezpečíme, že máme pole pôvodných položiek z prekladov
   const baseItems = Array.isArray(rawItems) ? rawItems : [];
 
-  // Vytvorenie výsledného zoznamu bubliniek vrátane 3 nových fotiek
+  // Vytvorenie výsledného zoznamu bubliniek, kde texty presne sedia na indexy vo WELLNESS_IMAGES
   const allItems = [
     ...baseItems,
-    // Ak by v JSON prekladoch chýbali indexy 4, 5, 6, použijú sa tieto slovenské texty
     { 
       t: baseItems[4]?.t || "Penzión Štrba - Pohľad spredu", 
       d: baseItems[4]?.d || "Exteriér a hlavný vstup do budovy" 
@@ -99,7 +98,7 @@ export default function Wellness() {
           </div>
         </motion.div>
 
-        {/* PRAVÁ STRANA: Grid so všetkými bublinkami (pôvodné + 3 nové) */}
+        {/* PRAVÁ STRANA: Grid so všetkými bublinkami */}
         <motion.div
           className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-4"
           initial={{ opacity: 0, y: 24 }}
@@ -108,7 +107,7 @@ export default function Wellness() {
           transition={{ duration: 0.8, delay: 0.15 }}
         >
           {allItems.map((it, i) => {
-            // Pre prvé 4 položky použijeme pôvodné ikony, pre nové fotky (a,b,c) priradíme ikonu domčeka (Home)
+            // Určenie správnej ikony (pôvodné vs domček pre exteriér)
             const Icon = i < baseItems.length ? ICONS[i % ICONS.length] : Home;
             const imagePath = WELLNESS_IMAGES[i];
 
@@ -179,7 +178,7 @@ export default function Wellness() {
                 ✕
               </button>
 
-              {/* Fotka s chránenou kompaktnou výškou na PC */}
+              {/* Fotka v modale */}
               {activeItem.image ? (
                 <div className="w-full h-64 md:h-80 bg-zinc-950 flex items-center justify-center relative">
                   <img 
