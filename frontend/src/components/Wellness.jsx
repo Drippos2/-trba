@@ -9,7 +9,7 @@ const ICONS = [Flame, Droplets, Waves, Sparkles];
 const WELLNESS_IMAGES = [
   "/sauna.jpg",      // 1. Infra sauna
   null,              // 2. Vírivá vaňa (bez obrázka)
-  "/oddychova.jpg",  // 3. Oddychová zóna (opravený názov súboru)
+  "/oddychova.jpg",  // 3. Oddychová zóna
   null,              // 4. Záložná karta
 ];
 
@@ -99,13 +99,13 @@ export default function Wellness() {
                     <Icon size={20} />
                   </div>
 
-                  {/* OPRAVA: Responzívna výška. Na mobile h-52, na PC (md:) jemnejších h-36 */}
+                  {/* Náhľadová fotka v karte */}
                   {imagePath && (
-                    <div className="w-full h-52 md:h-36 rounded-2xl overflow-hidden mb-4 bg-zinc-50 relative flex items-center justify-center border border-zinc-100/50">
+                    <div className="w-full h-36 rounded-2xl overflow-hidden mb-4 bg-zinc-50 relative flex items-center justify-center border border-zinc-100/50">
                       <img 
                         src={imagePath} 
                         alt={it.t} 
-                        className="w-full h-full object-cover group-hover:scale-102 transition-transform duration-500"
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       />
                     </div>
                   )}
@@ -130,68 +130,68 @@ export default function Wellness() {
       <AnimatePresence>
         {activeItem && (
           <motion.div 
-            className="fixed inset-0 bg-black/70 backdrop-blur-md z-[150] flex items-center justify-center p-4"
+            className="fixed inset-0 bg-black/70 backdrop-blur-md z-[150] flex items-center justify-center p-4 overflow-y-auto"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setActiveItem(null)}
           >
             <motion.div 
-              className="bg-white rounded-[32px] overflow-hidden max-w-2xl w-full shadow-2xl relative border border-zinc-100"
+              className="bg-white rounded-[32px] overflow-hidden max-w-lg w-full shadow-2xl relative border border-zinc-100 my-auto"
               initial={{ scale: 0.95, y: 20 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.95, y: 20 }}
               transition={{ type: "spring", duration: 0.4 }}
               onClick={(e) => e.stopPropagation()}
             >
-              {/* Tlačidlo X na zatvorenie */}
+              {/* Tlačidlo X na zatvorenie - presunuté priamo do rohu boxu so svetlým dizajnom pre lepšiu viditeľnosť */}
               <button 
                 onClick={() => setActiveItem(null)}
-                className="absolute top-4 right-4 bg-black/40 hover:bg-black/70 text-white w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold transition-colors z-50 backdrop-blur-sm"
+                className="absolute top-4 right-4 bg-white/80 hover:bg-white text-zinc-900 w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold shadow-md transition-colors z-50 backdrop-blur-sm border border-zinc-200"
                 aria-label="Close"
               >
                 ✕
               </button>
 
-              {/* OPRAVA: Zmenšená max. výška na PC pomocou max-h-[450px], aby okno nepôsobilo giganticky */}
+              {/* Fotka - teraz s obmedzenou max-height na PC, aby nevyliezala z okna */}
               {activeItem.image ? (
-                <div className="w-full h-72 md:h-[450px] bg-zinc-950 flex items-center justify-center relative p-2">
+                <div className="w-full h-64 md:h-80 bg-zinc-950 flex items-center justify-center relative">
                   <img 
                     src={activeItem.image} 
                     alt={activeItem.t} 
-                    className="max-w-full max-h-full object-contain rounded-lg"
+                    className="w-full h-full object-cover"
                   />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none" />
                 </div>
               ) : (
-                // Ak fotka nie je, elegantný zlatý pásik s veľkou ikonou
                 <div className="w-full h-32 bg-gradient-to-br from-zinc-50 to-zinc-100 border-b border-zinc-100 flex items-center justify-center text-[#cc9f37]">
                   <activeItem.Icon size={40} strokeWidth={1.5} />
                 </div>
               )}
 
               {/* Textový obsah pod fotkou */}
-              <div className="p-6 md:p-8">
+              <div className="p-6 md:p-7">
                 <div className="flex items-center gap-3 mb-3">
-                  <div className="w-8 h-8 rounded-lg bg-[#dfb144]/10 flex items-center justify-center text-[#cc9f37]">
-                    <activeItem.Icon size={16} />
+                  <div className="w-7 h-7 rounded-lg bg-[#dfb144]/10 flex items-center justify-center text-[#cc9f37]">
+                    <activeItem.Icon size={14} />
                   </div>
-                  <span className="text-zinc-400 text-xs font-semibold uppercase tracking-wider">Detail zóny</span>
+                  <span className="text-zinc-400 text-[11px] font-semibold uppercase tracking-wider">Detail zóny</span>
                 </div>
 
-                <h3 className="text-2xl md:text-3xl font-display font-bold text-zinc-900 mb-2">
+                <h3 className="text-xl md:text-2xl font-display font-bold text-zinc-900 mb-1.5">
                   {activeItem.t}
                 </h3>
-                <p className="text-[#cc9f37] text-sm font-medium mb-3">
+                <p className="text-[#cc9f37] text-xs font-medium mb-3">
                   {activeItem.d}
                 </p>
-                <p className="text-zinc-600 text-base leading-relaxed">
+                <p className="text-zinc-600 text-sm leading-relaxed">
                   Užite si maximálny relax a oddych v našom modernom wellness centre v Štrbe. Táto zóna je navrhnutá tak, aby poskytla dokonalú regeneráciu vášmu telu po aktívnom dni v regióne Vysokých Tatier.
                 </p>
 
-                <div className="mt-8 flex justify-end">
+                <div className="mt-6 flex justify-end">
                   <button
                     onClick={() => setActiveItem(null)}
-                    className="px-6 py-2.5 bg-zinc-900 hover:bg-zinc-800 text-white rounded-xl text-sm font-medium transition-colors shadow-sm"
+                    className="px-5 py-2 bg-zinc-900 hover:bg-zinc-800 text-white rounded-xl text-xs font-medium transition-colors shadow-sm"
                   >
                     Zatvoriť
                   </button>
