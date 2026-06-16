@@ -5,12 +5,12 @@ import { useLang } from "@/contexts/LangContext";
 
 const ICONS = [Flame, Droplets, Waves, Sparkles];
 
-// Priradenie tvojich fotiek z public priečinka pre wellness sekciu
+// OPRAVA: Presné názvy súborov. Pre Vírivú vaňu (index 1) dávame null, keďže majiteľ fotku nedodal.
 const WELLNESS_IMAGES = [
-  "/sauna.jpg",          // 1. Infra sauna
-  "/wellnes.jpg",        // 2. Vírivá vaňa
-  "/oddychchova.jpg",    // 3. Oddychová zóna
-  "/wellnes.jpg",        // 4. Záložná / Štvrtá karta ak existuje
+  "/sauna.jpg",      // 1. Infra sauna
+  null,              // 2. Vírivá vaňa (bez obrázka)
+  "/oddychova.jpg",  // 3. Oddychová zóna (opravený názov súboru)
+  null,              // 4. Záložná karta
 ];
 
 export default function Wellness() {
@@ -84,14 +84,14 @@ export default function Wellness() {
         >
           {(Array.isArray(items) ? items : []).map((it, i) => {
             const Icon = ICONS[i % ICONS.length];
-            const imagePath = WELLNESS_IMAGES[i % WELLNESS_IMAGES.length] || "/wellnes.jpg";
+            const imagePath = WELLNESS_IMAGES[i % WELLNESS_IMAGES.length];
 
             return (
               <div
                 key={i}
                 data-testid={`wellness-item-${i}`}
-                onClick={() => setActiveItem({ ...it, image: imagePath, Icon })} // Po kliknutí otvorí detail s fotkou
-                className="p-6 md:p-7 min-h-[280px] flex flex-col justify-between group border border-zinc-100 bg-white rounded-3xl hover:border-[#dfb144]/40 hover:shadow-md cursor-pointer transition-all duration-300 shadow-sm"
+                onClick={() => setActiveItem({ ...it, image: imagePath, Icon })} // Otvorí detail
+                className="p-6 md:p-7 min-h-[180px] flex flex-col justify-between group border border-zinc-100 bg-white rounded-3xl hover:border-[#dfb144]/40 hover:shadow-md cursor-pointer transition-all duration-300 shadow-sm"
               >
                 <div>
                   {/* Ikona */}
@@ -99,18 +99,20 @@ export default function Wellness() {
                     <Icon size={20} />
                   </div>
 
-                  {/* NOVÉ: Náhľadová fotka priamo vo wellness karte */}
-                  <div className="w-full h-32 rounded-xl overflow-hidden mb-4 bg-zinc-100 relative">
-                    <img 
-                      src={imagePath} 
-                      alt={it.t} 
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
-                  </div>
+                  {/* ZMENA: Obrázok sa vyrenderuje IBA ak existuje (nie je null) */}
+                  {imagePath && (
+                    <div className="w-full h-32 rounded-xl overflow-hidden mb-4 bg-zinc-100 relative">
+                      <img 
+                        src={imagePath} 
+                        alt={it.t} 
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                    </div>
+                  )}
                 </div>
 
                 <div>
-                  <div className="font-display text-lg md:text-xl font-semibold tracking-tight text-zinc-900 group-hover:text-[#cc9f37] transition-colors">
+                  <div className="font-display text-lg md:text-xl font-semibold tracking-tight text-zinc-900 group-hover:text-[#cc9f37] transition-colors mt-2">
                     {it.t}
                   </div>
                   <div className="mt-1.5 text-slate-500 text-sm flex justify-between items-center">
@@ -124,7 +126,7 @@ export default function Wellness() {
         </motion.div>
       </div>
 
-      {/* NOVÉ: ANiMOVANÉ VYSKAKOVACIE OKNO (MODAL DETAIl) */}
+      {/* ANiMOVANÉ VYSKAKOVACIE OKNO (MODAL DETAIl) */}
       <AnimatePresence>
         {activeItem && (
           <motion.div 
@@ -151,15 +153,22 @@ export default function Wellness() {
                 ✕
               </button>
 
-              {/* Veľká fotka wellness služby */}
-              <div className="w-full h-64 md:h-85 bg-zinc-900 relative">
-                <img 
-                  src={activeItem.image} 
-                  alt={activeItem.t} 
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none" />
-              </div>
+              {/* Veľká fotka - renderuje sa iba ak activeItem.image existuje */}
+              {activeItem.image ? (
+                <div className="w-full h-64 md:h-85 bg-zinc-900 relative">
+                  <img 
+                    src={activeItem.image} 
+                    alt={activeItem.t} 
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none" />
+                </div>
+              ) : (
+                // Ak fotka nie je, dáme tam len elegantný horný zlatý pásik s veľkou ikonou, aby to nevyzeralo prázdne
+                <div className="w-full h-32 bg-gradient-to-br from-zinc-50 to-zinc-100 border-b border-zinc-100 flex items-center justify-center text-[#cc9f37]">
+                  <activeItem.Icon size={40} strokeWidth={1.5} />
+                </div>
+              )}
 
               {/* Textový obsah pod fotkou */}
               <div className="p-6 md:p-8">
