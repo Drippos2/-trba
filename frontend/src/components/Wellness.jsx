@@ -3,41 +3,49 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Flame, Droplets, Waves, Sparkles, ArrowRight, Home } from "lucide-react";
 import { useLang } from "@/contexts/LangContext";
 
-// Základné ikony pre pôvodné wellness položky
-const ICONS = [Flame, Droplets, Waves, Sparkles];
-
-// OPRAVENÉ POLE: Presne kopíruje poradie položiek, ktoré spájame nižšie
-const WELLNESS_IMAGES = [
-  "/sauna.jpg",      // 1. Infra sauna
-  null,              // 2. Vírivá vaňa (bez obrázka)
-  "/oddychova.jpg",  // 3. Oddychová zóna
-  null,              // 4. Záložná karta ak existuje v JSON
-  "/a.jpg",          // 5. Priradené k: Penzión Štrba - Pohľad spredu
-  "/b.jpg",          // 6. Priradené k: Areál penziónu
-  "/c.jpg",          // 7. Priradené k: Ubytovacie krídlo
-];
-
 export default function Wellness() {
   const { tr } = useLang();
   const rawItems = tr("wellness.items");
-  
-  // Zabezpečíme, že máme pole pôvodných položiek z prekladov
   const baseItems = Array.isArray(rawItems) ? rawItems : [];
 
-  // Vytvorenie výsledného zoznamu bubliniek, kde texty presne sedia na indexy vo WELLNESS_IMAGES
+  // RUČNÉ A PRESNÉ SPÁROVANIE TEXTOV S OBRÁZKAMI A IKONAMI
+  // Už žiadne posúvanie indexov, každá karta má natvrdo definované svoje dáta
   const allItems = [
-    ...baseItems,
-    { 
-      t: baseItems[4]?.t || "Penzión Štrba - Pohľad spredu", 
-      d: baseItems[4]?.d || "Exteriér a hlavný vstup do budovy" 
+    {
+      t: baseItems[0]?.t || "Infra sauna",
+      d: baseItems[0]?.d || "40 – 65 °C • regenerácia svalov",
+      image: "/sauna.jpg",
+      Icon: Flame
     },
-    { 
-      t: baseItems[5]?.t || "Areál penziónu", 
-      d: baseItems[5]?.d || "Pohľad na ubytovaciu časť z boku" 
+    {
+      t: baseItems[1]?.t || "Vírivá vaňa",
+      d: baseItems[1]?.d || "Hydromasáž • uvoľnenie",
+      image: null, // Majiteľ nedodal fotku
+      Icon: Droplets
     },
-    { 
-      t: baseItems[6]?.t || "Ubytovacie krídlo", 
-      d: baseItems[6]?.d || "Detailná snímka komplexu penziónu" 
+    {
+      t: baseItems[2]?.t || "Oddychová zóna",
+      d: baseItems[2]?.d || "Tlmené LED svetlo • ticho",
+      image: "/oddychova.jpg",
+      Icon: Waves
+    },
+    {
+      t: baseItems[3]?.t || "Penzión Štrba - Pohľad spredu",
+      d: baseItems[3]?.d || "Exteriér a hlavný vstup do budovy",
+      image: "/a.jpg",
+      Icon: Home
+    },
+    {
+      t: baseItems[4]?.t || "Areál penziónu",
+      d: baseItems[4]?.d || "Pohľad na ubytovaciu časť z boku",
+      image: "/b.jpg",
+      Icon: Home
+    },
+    {
+      t: baseItems[5]?.t || "Ubytovacie krídlo",
+      d: baseItems[5]?.d || "Detailná snímka komplexu penziónu",
+      image: "/c.jpg",
+      Icon: Home
     }
   ];
 
@@ -107,15 +115,13 @@ export default function Wellness() {
           transition={{ duration: 0.8, delay: 0.15 }}
         >
           {allItems.map((it, i) => {
-            // Určenie správnej ikony (pôvodné vs domček pre exteriér)
-            const Icon = i < baseItems.length ? ICONS[i % ICONS.length] : Home;
-            const imagePath = WELLNESS_IMAGES[i];
+            const Icon = it.Icon;
 
             return (
               <div
                 key={i}
                 data-testid={`wellness-item-${i}`}
-                onClick={() => setActiveItem({ ...it, image: imagePath, Icon })} // Otvorí detail
+                onClick={() => setActiveItem(it)} // Otvorí detail
                 className="p-6 md:p-7 min-h-[180px] flex flex-col justify-between group border border-zinc-100 bg-white rounded-3xl hover:border-[#dfb144]/40 hover:shadow-md cursor-pointer transition-all duration-300 shadow-sm"
               >
                 <div>
@@ -125,10 +131,10 @@ export default function Wellness() {
                   </div>
 
                   {/* Náhľadová fotka v karte */}
-                  {imagePath && (
+                  {it.image && (
                     <div className="w-full h-36 rounded-2xl overflow-hidden mb-4 bg-zinc-50 relative flex items-center justify-center border border-zinc-100/50">
                       <img 
-                        src={imagePath} 
+                        src={it.image} 
                         alt={it.t} 
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       />
