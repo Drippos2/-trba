@@ -1,21 +1,46 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Flame, Droplets, Waves, Sparkles, ArrowRight } from "lucide-react";
+import { Flame, Droplets, Waves, Sparkles, ArrowRight, Home } from "lucide-react";
 import { useLang } from "@/contexts/LangContext";
 
+// Základné ikony pre pôvodné wellness položky
 const ICONS = [Flame, Droplets, Waves, Sparkles];
 
-// Presné názvy súborov. Pre Vírivú vaňu (index 1) dávame null, keďže majiteľ fotku nedodal.
+// Kompletné pole obrázkov vrátane nových troch súborov a, b, c
 const WELLNESS_IMAGES = [
   "/sauna.jpg",      // 1. Infra sauna
   null,              // 2. Vírivá vaňa (bez obrázka)
   "/oddychova.jpg",  // 3. Oddychová zóna
-  null,              // 4. Záložná karta
+  null,              // 4. Záložná karta ak existuje
+  "/a.jpg",          // 5. Nová fotka A
+  "/b.jpg",          // 6. Nová fotka B
+  "/c.jpg",          // 7. Nová fotka C
 ];
 
 export default function Wellness() {
   const { tr } = useLang();
-  const items = tr("wellness.items");
+  const rawItems = tr("wellness.items");
+  
+  // Zabezpečíme, že máme pole pôvodných položiek
+  const baseItems = Array.isArray(rawItems) ? rawItems : [];
+
+  // Vytvorenie výsledného zoznamu bubliniek vrátane 3 nových fotiek
+  const allItems = [
+    ...baseItems,
+    // Ak by v JSON prekladoch chýbali indexy 4, 5, 6, použijú sa tieto slovenské texty
+    { 
+      t: baseItems[4]?.t || "Penzión Štrba - Pohľad spredu", 
+      d: baseItems[4]?.d || "Exteriér a hlavný vstup do budovy" 
+    },
+    { 
+      t: baseItems[5]?.t || "Areál penziónu", 
+      d: baseItems[5]?.d || "Pohľad na ubytovaciu časť z boku" 
+    },
+    { 
+      t: baseItems[6]?.t || "Ubytovacie krídlo", 
+      d: baseItems[6]?.d || "Detailná snímka komplexu penziónu" 
+    }
+  ];
 
   // Stav pre otvorené vyskakovacie okno (Modal)
   const [activeItem, setActiveItem] = useState(null);
@@ -74,7 +99,7 @@ export default function Wellness() {
           </div>
         </motion.div>
 
-        {/* PRAVÁ STRANA: Grid s wellness bublinkami */}
+        {/* PRAVÁ STRANA: Grid so všetkými bublinkami (pôvodné + 3 nové) */}
         <motion.div
           className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-4"
           initial={{ opacity: 0, y: 24 }}
@@ -82,9 +107,10 @@ export default function Wellness() {
           viewport={{ once: true }}
           transition={{ duration: 0.8, delay: 0.15 }}
         >
-          {(Array.isArray(items) ? items : []).map((it, i) => {
-            const Icon = ICONS[i % ICONS.length];
-            const imagePath = WELLNESS_IMAGES[i % WELLNESS_IMAGES.length];
+          {allItems.map((it, i) => {
+            // Pre prvé 4 položky použijeme pôvodné ikony, pre nové fotky (a,b,c) priradíme ikonu domčeka (Home)
+            const Icon = i < baseItems.length ? ICONS[i % ICONS.length] : Home;
+            const imagePath = WELLNESS_IMAGES[i];
 
             return (
               <div
@@ -144,7 +170,7 @@ export default function Wellness() {
               transition={{ type: "spring", duration: 0.4 }}
               onClick={(e) => e.stopPropagation()}
             >
-              {/* Tlačidlo X na zatvorenie - presunuté priamo do rohu boxu so svetlým dizajnom pre lepšiu viditeľnosť */}
+              {/* Tlačidlo X na zatvorenie */}
               <button 
                 onClick={() => setActiveItem(null)}
                 className="absolute top-4 right-4 bg-white/80 hover:bg-white text-zinc-900 w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold shadow-md transition-colors z-50 backdrop-blur-sm border border-zinc-200"
@@ -153,7 +179,7 @@ export default function Wellness() {
                 ✕
               </button>
 
-              {/* Fotka - teraz s obmedzenou max-height na PC, aby nevyliezala z okna */}
+              {/* Fotka s chránenou kompaktnou výškou na PC */}
               {activeItem.image ? (
                 <div className="w-full h-64 md:h-80 bg-zinc-950 flex items-center justify-center relative">
                   <img 
@@ -185,7 +211,7 @@ export default function Wellness() {
                   {activeItem.d}
                 </p>
                 <p className="text-zinc-600 text-sm leading-relaxed">
-                  Užite si maximálny relax a oddych v našom modernom wellness centre v Štrbe. Táto zóna je navrhnutá tak, aby poskytla dokonalú regeneráciu vášmu telu po aktívnom dni v regióne Vysokých Tatier.
+                  Užite si maximálny relax a príjemné prostredie v našom modernom komplexe v Štrbe. Naše priestory sú kompletne pripravené poskytnúť vám dokonalé zázemie a komfort počas vášho celého pobytu v regióne Vysokých Tatier.
                 </p>
 
                 <div className="mt-6 flex justify-end">
