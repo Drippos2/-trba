@@ -99,13 +99,13 @@ export default function Wellness() {
                     <Icon size={20} />
                   </div>
 
-                  {/* ZMENA: Obrázok sa vyrenderuje IBA ak existuje (nie je null) */}
+                  {/* ÚPRAVA: Zväčšená výška na h-52, aby bola lokálne fotka vidieť oveľa lepšie a celá */}
                   {imagePath && (
-                    <div className="w-full h-32 rounded-xl overflow-hidden mb-4 bg-zinc-100 relative">
+                    <div className="w-full h-52 rounded-2xl overflow-hidden mb-4 bg-zinc-50 relative flex items-center justify-center border border-zinc-100/50">
                       <img 
                         src={imagePath} 
                         alt={it.t} 
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        className="w-full h-full object-cover group-hover:scale-102 transition-transform duration-500"
                       />
                     </div>
                   )}
@@ -153,18 +153,17 @@ export default function Wellness() {
                 ✕
               </button>
 
-              {/* Veľká fotka - renderuje sa iba ak activeItem.image existuje */}
+              {/* ÚPRAVA: Použitie object-contain a čierneho pozadia, čím sa fotka zobrazí na 100% CELÁ bez orezu */}
               {activeItem.image ? (
-                <div className="w-full h-64 md:h-85 bg-zinc-900 relative">
+                <div className="w-full h-72 md:h-96 bg-zinc-950 flex items-center justify-center relative p-2">
                   <img 
                     src={activeItem.image} 
                     alt={activeItem.t} 
-                    className="w-full h-full object-cover"
+                    className="max-w-full max-h-full object-contain rounded-lg"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none" />
                 </div>
               ) : (
-                // Ak fotka nie je, dáme tam len elegantný horný zlatý pásik s veľkou ikonou, aby to nevyzeralo prázdne
+                // Ak fotka nie je, elegantný zlatý pásik s veľkou ikonou
                 <div className="w-full h-32 bg-gradient-to-br from-zinc-50 to-zinc-100 border-b border-zinc-100 flex items-center justify-center text-[#cc9f37]">
                   <activeItem.Icon size={40} strokeWidth={1.5} />
                 </div>
