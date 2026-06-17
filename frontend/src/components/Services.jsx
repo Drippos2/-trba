@@ -30,7 +30,7 @@ export default function Services() {
     {
       t: baseItems[1]?.t || "Jedáleň / Kuchynky na poschodí",
       d: baseItems[1]?.d || "Kompletne vybavené pre hostí",
-      image: "/kuchynky.jpg",
+      image: "/kuch.jpg",
       Icon: ChefHat
     },
     {
@@ -66,7 +66,7 @@ export default function Services() {
     {
       t: baseItems[7]?.t || "Požičovňa lyží",
       d: baseItems[7]?.d || "Zľavy na lyžiarsku výstroj pre hostí",
-      image: "/lyziaren.jpg", // Opravená nefunkčná fotka
+      image: "/pozicovna.jpg", // Opravená nefunkčná fotka
       Icon: GraduationCap
     },
     {
