@@ -12,7 +12,7 @@ import {
   Wifi,
   Sparkles,
   Cake,
-  FileText // Pridaná ikona pre Leták
+  FileText 
 } from "lucide-react";
 import { useLang } from "@/contexts/LangContext";
 
@@ -34,7 +34,7 @@ export default function Services() {
     };
   };
 
-  // 100% STABILNÉ POLE POLOŽIEK – Fotky, ikony a texty držia fixne spolu
+  // Spárovanie textov z prekladov podľa kľúčových slov
   const pizzerieTexts = findItemByKeyword("pizz", "Reštaurácia & Pizzeria", "Tradičné jedlá aj skvelá pizza");
   const kuchynkyTexts = findItemByKeyword("kuch", "Jedáleň / Kuchynky na poschodí", "Kompletne vybavené pre hostí");
   const ranajkyTexts = findItemByKeyword("raňaj", "Raňajkový bufet / Školiaca miestnosť", "Bohaté raňajky pre štart do dňa");
@@ -48,6 +48,7 @@ export default function Services() {
   const oslavyTexts = findItemByKeyword("oslav", "Rodinné oslavy", "Ideálny priestor pre vaše životné udalosti");
   const letakTexts = findItemByKeyword("leták", "Informačný leták", "Kompletné informácie o oslavách a podujatiach");
 
+  // PREHODENÉ PORADIE: Leták ide na 3. miesto, Raňajky idú na koniec (12. miesto)
   const allItems = [
     {
       ...pizzerieTexts,
@@ -62,10 +63,10 @@ export default function Services() {
       Icon: ChefHat
     },
     {
-      ...ranajkyTexts,
-      image: null,
-      fallbackImage: null,
-      Icon: Coffee
+      ...letakTexts, // Informačný leták presunutý sem hore
+      image: "/letak.png",
+      fallbackImage: "/letak.PNG",
+      Icon: FileText
     },
     {
       ...wifiTexts,
@@ -93,19 +94,19 @@ export default function Services() {
     },
     {
       ...pozicovnaTexts,
-      image: "/pozicovna.JPG", // Primárne overené veľké z minula
+      image: "/pozicovna.JPG",
       fallbackImage: "/pozicovna.jpg",
       Icon: GraduationCap
     },
     {
       ...kutikTexts,
-      image: "/kutik.JPG", // Primárne overené veľké z minula
+      image: "/kutik.JPG",
       fallbackImage: "/kutik.jpg",
       Icon: Baby
     },
     {
       ...wellnessTexts,
-      image: "/welnes.JPG", // Primárne overené veľké z minula
+      image: "/welnes.JPG",
       fallbackImage: "/welnes.jpg",
       Icon: Sparkles
     },
@@ -116,10 +117,10 @@ export default function Services() {
       Icon: Cake
     },
     {
-      ...letakTexts,
-      image: "/letak.png",
-      fallbackImage: "/letak.PNG",
-      Icon: FileText
+      ...ranajkyTexts, // Raňajkový bufet presunutý sem na koniec
+      image: null,
+      fallbackImage: null,
+      Icon: Coffee
     }
   ];
 
@@ -131,7 +132,7 @@ export default function Services() {
   // Sledovanie definitívnych chýb (ak zlyhá aj záložný variant)
   const [failedImages, setFailedImages] = useState({});
 
-  // Inicializácia základných ciest obrázkov pri načítaní komponentu
+  // Inicializácia základných ciest obrázkov pri načítaní komponentu alebo zmene allItems
   useEffect(() => {
     const initialImages = {};
     allItems.forEach((item, index) => {
@@ -143,11 +144,9 @@ export default function Services() {
   }, []);
 
   const handleImageError = (index, item) => {
-    // Ak zlyhal primárny obrázok a máme záložný (napr. prepíname z .jpg na .JPG), skúsime ho
     if (currentImages[index] === item.image && item.fallbackImage) {
       setCurrentImages((prev) => ({ ...prev, [index]: item.fallbackImage }));
     } else {
-      // Ak zlyhal aj záložný, označíme ho ako definitívne nefunkčný
       setFailedImages((prev) => ({ ...prev, [index]: true }));
     }
   };
@@ -294,7 +293,7 @@ export default function Services() {
                   {activeItem.d}
                 </p>
                 <p className="text-zinc-600 text-sm leading-relaxed">
-                  V našom penzióne dbáme na maximálne pohodlie, čistotu a spokojnosť hostí. Táto služba je plne k dispozícii pre všetkých ubytovaných návštevnických počas celého pobytu u nás v Štrbe.
+                  V našom penzióne dbáme na maximálne pohodlie, čistotu a spokojnosť hostí. Táto služba je plne k dispozícii pre všetkých ubytovaných návštevníkov počas celého pobytu u nás v Štrbe.
                 </p>
 
                 <div className="mt-6 flex justify-end">
