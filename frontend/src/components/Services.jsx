@@ -46,67 +46,79 @@ export default function Services() {
   const kutikTexts = findItemByKeyword("kútik", "Detský kútik", "Zábava pre vaše deti");
   const wellnessTexts = findItemByKeyword("weln", "Privátne Wellness", "Dokonalý relax v saune a vírivke");
   const oslavyTexts = findItemByKeyword("oslav", "Rodinné oslavy", "Ideálny priestor pre vaše životné udalosti");
-  const letakTexts = findItemByKeyword("leták", "Informačný leták", "Kompletné informácie o oslavách a podujatiach"); // Nová bublinka pre Leták
+  const letakTexts = findItemByKeyword("leták", "Informačný leták", "Kompletné informácie o oslavách a podujatiach");
 
   const allItems = [
     {
       ...pizzerieTexts,
-      image: "/pizzeria.JPG", // Opravené na veľké .JPG podľa disku
+      image: "/pizzeria.jpg",
+      fallbackImage: "/pizzeria.JPG",
       Icon: UtensilsCrossed
     },
     {
       ...kuchynkyTexts,
-      image: "/kuch.JPG", // Opravené na veľké .JPG podľa disku
+      image: "/kuch.jpg",
+      fallbackImage: "/kuch.JPG",
       Icon: ChefHat
     },
     {
       ...ranajkyTexts,
-      image: null, // Majiteľ nedodal fotku - zrušená
+      image: null,
+      fallbackImage: null,
       Icon: Coffee
     },
     {
       ...wifiTexts,
-      image: "/wifi.JPG", // Opravené na veľké .JPG podľa disku
+      image: "/wifi.jpg",
+      fallbackImage: "/wifi.JPG",
       Icon: Wifi
     },
     {
       ...parkovanieTexts,
-      image: "/parkovanie.JPG", // Opravené na veľké .JPG podľa disku
+      image: "/parkovanie.jpg",
+      fallbackImage: "/parkovanie.JPG",
       Icon: ParkingCircle
     },
     {
       ...nefajciarTexts,
-      image: "/nefajci.JPG", // Opravené na veľké .JPG podľa disku
+      image: "/nefajci.jpg",
+      fallbackImage: "/nefajci.JPG",
       Icon: Snowflake
     },
     {
       ...lyziarenTexts,
-      image: "/lyziaren.JPG", // Opravené na veľké .JPG podľa disku
+      image: "/lyziaren.jpg",
+      fallbackImage: "/lyziaren.JPG",
       Icon: Mountain
     },
     {
       ...pozicovnaTexts,
-      image: "/pozicovna.JPG", // Presná zhoda so screenshotom image_bf1907.jpg
+      image: "/pozicovna.JPG", // Primárne overené veľké z minula
+      fallbackImage: "/pozicovna.jpg",
       Icon: GraduationCap
     },
     {
       ...kutikTexts,
-      image: "/kutik.JPG", // Presná zhoda so screenshotom image_bf194c.jpg
+      image: "/kutik.JPG", // Primárne overené veľké z minula
+      fallbackImage: "/kutik.jpg",
       Icon: Baby
     },
     {
       ...wellnessTexts,
-      image: "/welnes.JPG", // Presná zhoda so screenshotom image_bf18cc.jpg
+      image: "/welnes.JPG", // Primárne overené veľké z minula
+      fallbackImage: "/welnes.jpg",
       Icon: Sparkles
     },
     {
       ...oslavyTexts,
-      image: "/oslava.JPG", // Opravené na veľké .JPG podľa disku
+      image: "/oslava.jpg",
+      fallbackImage: "/oslava.JPG",
       Icon: Cake
     },
     {
       ...letakTexts,
-      image: "/letak.png", // Ponechané malé .png, keďže leták bol ako PNG
+      image: "/letak.png",
+      fallbackImage: "/letak.PNG",
       Icon: FileText
     }
   ];
@@ -114,11 +126,30 @@ export default function Services() {
   // Stav pre otvorené vyskakovacie okno
   const [activeItem, setActiveItem] = useState(null);
 
-  // Stav pre sledovanie chýb pri načítaní obrázkov na webe
-  const [imageErrors, setImageErrors] = useState({});
+  // Sledovanie ciest obrázkov (ak zlyhá základná, prepne sa na záložnú)
+  const [currentImages, setCurrentImages] = useState({});
+  // Sledovanie definitívnych chýb (ak zlyhá aj záložný variant)
+  const [failedImages, setFailedImages] = useState({});
 
-  const handleImageError = (index) => {
-    setImageErrors((prev) => ({ ...prev, [index]: true }));
+  // Inicializácia základných ciest obrázkov pri načítaní komponentu
+  useEffect(() => {
+    const initialImages = {};
+    allItems.forEach((item, index) => {
+      if (item.image) {
+        initialImages[index] = item.image;
+      }
+    });
+    setCurrentImages(initialImages);
+  }, []);
+
+  const handleImageError = (index, item) => {
+    // Ak zlyhal primárny obrázok a máme záložný (napr. prepíname z .jpg na .JPG), skúsime ho
+    if (currentImages[index] === item.image && item.fallbackImage) {
+      setCurrentImages((prev) => ({ ...prev, [index]: item.fallbackImage }));
+    } else {
+      // Ak zlyhal aj záložný, označíme ho ako definitívne nefunkčný
+      setFailedImages((prev) => ({ ...prev, [index]: true }));
+    }
   };
 
   // Blokovanie scrollovania pozadia
@@ -149,7 +180,8 @@ export default function Services() {
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {allItems.map((it, i) => {
             const Icon = it.Icon;
-            const hasValidImage = it.image && !imageErrors[i];
+            const imgSrc = currentImages[i];
+            const isFailed = failedImages[i];
 
             return (
               <motion.div
@@ -171,11 +203,11 @@ export default function Services() {
                   {/* Náhľadová fotka */}
                   {it.image && (
                     <div className="w-full h-32 rounded-xl overflow-hidden mb-4 bg-zinc-50 relative flex items-center justify-center border border-zinc-100/50">
-                      {hasValidImage ? (
+                      {imgSrc && !isFailed ? (
                         <img 
-                          src={it.image} 
+                          src={imgSrc} 
                           alt={it.t} 
-                          onError={() => handleImageError(i)}
+                          onError={() => handleImageError(i, it)}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                         />
                       ) : (
@@ -230,12 +262,12 @@ export default function Services() {
               </button>
 
               {/* Veľký obrázok alebo záložná ikona */}
-              {activeItem.image && !imageErrors[activeItem.originalIndex] ? (
+              {activeItem.image && !failedImages[activeItem.originalIndex] ? (
                 <div className="w-full h-64 md:h-80 bg-zinc-900 flex items-center justify-center relative p-2">
                   <img 
-                    src={activeItem.image} 
+                    src={currentImages[activeItem.originalIndex]} 
                     alt={activeItem.t} 
-                    onError={() => handleImageError(activeItem.originalIndex)}
+                    onError={() => handleImageError(activeItem.originalIndex, activeItem)}
                     className="w-full h-full object-contain rounded-2xl" 
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent pointer-events-none rounded-2xl" />
@@ -262,7 +294,7 @@ export default function Services() {
                   {activeItem.d}
                 </p>
                 <p className="text-zinc-600 text-sm leading-relaxed">
-                  V našom penzióne dbáme na maximálne pohodlie, čistotu a spokojnosť hostí. Táto služba je plne k dispozícii pre všetkých ubytovaných návštevníkov počas celého pobytu u nás v Štrbe.
+                  V našom penzióne dbáme na maximálne pohodlie, čistotu a spokojnosť hostí. Táto služba je plne k dispozícii pre všetkých ubytovaných návštevnických počas celého pobytu u nás v Štrbe.
                 </p>
 
                 <div className="mt-6 flex justify-end">
