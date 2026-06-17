@@ -114,6 +114,13 @@ export default function Services() {
   // Stav pre otvorené vyskakovacie okno
   const [activeItem, setActiveItem] = useState(null);
 
+  // Stav pre sledovanie chýb pri načítaní obrázkov na webe
+  const [imageErrors, setImageErrors] = useState({});
+
+  const handleImageError = (index) => {
+    setImageErrors((prev) => ({ ...prev, [index]: true }));
+  };
+
   // Blokovanie scrollovania pozadia
   useEffect(() => {
     if (activeItem) {
@@ -123,7 +130,7 @@ export default function Services() {
     }
     return () => {
       document.body.style.overflow = "unset";
-    }
+    };
   }, [activeItem]);
 
   return (
@@ -142,13 +149,14 @@ export default function Services() {
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {allItems.map((it, i) => {
             const Icon = it.Icon;
+            const hasValidImage = it.image && !imageErrors[i];
 
             return (
               <motion.div
                 key={i}
                 data-testid={`service-item-${i}`}
                 className="p-6 min-h-[240px] flex flex-col justify-between border border-zinc-100 hover:border-[#dfb144]/40 hover:shadow-md cursor-pointer transition-all duration-300 group rounded-3xl bg-white shadow-sm"
-                onClick={() => setActiveItem(it)}
+                onClick={() => setActiveItem({ ...it, originalIndex: i })}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -160,14 +168,21 @@ export default function Services() {
                     <Icon size={18} strokeWidth={1.75} />
                   </div>
                   
-                  {/* Náhľadová fotka (ak existuje) */}
+                  {/* Náhľadová fotka (ak existuje a nespôsobila chybu) */}
                   {it.image && (
                     <div className="w-full h-32 rounded-xl overflow-hidden mb-4 bg-zinc-50 relative flex items-center justify-center border border-zinc-100/50">
-                      <img 
-                        src={it.image} 
-                        alt={it.t} 
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                      />
+                      {hasValidImage ? (
+                        <img 
+                          src={it.image} 
+                          alt={it.t} 
+                          onError={() => handleImageError(i)}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        />
+                      ) : (
+                        <div className="text-[#dfb144]/40">
+                          <Icon size={32} strokeWidth={1.25} />
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
@@ -187,7 +202,7 @@ export default function Services() {
         </div>
       </div>
 
-      {/* VYSKOMOCNÉ OKNO (MODAL) */}
+      {/* VYSKAKOVACIE OKNO (MODAL) */}
       <AnimatePresence>
         {activeItem && (
           <motion.div 
@@ -214,12 +229,13 @@ export default function Services() {
                 ✕
               </button>
 
-              {/* Veľký obrázok - ZMENENÉ NA object-contain PRE ZOBRAZENIE CELEJ FOTKY BEZ OREZANIA */}
-              {activeItem.image ? (
+              {/* Veľký obrázok alebo záložná ikona s ošetrením chýb načítania */}
+              {activeItem.image && !imageErrors[activeItem.originalIndex] ? (
                 <div className="w-full h-64 md:h-80 bg-zinc-900 flex items-center justify-center relative p-2">
                   <img 
                     src={activeItem.image} 
                     alt={activeItem.t} 
+                    onError={() => handleImageError(activeItem.originalIndex)}
                     className="w-full h-full object-contain rounded-2xl" 
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent pointer-events-none rounded-2xl" />
