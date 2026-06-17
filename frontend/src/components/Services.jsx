@@ -10,7 +10,9 @@ import {
   GraduationCap,
   Baby,
   Wifi,
-  Smile
+  Sparkles,
+  Cake,
+  FileText // Pridaná ikona pre Leták
 } from "lucide-react";
 import { useLang } from "@/contexts/LangContext";
 
@@ -19,61 +21,93 @@ export default function Services() {
   const rawItems = tr("services.items");
   const baseItems = Array.isArray(rawItems) ? rawItems : [];
 
-  // FIXNÉ SPÁROVANIE Služieb s presnými fotkami a ikonami
+  // Pomocná funkcia na inteligentné spárovanie textov podľa kľúčového slova v preklade
+  const findItemByKeyword = (keyword, fallbackTitle, fallbackDesc) => {
+    const found = baseItems.find(
+      (item) =>
+        item?.t?.toLowerCase().includes(keyword.toLowerCase()) ||
+        item?.d?.toLowerCase().includes(keyword.toLowerCase())
+    );
+    return {
+      t: found?.t || fallbackTitle,
+      d: found?.d || fallbackDesc,
+    };
+  };
+
+  // 100% STABILNÉ POLE POLOŽIEK – Fotky, ikony a texty držia fixne spolu
+  const pizzerieTexts = findItemByKeyword("pizz", "Reštaurácia & Pizzeria", "Tradičné jedlá aj skvelá pizza");
+  const kuchynkyTexts = findItemByKeyword("kuch", "Jedáleň / Kuchynky na poschodí", "Kompletne vybavené pre hostí");
+  const ranajkyTexts = findItemByKeyword("raňaj", "Raňajkový bufet / Školiaca miestnosť", "Bohaté raňajky pre štart do dňa");
+  const wifiTexts = findItemByKeyword("wifi", "Wifi zdarma", "Vysokorýchlostný internet v celom objekte");
+  const parkovanieTexts = findItemByKeyword("park", "Bezplatné parkovanie", "Priamo pred objektom penziónu");
+  const nefajciarTexts = findItemByKeyword("fajč", "Nefajčiarsky objekt", "Čisté a bezpečné prostredie pre všetkých");
+  const lyziarenTexts = findItemByKeyword("lyžiar", "Lyžiareň", "Bezpečné odkladanie lyží a snowboardov");
+  const pozicovnaTexts = findItemByKeyword("požič", "Požičovňa lyží", "Zľavy na lyžiarsku výstroj pre hostí");
+  const kutikTexts = findItemByKeyword("kútik", "Detský kútik", "Zábava pre vaše deti");
+  const wellnessTexts = findItemByKeyword("weln", "Privátne Wellness", "Dokonalý relax v saune a vírivke");
+  const oslavyTexts = findItemByKeyword("oslav", "Rodinné oslavy", "Ideálny priestor pre vaše životné udalosti");
+  const letakTexts = findItemByKeyword("leták", "Informačný leták", "Kompletné informácie o oslavách a podujatiach"); // Nová bublinka pre Leták
+
   const allItems = [
     {
-      t: baseItems[0]?.t || "Reštaurácia & Pizzeria",
-      d: baseItems[0]?.d || "Tradičné jedlá aj skvelá pizza",
+      ...pizzerieTexts,
       image: "/pizzeria.jpg",
       Icon: UtensilsCrossed
     },
     {
-      t: baseItems[1]?.t || "Jedáleň / Kuchynky na poschodí",
-      d: baseItems[1]?.d || "Kompletne vybavené pre hostí",
+      ...kuchynkyTexts,
       image: "/kuch.jpg",
       Icon: ChefHat
     },
     {
-      t: baseItems[2]?.t || "Raňajkový bufet / Školiaca miestnosť",
-      d: baseItems[2]?.d || "Bohaté raňajky pre štart do dňa",
-      image: null, // Majiteľ nedodal fotku - zrušené
+      ...ranajkyTexts,
+      image: null, // Majiteľ nedodal fotku - zrušená
       Icon: Coffee
     },
     {
-      t: baseItems[3]?.t || "Wifi zdarma",
-      d: baseItems[3]?.d || "Vysokorýchlostný internet v celom objekte",
+      ...wifiTexts,
       image: "/wifi.jpg",
       Icon: Wifi
     },
     {
-      t: baseItems[4]?.t || "Bezplatné parkovanie",
-      d: baseItems[4]?.d || "Priamo pred objektom penziónu",
+      ...parkovanieTexts,
       image: "/parkovanie.jpg",
       Icon: ParkingCircle
     },
     {
-      t: baseItems[5]?.t || "Nefajčiarsky objekt",
-      d: baseItems[5]?.d || "Čisté a bezpečné prostredie pre všetkých",
+      ...nefajciarTexts,
       image: "/nefajci.jpg",
       Icon: Snowflake
     },
     {
-      t: baseItems[6]?.t || "Lyžiareň",
-      d: baseItems[6]?.d || "Bezpečné odkladanie lyží a snowboardov",
+      ...lyziarenTexts,
       image: "/lyziaren.jpg",
       Icon: Mountain
     },
     {
-      t: baseItems[7]?.t || "Požičovňa lyží",
-      d: baseItems[7]?.d || "Zľavy na lyžiarsku výstroj pre hostí",
-      image: "/pozicovna.jpg", // Opravená nefunkčná fotka
+      ...pozicovnaTexts,
+      image: "/pozicovna.jpg",
       Icon: GraduationCap
     },
     {
-      t: baseItems[8]?.t || "Detský kútik",
-      d: baseItems[8]?.d || "Zábava pre vaše ratolesti",
-      image: "/kutik.jpg", // Opravená fotka kútika
+      ...kutikTexts,
+      image: "/kutik.jpg",
       Icon: Baby
+    },
+    {
+      ...wellnessTexts,
+      image: "/welnes.jpg",
+      Icon: Sparkles
+    },
+    {
+      ...oslavyTexts,
+      image: "/oslava.jpg",
+      Icon: Cake
+    },
+    {
+      ...letakTexts,
+      image: "/letak.png", // Opravená fotka na .png podľa tvojho zistenia
+      Icon: FileText
     }
   ];
 
@@ -89,7 +123,7 @@ export default function Services() {
     }
     return () => {
       document.body.style.overflow = "unset";
-    };
+    }
   }, [activeItem]);
 
   return (
@@ -128,7 +162,7 @@ export default function Services() {
                   
                   {/* Náhľadová fotka (ak existuje) */}
                   {it.image && (
-                    <div className="w-full h-32 rounded-xl overflow-hidden mb-4 bg-zinc-50 relative border border-zinc-100/50">
+                    <div className="w-full h-32 rounded-xl overflow-hidden mb-4 bg-zinc-50 relative flex items-center justify-center border border-zinc-100/50">
                       <img 
                         src={it.image} 
                         alt={it.t} 
@@ -153,7 +187,7 @@ export default function Services() {
         </div>
       </div>
 
-      {/* VYSKAKOVACIE OKNO (MODAL) */}
+      {/* VYSKOMOCNÉ OKNO (MODAL) */}
       <AnimatePresence>
         {activeItem && (
           <motion.div 
@@ -180,15 +214,15 @@ export default function Services() {
                 ✕
               </button>
 
-              {/* Veľký obrázok alebo záložný blok s ikonou */}
+              {/* Veľký obrázok - ZMENENÉ NA object-contain PRE ZOBRAZENIE CELEJ FOTKY BEZ OREZANIA */}
               {activeItem.image ? (
-                <div className="w-full h-64 md:h-80 bg-zinc-950 flex items-center justify-center relative">
+                <div className="w-full h-64 md:h-80 bg-zinc-900 flex items-center justify-center relative p-2">
                   <img 
                     src={activeItem.image} 
                     alt={activeItem.t} 
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-contain rounded-2xl" 
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent pointer-events-none rounded-2xl" />
                 </div>
               ) : (
                 <div className="w-full h-36 bg-gradient-to-br from-zinc-50 to-zinc-100 border-b border-zinc-100 flex items-center justify-center text-[#cc9f37]">
