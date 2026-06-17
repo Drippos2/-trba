@@ -51,12 +51,12 @@ export default function Services() {
   const allItems = [
     {
       ...pizzerieTexts,
-      image: "/pizzeria.jpg",
+      image: "/pizzeria.JPG", // Opravené na veľké .JPG podľa disku
       Icon: UtensilsCrossed
     },
     {
       ...kuchynkyTexts,
-      image: "/kuch.jpg",
+      image: "/kuch.JPG", // Opravené na veľké .JPG podľa disku
       Icon: ChefHat
     },
     {
@@ -66,47 +66,47 @@ export default function Services() {
     },
     {
       ...wifiTexts,
-      image: "/wifi.jpg",
+      image: "/wifi.JPG", // Opravené na veľké .JPG podľa disku
       Icon: Wifi
     },
     {
       ...parkovanieTexts,
-      image: "/parkovanie.jpg",
+      image: "/parkovanie.JPG", // Opravené na veľké .JPG podľa disku
       Icon: ParkingCircle
     },
     {
       ...nefajciarTexts,
-      image: "/nefajci.jpg",
+      image: "/nefajci.JPG", // Opravené na veľké .JPG podľa disku
       Icon: Snowflake
     },
     {
       ...lyziarenTexts,
-      image: "/lyziaren.jpg",
+      image: "/lyziaren.JPG", // Opravené na veľké .JPG podľa disku
       Icon: Mountain
     },
     {
       ...pozicovnaTexts,
-      image: "/pozicovna.jpg",
+      image: "/pozicovna.JPG", // Presná zhoda so screenshotom image_bf1907.jpg
       Icon: GraduationCap
     },
     {
       ...kutikTexts,
-      image: "/kutik.jpg",
+      image: "/kutik.JPG", // Presná zhoda so screenshotom image_bf194c.jpg
       Icon: Baby
     },
     {
       ...wellnessTexts,
-      image: "/welnes.jpg",
+      image: "/welnes.JPG", // Presná zhoda so screenshotom image_bf18cc.jpg
       Icon: Sparkles
     },
     {
       ...oslavyTexts,
-      image: "/oslava.jpg",
+      image: "/oslava.JPG", // Opravené na veľké .JPG podľa disku
       Icon: Cake
     },
     {
       ...letakTexts,
-      image: "/letak.png", // Opravená fotka na .png podľa tvojho zistenia
+      image: "/letak.png", // Ponechané malé .png, keďže leták bol ako PNG
       Icon: FileText
     }
   ];
@@ -168,7 +168,7 @@ export default function Services() {
                     <Icon size={18} strokeWidth={1.75} />
                   </div>
                   
-                  {/* Náhľadová fotka (ak existuje a nespôsobila chybu) */}
+                  {/* Náhľadová fotka */}
                   {it.image && (
                     <div className="w-full h-32 rounded-xl overflow-hidden mb-4 bg-zinc-50 relative flex items-center justify-center border border-zinc-100/50">
                       {hasValidImage ? (
@@ -229,7 +229,7 @@ export default function Services() {
                 ✕
               </button>
 
-              {/* Veľký obrázok alebo záložná ikona s ošetrením chýb načítania */}
+              {/* Veľký obrázok alebo záložná ikona */}
               {activeItem.image && !imageErrors[activeItem.originalIndex] ? (
                 <div className="w-full h-64 md:h-80 bg-zinc-900 flex items-center justify-center relative p-2">
                   <img 
