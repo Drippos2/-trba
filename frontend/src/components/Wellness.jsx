@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Flame, Droplets, Waves, Sparkles, ArrowRight, Home } from "lucide-react";
+import { Flame, Droplets, Waves, ArrowRight } from "lucide-react";
 import { useLang } from "@/contexts/LangContext";
 
 export default function Wellness() {
@@ -9,48 +9,55 @@ export default function Wellness() {
   const baseItems = Array.isArray(rawItems) ? rawItems : [];
 
   // RUČNÉ A PRESNÉ SPÁROVANIE TEXTOV S OBRÁZKAMI A IKONAMI
-  // Už žiadne posúvanie indexov, každá karta má natvrdo definované svoje dáta
+  // Poradie kariet bolo zmenené tak, aby položka bez fotky (Vírivá vaňa) bola na konci
   const allItems = [
     {
       t: baseItems[0]?.t || "Infra sauna",
       d: baseItems[0]?.d || "40 – 65 °C • regenerácia svalov",
       image: "/sauna.jpg",
+      fallbackImage: "/sauna.JPG",
       Icon: Flame
-    },
-    {
-      t: baseItems[1]?.t || "Vírivá vaňa",
-      d: baseItems[1]?.d || "Hydromasáž • uvoľnenie",
-      image: null, // Majiteľ nedodal fotku
-      Icon: Droplets
     },
     {
       t: baseItems[2]?.t || "Oddychová zóna",
       d: baseItems[2]?.d || "Tlmené LED svetlo • ticho",
       image: "/oddychova.jpg",
+      fallbackImage: "/oddychova.JPG",
       Icon: Waves
     },
     {
-      t: baseItems[3]?.t || "Penzión Štrba - Pohľad spredu",
-      d: baseItems[3]?.d || "Exteriér a hlavný vstup do budovy",
-      image: "/a.jpg",
-      Icon: Home
-    },
-    {
-      t: baseItems[4]?.t || "Areál penziónu",
-      d: baseItems[4]?.d || "Pohľad na ubytovaciu časť z boku",
-      image: "/b.jpg",
-      Icon: Home
-    },
-    {
-      t: baseItems[5]?.t || "Ubytovacie krídlo",
-      d: baseItems[5]?.d || "Detailná snímka komplexu penziónu",
-      image: "/c.jpg",
-      Icon: Home
+      t: baseItems[1]?.t || "Vírivá vaňa",
+      d: baseItems[1]?.d || "Hydromasáž • uvoľnenie",
+      image: null, // Majiteľ nedodal fotku
+      fallbackImage: null,
+      Icon: Droplets
     }
   ];
 
   // Stav pre otvorené vyskakovacie okno (Modal)
   const [activeItem, setActiveItem] = useState(null);
+
+  // Sledovanie ciest obrázkov kvôli chybám s veľkosťou písma prípon (.jpg vs .JPG)
+  const [currentImages, setCurrentImages] = useState({});
+  const [failedImages, setFailedImages] = useState({});
+
+  useEffect(() => {
+    const initialImages = {};
+    allItems.forEach((item, index) => {
+      if (item.image) {
+        initialImages[index] = item.image;
+      }
+    });
+    setCurrentImages(initialImages);
+  }, []);
+
+  const handleImageError = (index, item) => {
+    if (currentImages[index] === item.image && item.fallbackImage) {
+      setCurrentImages((prev) => ({ ...prev, [index]: item.fallbackImage }));
+    } else {
+      setFailedImages((prev) => ({ ...prev, [index]: true }));
+    }
+  };
 
   // Blokovanie scrollovania pozadia, keď je detail otvorený
   useEffect(() => {
@@ -106,7 +113,7 @@ export default function Wellness() {
           </div>
         </motion.div>
 
-        {/* PRAVÁ STRANA: Grid so všetkými bublinkami */}
+        {/* PRAVÁ STRANA: Grid so zoradenými wellness bublinkami */}
         <motion.div
           className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-4"
           initial={{ opacity: 0, y: 24 }}
@@ -116,12 +123,14 @@ export default function Wellness() {
         >
           {allItems.map((it, i) => {
             const Icon = it.Icon;
+            const imgSrc = currentImages[i];
+            const isFailed = failedImages[i];
 
             return (
               <div
                 key={i}
                 data-testid={`wellness-item-${i}`}
-                onClick={() => setActiveItem(it)} // Otvorí detail
+                onClick={() => setActiveItem({ ...it, originalIndex: i })} // Otvorí detail
                 className="p-6 md:p-7 min-h-[180px] flex flex-col justify-between group border border-zinc-100 bg-white rounded-3xl hover:border-[#dfb144]/40 hover:shadow-md cursor-pointer transition-all duration-300 shadow-sm"
               >
                 <div>
@@ -133,11 +142,18 @@ export default function Wellness() {
                   {/* Náhľadová fotka v karte */}
                   {it.image && (
                     <div className="w-full h-36 rounded-2xl overflow-hidden mb-4 bg-zinc-50 relative flex items-center justify-center border border-zinc-100/50">
-                      <img 
-                        src={it.image} 
-                        alt={it.t} 
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                      />
+                      {imgSrc && !isFailed ? (
+                        <img 
+                          src={imgSrc} 
+                          alt={it.t} 
+                          onError={() => handleImageError(i, it)}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        />
+                      ) : (
+                        <div className="text-[#dfb144]/40">
+                          <Icon size={32} strokeWidth={1.25} />
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
@@ -185,11 +201,12 @@ export default function Wellness() {
               </button>
 
               {/* Fotka v modale */}
-              {activeItem.image ? (
+              {activeItem.image && !failedImages[activeItem.originalIndex] ? (
                 <div className="w-full h-64 md:h-80 bg-zinc-950 flex items-center justify-center relative">
                   <img 
-                    src={activeItem.image} 
+                    src={currentImages[activeItem.originalIndex]} 
                     alt={activeItem.t} 
+                    onError={() => handleImageError(activeItem.originalIndex, activeItem)}
                     className="w-full h-full object-cover"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none" />

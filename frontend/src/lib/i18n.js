@@ -52,7 +52,7 @@ export const dict = {
       selectTime: "Vyberte čas",
       adults: "Počet dospelých",
       children: "Počet detí",
-      capacityNote: "Wellness je privátny and má limitovanú kapacitu na maximálne 2 osoby.",
+      capacityNote: "Wellness je privátny a má limitovanú kapacitu na maximálne 2 osoby.",
       summary: "Súhrn výberu",
       date: "Dátum",
       time: "Čas",
@@ -77,7 +77,7 @@ export const dict = {
     about: {
       overline: "O penzióne",
       title: "Miesto, kde sa čas spomalí.",
-      body: "Usadené v srdci Vysokých Tatier, kde Štrbské pleso dýcha ráno hmlou a lesy v noci stíchnu. Penzión Štrba is príbeh o pohostinnosti, chute domácej kuchyne a tichom luxuse horského odchodu. Priestor navrhnutý s rešpektom k prírode a detailu.",
+      body: "Usadené v srdci Vysokých Tatier, kde Štrbské pleso dýcha ráno hmlou a lesy v noci stíchnu. Penzión Štrba je príbeh o pohostinnosti, chutiach domácej kuchyne a tichom luxuse horského útočiska. Priestor navrhnutý s rešpektom k prírode a detailu.",
       stats: [
         { label: "Izieb", value: "30" },
         { label: "km k Štrbskému plesu", value: "8" },
@@ -89,7 +89,7 @@ export const dict = {
       overline: "Izby",
       title: "Ticho. Svetlo. Výhľad na hory.",
       subtitle:
-        "Každá izba je navrhnutá ako osobný útok. Prírodné materiály, mäkké tkaniny a technológie, ktoré nerušia. 8 km od Štrbského Plesa.",
+        "Každá izba je navrhnutá ako osobné útočisko. Prírodné materiály, mäkké tkaniny a technológie, ktoré nerušia. 8 km od Štrbského Plesa.",
       from: "od",
       night: "/ noc",
       guests: "Kapacita",
@@ -109,7 +109,7 @@ export const dict = {
         { t: "Požičovňa lyží", d: "Zľava pre hostí" },
         { t: "Kuchynky na poschodí", d: "Plne vybavené" },
         { t: "Školiaca miestnosť", d: "Kapacita až 40 osôb" },
-        { t: "Detský kútik", },
+        { t: "Detský kútik", d: "Priestor pre najmenších" },
       ],
     },
     location: {
@@ -140,7 +140,7 @@ export const dict = {
     },
     booking: {
       title: "Rezervácia pobytu",
-      subtitle: "Vyplňte nasledujúce údaje a mi potvrdíme dostupnosť do 24 hodín.",
+      subtitle: "Vyplňte nasledujúce údaje a my potvrdíme dostupnosť do 24 hodín.",
       step: "Krok",
       of: "z",
       step1: "Termín & izba",
@@ -200,7 +200,7 @@ export const dict = {
           tag: "Pre rodiny",
           title: "Bezpečný horský pobyt s deťmi.",
           body: "Detský kútik, izby s prístelkou, deti do 6 rokov zdarma. 8 km od Štrbského Plesa — výlety, člnkovanie a aquaparky na dosah.",
-          bullets: ["Deti do 6 rokov zdarma", "Detská postieľka 15 €/noc", "Detský kútik ", "Bezpečné parkovisko"],
+          bullets: ["Deti do 6 rokov zdarma", "Detská postieľka 15 €/noc", "Detský kútik", "Bezpečné parkovisko"],
         },
         {
           tag: "Pre skupiny",
@@ -308,7 +308,7 @@ export const dict = {
     about: {
       overline: "About",
       title: "Where time slows down.",
-      body: "Nestled in the heart of the High Tatras, where Štrbské Pleso breathes morning mist and forests fall silent at night. Penzión Štrba is a story of hospitality, home-cooked flavors and the quiet luxury of a mountain retreat.",
+      body: "Nestled in the heart of the High Tatras, where Štrbské Pleso breathes morning mist and forests fall silent at night. Penzión Štrba is a story of hospitality, home-cooked flavors and the quiet luxury of a mountain retreat. Space designed with respect for nature and detail.",
       stats: [
         { label: "Rooms", value: "30" },
         { label: "km to Štrbské Pleso", value: "8" },
@@ -316,7 +316,15 @@ export const dict = {
         { label: "Open all year", value: "365 days" },
       ],
     },
-    rooms: { overline: "Rooms", title: "Silence. Light. Mountain views.", subtitle: "Every room is designed as a personal sanctuary. Natural materials, soft fabrics, technology that does not intrude.", from: "from", night: "/ night", guests: "Capacity", book: "Check availability" },
+    rooms: { 
+      overline: "Rooms", 
+      title: "Silence. Light. Mountain views.", 
+      subtitle: "Every room is designed as a personal sanctuary. Natural materials, soft fabrics, technology that does not intrude. 8 km from Štrbské Pleso.", 
+      from: "from", 
+      night: "/ night", 
+      guests: "Capacity", 
+      book: "Check availability" 
+    },
     services: {
       overline: "Services & Amenities",
       title: "Amenities that think ahead for you.",
@@ -331,7 +339,7 @@ export const dict = {
         { t: "Ski rental", d: "Guest discount" },
         { t: "Kitchenettes", d: "Fully equipped per floor" },
         { t: "Conference room", d: "Capacity up to 40" },
-        { t: "Kids corner", },
+        { t: "Kids corner", d: "Space for the little ones" },
       ],
     },
     location: {
@@ -345,7 +353,7 @@ export const dict = {
       winterItems: ["Štrbské Pleso skiing", "Lučivná", "Cross-country skiing", "Ski touring"],
       relaxItems: ["Aquacity Poprad", "Tatralandia", "Bešeňová", "Caves"],
     },
-    reviews: { overline: "Reviews", title: "What our guests say." },
+    reviews: { overline: "Reviews", title: "What our guests say 8 km from Štrbské Pleso." },
     contact: { overline: "Contact", title: "Write to us.", name: "Full name", email: "E-mail", phone: "Phone", subject: "Subject", message: "Message", send: "Send message", sent: "Your message has been sent." },
     booking: {
       title: "Book your stay",
@@ -409,7 +417,7 @@ export const dict = {
           tag: "For families",
           title: "A safe mountain stay with kids.",
           body: "Kids corner, rooms with extra beds, children under 6 stay free. 8 km from Štrbské Pleso — trips, boating and aquaparks within reach.",
-          bullets: ["Children under 6 free", "Baby cot €15/night", "Kids corner ", "Safe parking"],
+          bullets: ["Children under 6 free", "Baby cot €15/night", "Kids corner", "Safe parking"],
         },
         {
           tag: "For groups",
@@ -443,6 +451,7 @@ export const dict = {
       about: "Über uns",
       rooms: "Zimmer",
       wellness: "Wellness",
+      audiences: "Aufenthalte",
       services: "Service",
       location: "Lage",
       reviews: "Bewertungen",
@@ -452,8 +461,8 @@ export const dict = {
     },
     hero: {
       overline: "Unterkunft 8 km vom Štrbské Pleso mit Wellness",
-      title1: "Ruhe der Berge.",
-      title2: "8 km vom Štrbské Pleso.",
+      title1: "Ruhige Unterkunft in",
+      title2: "Tatranská Štrba mit Wellness",
       subtitle:
         "Nur 8 Minuten von Štrbské Pleso entfernt. Penzión ŠTRBA *** — ganzjährige Unterkunft mit privatem Wellness, Restaurant und kostenlosem Parken. 30 Zimmer im Herzen der Hohen Tatra.",
       cta: "Verfügbarkeit prüfen",
@@ -469,7 +478,7 @@ export const dict = {
     wellness: {
       overline: "Wellness",
       title: "Privates Wellness. Nur für Sie.",
-      subtitle: "Entspannen Sie bei Kerzenschein, RGB-Licht und sanfter Wärme. Unsere Wellness-Zone ist exklusiv für einen Gast pro Termin reserviert.",
+      subtitle: "Entspannen Sie bei Kerzenschein, RGB-Licht und sanfter Wärme. Unsere Wellness-Zone ist exklusiv für einen Gast pro Termin reserviert, 8 km vom Štrbské Pleso entfernt.",
       items: [
         { t: "Infrarot-Sauna", d: "40 – 65 °C  •  Muskelregeneration" },
         { t: "Whirlpool", d: "Mit Perlbad  •  Farbtherapie" },
@@ -482,7 +491,7 @@ export const dict = {
       bookingTitle: "Wellness-Reservierung",
       thanks: "Vielen Dank für Ihre Reservierung",
       successMessage: "Ihre Wellness-Reservierung wurde erfolgreich empfangen. Eine Bestätigung wurde an Ihre E-Mail gesendet.",
-      close: "Fenster schließen",
+      close: "Schließen",
       selectDate: "Datum wählen",
       selectTime: "Zeit wählen",
       adults: "Anzahl der Erwachsenen",
@@ -512,7 +521,7 @@ export const dict = {
     about: {
       overline: "Über uns",
       title: "Hier verlangsamt sich die Zeit.",
-      body: "Im Herzen der Hohen Tatra, wo das Štrbské Pleso morgens Nebel atmet und Wälder nachts verstummen. Penzión Štrba ist eine Geschichte von Gastfreundschaft, heimischen Aromen und dem leisen Luxus eines Bergrückzugs.",
+      body: "Im Herzen der Hohen Tatra, wo das Štrbské Pleso morgens Nebel atmet und Wälder nachts verstummen. Penzión Štrba ist eine Geschichte von Gastfreundschaft, heimischen Aromen und dem leisen Luxus eines Bergrückzugs. Ein Raum, der mit Respekt vor der Natur und dem Detail gestaltet wurde.",
       stats: [
         { label: "Zimmer", value: "30" },
         { label: "km zum Pleso", value: "8" },
@@ -520,7 +529,15 @@ export const dict = {
         { label: "Ganzjährig", value: "365 Tage" },
       ],
     },
-    rooms: { overline: "Zimmer", title: "Stille. Licht. Bergblick.", subtitle: "Jedes Zimmer als persönlicher Rückzugsort gestaltet. Natürliche Materialien, weiche Stoffe, dezente Technik.", from: "ab", night: "/ Nacht", guests: "Kapazität", book: "Verfügbarkeit prüfen" },
+    rooms: { 
+      overline: "Zimmer", 
+      title: "Stille. Licht. Bergblick.", 
+      subtitle: "Jedes Zimmer als persönlicher Rückzugsort gestaltet. Natürliche Materialien, weiche Stoffe, dezente Technik. 8 km vom Štrbské Pleso.", 
+      from: "ab", 
+      night: "/ Nacht", 
+      guests: "Kapazität", 
+      book: "Verfügbarkeit prüfen" 
+    },
     services: {
       overline: "Service & Ausstattung",
       title: "Ausstattung, die für Sie mitdenkt.",
@@ -535,7 +552,7 @@ export const dict = {
         { t: "Skiverleih", d: "Gäste-Rabatt" },
         { t: "Küchen pro Etage", d: "Vollausgestattet" },
         { t: "Seminarraum", d: "Bis zu 40 Personen" },
-        { t: "Kinderecke" },
+        { t: "Kinderecke", d: "Platz für die Kleinsten" },
       ],
     },
     location: {
@@ -549,7 +566,7 @@ export const dict = {
       winterItems: ["Štrbské Pleso Skifahren", "Lučivná", "Langlauf", "Skitouren"],
       relaxItems: ["Aquacity Poprad", "Tatralandia", "Bešeňová", "Höhlen"],
     },
-    reviews: { overline: "Bewertungen", title: "Was unsere Gäste sagen." },
+    reviews: { overline: "Bewertungen", title: "Was unsere Gäste sagen — 8 km vom Štrbské Pleso." },
     contact: { overline: "Kontakt", title: "Schreiben Sie uns.", name: "Vor- und Nachname", email: "E-Mail", phone: "Telefon", subject: "Betreff", message: "Nachricht", send: "Nachricht senden", sent: "Ihre Nachricht wurde gesendet." },
     booking: {
       title: "Aufenthalt reservieren",
@@ -607,19 +624,19 @@ export const dict = {
     },
     audiences: {
       overline: "Für wen",
-      title: "Unterkunft 8 km vom Štrbské Bahn, maßgeschneidert.",
+      title: "Unterkunft 8 km vom Štrbské Pleso, maßgeschneidert.",
       cards: [
         {
           tag: "Für Familien",
           title: "Sicherer Bergaufenthalt mit Kindern.",
           body: "Kinderecke, Zimmer mit Zustellbett, Kinder bis 6 Jahre kostenlos. 8 km vom Štrbské Pleso — Ausflüge, Bootfahren und Aquaparks.",
-          bullets: ["Kinder bis 6 J. kostenlos", "Babybett 15 €/Nacht", "Kinderecke ", "Sicheres Parken"],
+          bullets: ["Kinder bis 6 J. kostenlos", "Babybett 15 €/Nacht", "Kinderecke", "Sicheres Parken"],
         },
         {
           tag: "Für Gruppen",
           title: "Firmen, Schulen, Feiern.",
-          body: "Seminarraum für bis zu 40 Personen, lounge, individuelle Preise für Teambuilding, Skikurse und Familienfeiern.",
-          bullets: ["Seminarraum 40 Pers.", "Coffee Break & Catering", "Gruppen­tarife", "Kostenloses Parken"],
+          body: "Seminarraum für bis zu 40 Personen, Lounge, individuelle Preise für Teambuilding, Skikurse und Familienfeiern.",
+          bullets: ["Seminarraum 40 Pers.", "Coffee Break & Catering", "Gruppen-tarife", "Kostenloses Parken"],
         },
         {
           tag: "Wellness-Aufenthalt im Herzen der Tatra",

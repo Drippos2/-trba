@@ -115,15 +115,16 @@ export default function Location() {
             <iframe
               data-testid="location-map-embed"
               title="Penzión Štrba — Google Maps"
-              /* SEM VLOŽ SVOJ REÁLNY EMBED LINK Z GOOGLE MAPS */
-              src="https://www.google.com/maps?q=Horsk%C3%A1+1130%2F31%2C+059+41+Tatransk%C3%A1+%C5%A0trba&output=embed"
+              /* ZMENENÉ: Čistejšia embed adresa priamo smerovaná na Tatranskú Štrbu */
+              src="https://maps.google.com/maps?q=Horsk%C3%A1%201130/31,%20Tatransk%C3%A1%20%C5%A0trba&t=&z=15&ie=UTF8&iwloc=&output=embed"
               width="100%"
               height="100%"
               style={{ border: 0, minHeight: 380, display: "block" }}
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
               allowFullScreen
-              sandbox="allow-scripts allow-same-origin allow-forms"
+              /* UPRAVENÉ: Pridané popups povolenia pre hladký priebeh skriptov v mape */
+              sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox"
             />
           </div>
         </div>

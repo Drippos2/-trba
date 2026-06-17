@@ -17,38 +17,33 @@ import {
 import { useLang } from "@/contexts/LangContext";
 
 export default function Services() {
-  const { tr } = useLang();
+  const { tr, lang } = useLang();
   const rawItems = tr("services.items");
   const baseItems = Array.isArray(rawItems) ? rawItems : [];
 
-  // Pomocná funkcia na inteligentné spárovanie textov podľa kľúčového slova v preklade
-  const findItemByKeyword = (keyword, fallbackTitle, fallbackDesc) => {
-    const found = baseItems.find(
-      (item) =>
-        item?.t?.toLowerCase().includes(keyword.toLowerCase()) ||
-        item?.d?.toLowerCase().includes(keyword.toLowerCase())
-    );
-    return {
-      t: found?.t || fallbackTitle,
-      d: found?.d || fallbackDesc,
-    };
-  };
+  // Bezpečné priradenie textov na základe indexov zo súboru i18n.js
+  const pizzerieTexts = baseItems[0] || { t: "Reštaurácia & Pizzeria", d: "Denne 15:00 – 23:00" };
+  const kuchynkyTexts = baseItems[1] || { t: "Jedáleň", d: "Priestor na stravovanie" };
+  const letakTexts    = baseItems[2] || { t: "Informačný leták", d: "Kompletné informácie" };
+  const wifiTexts     = baseItems[3] || { t: "Wifi zdarma", d: "V celom objekte" };
+  const parkovanieTexts = baseItems[4] || { t: "Bezplatné parkovanie", d: "Priamo pri penzióne" };
+  const nefajciarTexts = baseItems[5] || { t: "Nefajčiarsky objekt", d: "Čisté a zdravé prostredie" };
+  const lyziarenTexts  = baseItems[6] || { t: "Lyžiareň", d: "Vyhrievaná a uzamykateľná" };
+  const pozicovnaTexts = baseItems[7] || { t: "Požičovňa lyží", d: "Zľava pre hostí" };
+  const kuchynkyPoschodieTexts = baseItems[8] || { t: "Kuchynky na poschodí", d: "Plne vybavené" };
+  const skoliacaTexts  = baseItems[9] || { t: "Školiaca miestnosť", d: "Kapacita až 40 osôb" };
+  const kutikTexts     = baseItems[10] || { t: "Detský kútik", d: "Priestor pre najmenších" };
 
-  // Spárovanie textov z prekladov podľa kľúčových slov
-  const pizzerieTexts = findItemByKeyword("pizz", "Reštaurácia & Pizzeria", "Tradičné jedlá aj skvelá pizza");
-  const kuchynkyTexts = findItemByKeyword("kuch", "Jedáleň / Kuchynky na poschodí", "Kompletne vybavené pre hostí");
-  const ranajkyTexts = findItemByKeyword("raňaj", "Raňajkový bufet / Školiaca miestnosť", "Bohaté raňajky pre štart do dňa");
-  const wifiTexts = findItemByKeyword("wifi", "Wifi zdarma", "Vysokorýchlostný internet v celom objekte");
-  const parkovanieTexts = findItemByKeyword("park", "Bezplatné parkovanie", "Priamo pred objektom penziónu");
-  const nefajciarTexts = findItemByKeyword("fajč", "Nefajčiarsky objekt", "Čisté a bezpečné prostredie pre všetkých");
-  const lyziarenTexts = findItemByKeyword("lyžiar", "Lyžiareň", "Bezpečné odkladanie lyží a snowboardov");
-  const pozicovnaTexts = findItemByKeyword("požič", "Požičovňa lyží", "Zľavy na lyžiarsku výstroj pre hostí");
-  const kutikTexts = findItemByKeyword("kútik", "Detský kútik", "Zábava pre vaše deti");
-  const wellnessTexts = findItemByKeyword("weln", "Privátne Wellness", "Dokonalý relax v saune a vírivke");
-  const oslavyTexts = findItemByKeyword("oslav", "Rodinné oslavy", "Ideálny priestor pre vaše životné udalosti");
-  const letakTexts = findItemByKeyword("leták", "Informačný leták", "Kompletné informácie o oslavách a podujatiach");
+  // OPRAVA FALLBACKU: Ak anglický preklad v i18n.js na indexe 11 chýba, natvrdo priradíme EN/DE texty podľa prepnutého jazyka
+  const ranajkyTexts   = baseItems[11] || (
+    lang === "en" 
+      ? { t: "Breakfast buffet", d: "07:30 – 09:00 included" }
+      : lang === "de"
+      ? { t: "Frühstücksbuffet", d: "07:30 – 09:00 inklusive" }
+      : { t: "Raňajkový bufet", d: "07:30 – 09:00 v cene" }
+  );
 
-  // PREHODENÉ PORADIE: Leták ide na 3. miesto, Raňajky idú na koniec (12. miesto)
+  // Výsledné pole s presným poradím vizuálnych bubliniek a priradenými fotkami/ikonami
   const allItems = [
     {
       ...pizzerieTexts,
@@ -63,7 +58,7 @@ export default function Services() {
       Icon: ChefHat
     },
     {
-      ...letakTexts, // Informačný leták presunutý sem hore
+      ...letakTexts,
       image: "/letak.png",
       fallbackImage: "/letak.PNG",
       Icon: FileText
@@ -105,19 +100,19 @@ export default function Services() {
       Icon: Baby
     },
     {
-      ...wellnessTexts,
+      ...kuchynkyPoschodieTexts,
       image: "/welnes.JPG",
       fallbackImage: "/welnes.jpg",
       Icon: Sparkles
     },
     {
-      ...oslavyTexts,
+      ...skoliacaTexts,
       image: "/oslava.jpg",
       fallbackImage: "/oslava.JPG",
       Icon: Cake
     },
     {
-      ...ranajkyTexts, // Raňajkový bufet presunutý sem na koniec
+      ...ranajkyTexts, // Raňajkový bufet na 12. mieste na konci
       image: null,
       fallbackImage: null,
       Icon: Coffee
@@ -132,7 +127,7 @@ export default function Services() {
   // Sledovanie definitívnych chýb (ak zlyhá aj záložný variant)
   const [failedImages, setFailedImages] = useState({});
 
-  // Inicializácia základných ciest obrázkov pri načítaní komponentu alebo zmene allItems
+  // Inicializácia základných ciest obrázkov pri načítaní komponentu alebo zmene prekladu
   useEffect(() => {
     const initialImages = {};
     allItems.forEach((item, index) => {
@@ -141,7 +136,7 @@ export default function Services() {
       }
     });
     setCurrentImages(initialImages);
-  }, []);
+  }, [baseItems]);
 
   const handleImageError = (index, item) => {
     if (currentImages[index] === item.image && item.fallbackImage) {
@@ -283,7 +278,9 @@ export default function Services() {
                   <div className="w-7 h-7 rounded-lg bg-[#dfb144]/10 flex items-center justify-center text-[#cc9f37]">
                     <activeItem.Icon size={14} />
                   </div>
-                  <span className="text-zinc-400 text-[11px] font-semibold uppercase tracking-wider">Detail služby</span>
+                  <span className="text-zinc-400 text-[11px] font-semibold uppercase tracking-wider">
+                    {lang === "en" ? "Service detail" : lang === "de" ? "Service-Details" : "Detail služby"}
+                  </span>
                 </div>
 
                 <h3 className="text-xl md:text-2xl font-display font-bold text-zinc-900 mb-1.5">
@@ -293,7 +290,11 @@ export default function Services() {
                   {activeItem.d}
                 </p>
                 <p className="text-zinc-600 text-sm leading-relaxed">
-                  V našom penzióne dbáme na maximálne pohodlie, čistotu a spokojnosť hostí. Táto služba je plne k dispozícii pre všetkých ubytovaných návštevníkov počas celého pobytu u nás v Štrbe.
+                  {lang === "en" 
+                    ? "In our pension, we care about maximum comfort, cleanliness, and guest satisfaction. This service is fully available to all accommodated visitors throughout their stay with us in Štrba."
+                    : lang === "de"
+                    ? "In unserer Pension legen wir großen Wert auf maximalen Komfort, Sauberkeit und die Zufriedenheit unserer Gäste. Dieser Service steht allen übernachtenden Gästen während ihres gesamten Aufenthalts in Štrba uneingeschränkt zur Verfügung."
+                    : "V našom penzióne dbáme na maximálne pohodlie, čistotu a spokojnosť hostí. Táto služba je plne k dispozícii pre všetkých ubytovaných návštevníkov počas celého pobytu u nás v Štrbe."}
                 </p>
 
                 <div className="mt-6 flex justify-end">
@@ -301,7 +302,7 @@ export default function Services() {
                     onClick={() => setActiveItem(null)}
                     className="px-5 py-2 bg-zinc-900 hover:bg-zinc-800 text-white rounded-xl text-xs font-medium transition-colors shadow-sm"
                   >
-                    Zatvoriť
+                    {lang === "en" ? "Close" : lang === "de" ? "Schließen" : "Zatvoriť"}
                   </button>
                 </div>
               </div>

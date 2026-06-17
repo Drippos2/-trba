@@ -17,9 +17,27 @@ const links = [
 ];
 
 export default function Navigation() {
-  const { tr } = useLang();
+  const { tr, lang } = useLang();
   const [scrolled, setScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  // Lokalizované preklady a odkazy pre tlačidlo dostupnosti
+  const buttonContent = {
+    sk: {
+      text: "Overiť dostupnosť",
+      url: "https://booking.previo.cz/stay/index/step-2/?hotId=41403&currency=EUR&lang=sk&redirectType=iframe&PHPSESSID=1bjsr5lq8rasqn6vqjrj236ed8&stayId=65505&singleStay=1"
+    },
+    en: {
+      text: "Check availability",
+      url: "https://booking.previo.cz/stay/index/step-2/?hotId=41403&currency=EUR&lang=en&redirectType=iframe&PHPSESSID=1bjsr5lq8rasqn6vqjrj236ed8&stayId=65505&singleStay=1"
+    },
+    de: {
+      text: "Verfügbarkeit prüfen",
+      url: "https://booking.previo.cz/stay/index/step-2/?hotId=41403&currency=EUR&lang=de&redirectType=iframe&PHPSESSID=1bjsr5lq8rasqn6vqjrj236ed8&stayId=65505&singleStay=1"
+    }
+  };
+
+  const currentButton = buttonContent[lang] || buttonContent.sk;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 30);
@@ -80,24 +98,24 @@ export default function Navigation() {
           </div>
           <LanguageSwitcher />
           <a 
-            href="https://booking.previo.cz/stay/index/step-2/?hotId=41403&currency=EUR&lang=sk&redirectType=iframe&PHPSESSID=1bjsr5lq8rasqn6vqjrj236ed8&stayId=65505&singleStay=1" 
+            href={currentButton.url} 
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center justify-center px-4 py-2 text-slate-900 bg-[#dfb144] hover:bg-[#cc9f37] rounded-full font-semibold text-xs transition-all duration-300 shadow-md hover:scale-105 whitespace-nowrap"
           >
-            Overiť dostupnosť
+            {currentButton.text}
           </a>
         </div>
 
         {/* MOBILNÁ LIŠTA */}
         <div className="flex lg:hidden items-center gap-3 z-50">
           <a 
-            href="https://booking.previo.cz/stay/index/step-2/?hotId=41403&currency=EUR&lang=sk&redirectType=iframe&PHPSESSID=1bjsr5lq8rasqn6vqjrj236ed8&stayId=65505&singleStay=1" 
+            href={currentButton.url} 
             target="_blank"
             rel="noopener noreferrer"
             className="px-3 py-1.5 text-slate-900 bg-[#dfb144] rounded-full font-bold text-[11px] uppercase tracking-wider shadow-sm"
           >
-            Overiť dostupnosť
+            {currentButton.text}
           </a>
 
           {/* OPRAVENÁ FUNKCIA ONCLICK TU: */}
