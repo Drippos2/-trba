@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { api } from "@/lib/api";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   UtensilsCrossed,
@@ -10,31 +9,78 @@ import {
   ChefHat,
   GraduationCap,
   Baby,
+  Wifi,
+  Smile
 } from "lucide-react";
 import { useLang } from "@/contexts/LangContext";
 
-const ICONS = [UtensilsCrossed, Coffee, ParkingCircle, Snowflake, Mountain, ChefHat, GraduationCap, Baby];
-
-// Priradenie tvojich fotiek z public priečinka presne podľa poradia bubliniek na webe
-const SERVICE_IMAGES = [
-  "/pizzeria.jpg",     // 1. Reštaurácia & Pizzeria
-  "/kuchynky.jpg",     // 2. Jedáleň / Kuchynky na poschodí
-  "/oslava.jpg",       // 3. Raňajkový bufet / Školiaca miestnosť
-  "/wifi.jpg",         // 4. Wifi zdarma
-  "/parkovanie.jpg",   // 5. Bezplatné parkovanie
-  "/nefajci.jpg",      // 6. Nefajčiarsky objekt
-  "/lyziaren.jpg",     // 7. Lyžiareň
-  "/pozicovna.jpg",    // 8. Požičovňa lyží
-];
-
 export default function Services() {
   const { tr } = useLang();
-  const items = tr("services.items");
+  const rawItems = tr("services.items");
+  const baseItems = Array.isArray(rawItems) ? rawItems : [];
 
-  // Stav pre otvorené vyskakovacie okno. Na začiatku je null (zatvorené).
+  // FIXNÉ SPÁROVANIE Služieb s presnými fotkami a ikonami
+  const allItems = [
+    {
+      t: baseItems[0]?.t || "Reštaurácia & Pizzeria",
+      d: baseItems[0]?.d || "Tradičné jedlá aj skvelá pizza",
+      image: "/pizzeria.jpg",
+      Icon: UtensilsCrossed
+    },
+    {
+      t: baseItems[1]?.t || "Jedáleň / Kuchynky na poschodí",
+      d: baseItems[1]?.d || "Kompletne vybavené pre hostí",
+      image: "/kuchynky.jpg",
+      Icon: ChefHat
+    },
+    {
+      t: baseItems[2]?.t || "Raňajkový bufet / Školiaca miestnosť",
+      d: baseItems[2]?.d || "Bohaté raňajky pre štart do dňa",
+      image: null, // Majiteľ nedodal fotku - zrušené
+      Icon: Coffee
+    },
+    {
+      t: baseItems[3]?.t || "Wifi zdarma",
+      d: baseItems[3]?.d || "Vysokorýchlostný internet v celom objekte",
+      image: "/wifi.jpg",
+      Icon: Wifi
+    },
+    {
+      t: baseItems[4]?.t || "Bezplatné parkovanie",
+      d: baseItems[4]?.d || "Priamo pred objektom penziónu",
+      image: "/parkovanie.jpg",
+      Icon: ParkingCircle
+    },
+    {
+      t: baseItems[5]?.t || "Nefajčiarsky objekt",
+      d: baseItems[5]?.d || "Čisté a bezpečné prostredie pre všetkých",
+      image: "/nefajci.jpg",
+      Icon: Snowflake
+    },
+    {
+      t: baseItems[6]?.t || "Lyžiareň",
+      d: baseItems[6]?.d || "Bezpečné odkladanie lyží a snowboardov",
+      image: "/lyziaren.jpg",
+      Icon: Mountain
+    },
+    {
+      t: baseItems[7]?.t || "Požičovňa lyží",
+      d: baseItems[7]?.d || "Zľavy na lyžiarsku výstroj pre hostí",
+      image: "/lyziaren.jpg", // Opravená nefunkčná fotka
+      Icon: GraduationCap
+    },
+    {
+      t: baseItems[8]?.t || "Detský kútik",
+      d: baseItems[8]?.d || "Zábava pre vaše ratolesti",
+      image: "/kutik.jpg", // Opravená fotka kútika
+      Icon: Baby
+    }
+  ];
+
+  // Stav pre otvorené vyskakovacie okno
   const [activeItem, setActiveItem] = useState(null);
 
-  // Blokovanie scrollovania pozadia webu, keď je okno otvorené, aby to nelietalo hore-dole
+  // Blokovanie scrollovania pozadia
   useEffect(() => {
     if (activeItem) {
       document.body.style.overflow = "hidden";
@@ -47,55 +93,56 @@ export default function Services() {
   }, [activeItem]);
 
   return (
-    /* ZMENA: Pozadie sekcie preklopené zo starého var(--bg-soft) na elegantnú čistú bielu */
     <section id="services" className="section bg-white relative">
       <div className="max-w-[1400px] mx-auto">
         <div className="max-w-3xl mb-14">
-          {/* ZMENA: Overline jemne podfarbený našou zlatou farbou */}
-          <div className="overline mb-5 text-[#dfb144]">{tr("services.overline")}</div>
+          <div className="text-xs font-semibold tracking-wider uppercase mb-5 text-[#dfb144]">
+            {tr("services.overline")}
+          </div>
           <h2 className="font-display font-semibold text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight text-zinc-900">
             {tr("services.title")}
           </h2>
         </div>
 
+        {/* Mriežka s bublinkami */}
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {(Array.isArray(items) ? items : []).map((it, i) => {
-            const Icon = ICONS[i % ICONS.length];
-            const imagePath = SERVICE_IMAGES[i % SERVICE_IMAGES.length] || "/wifi.jpg";
+          {allItems.map((it, i) => {
+            const Icon = it.Icon;
 
             return (
               <motion.div
                 key={i}
                 data-testid={`service-item-${i}`}
-                /* ZMENA: Pridaný kurzor pointer, prechod a tieň pre lepšiu klikateľnosť */
-                className="surface-card p-6 min-h-[260px] flex flex-col justify-between border border-zinc-100 hover:border-[#dfb144]/40 hover:shadow-md cursor-pointer transition-all duration-300 group rounded-3xl"
-                onClick={() => setActiveItem({ ...it, image: imagePath, Icon })} // Kliknutím uložíme dáta bublinky do stavu
+                className="p-6 min-h-[240px] flex flex-col justify-between border border-zinc-100 hover:border-[#dfb144]/40 hover:shadow-md cursor-pointer transition-all duration-300 group rounded-3xl bg-white shadow-sm"
+                onClick={() => setActiveItem(it)}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: (i % 4) * 0.06 }}
               >
                 <div>
-                  {/* Horná časť s ikonou */}
+                  {/* Ikona */}
                   <div className="w-10 h-10 rounded-lg bg-[#dfb144]/10 flex items-center justify-center text-[#cc9f37] mb-4 group-hover:scale-105 transition-transform">
                     <Icon size={18} strokeWidth={1.75} />
                   </div>
                   
-                  {/* NOVÉ: Malá zaoblená fotka priamo vo vnútri bublinky pre krajší dizajn */}
-                  <div className="w-full h-32 rounded-xl overflow-hidden mb-4 bg-zinc-100 relative">
-                    <img 
-                      src={imagePath} 
-                      alt={it.t} 
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
-                  </div>
+                  {/* Náhľadová fotka (ak existuje) */}
+                  {it.image && (
+                    <div className="w-full h-32 rounded-xl overflow-hidden mb-4 bg-zinc-50 relative border border-zinc-100/50">
+                      <img 
+                        src={it.image} 
+                        alt={it.t} 
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                    </div>
+                  )}
                 </div>
 
                 <div>
-                  <div className="font-display text-lg font-semibold tracking-tight text-zinc-900 group-hover:text-[#cc9f37] transition-colors">
+                  <div className="font-display text-lg font-semibold tracking-tight text-zinc-900 group-hover:text-[#cc9f37] transition-colors mt-2">
                     {it.t}
                   </div>
-                  <div className="mt-1 text-zinc-500 text-sm flex justify-between items-center">
+                  <div className="mt-1.5 text-zinc-500 text-sm flex justify-between items-center">
                     <span>{it.d}</span>
                     <span className="text-[#dfb144] opacity-0 group-hover:opacity-100 transition-opacity font-bold text-base ml-2">→</span>
                   </div>
@@ -106,68 +153,74 @@ export default function Services() {
         </div>
       </div>
 
-      {/* NOVÉ: VYSKAKOVACIE OKNO (MODAL LIGHTBOX) */}
+      {/* VYSKAKOVACIE OKNO (MODAL) */}
       <AnimatePresence>
         {activeItem && (
           <motion.div 
-            className="fixed inset-0 bg-black/70 backdrop-blur-md z-[150] flex items-center justify-center p-4"
+            className="fixed inset-0 bg-black/70 backdrop-blur-md z-[150] flex items-center justify-center p-4 overflow-y-auto"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={() => setActiveItem(null)} // Kliknutie na tmavé pozadie zatvorí okno
+            onClick={() => setActiveItem(null)}
           >
-            {/* Telo okná */}
             <motion.div 
-              className="bg-white rounded-[32px] overflow-hidden max-w-2xl w-full shadow-2xl relative border border-zinc-100"
+              className="bg-white rounded-[32px] overflow-hidden max-w-lg w-full shadow-2xl relative border border-zinc-100 my-auto"
               initial={{ scale: 0.95, y: 20 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.95, y: 20 }}
               transition={{ type: "spring", duration: 0.4 }}
-              onClick={(e) => e.stopPropagation()} // Zamedzí zatvoreniu okna, keď klikneš do vnútra na fotku/text
+              onClick={(e) => e.stopPropagation()}
             >
-              {/* Tlačidlo na zatvorenie v rohu (X) */}
+              {/* Horné tlačidlo X v rohu */}
               <button 
                 onClick={() => setActiveItem(null)}
-                className="absolute top-4 right-4 bg-black/40 hover:bg-black/70 text-white w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold transition-colors z-50 backdrop-blur-sm"
+                className="absolute top-4 right-4 bg-white/80 hover:bg-white text-zinc-900 w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold shadow-md transition-colors z-50 backdrop-blur-sm border border-zinc-200"
                 aria-label="Close"
               >
                 ✕
               </button>
 
-              {/* Veľký obrázok v okne */}
-              <div className="w-full h-64 md:h-85 bg-zinc-900 relative">
-                <img 
-                  src={activeItem.image} 
-                  alt={activeItem.t} 
-                  className="w-full h-full object-cover"
-                />
-                {/* Malý dizajnový prechod na spodku fotky */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none" />
-              </div>
+              {/* Veľký obrázok alebo záložný blok s ikonou */}
+              {activeItem.image ? (
+                <div className="w-full h-64 md:h-80 bg-zinc-950 flex items-center justify-center relative">
+                  <img 
+                    src={activeItem.image} 
+                    alt={activeItem.t} 
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none" />
+                </div>
+              ) : (
+                <div className="w-full h-36 bg-gradient-to-br from-zinc-50 to-zinc-100 border-b border-zinc-100 flex items-center justify-center text-[#cc9f37]">
+                  <activeItem.Icon size={44} strokeWidth={1.5} />
+                </div>
+              )}
 
-              {/* Obsah a texty pod fotkou */}
-              <div className="p-6 md:p-8">
+              {/* Obsah pod fotkou */}
+              <div className="p-6 md:p-7">
                 <div className="flex items-center gap-3 mb-3">
-                  <div className="w-8 h-8 rounded-lg bg-[#dfb144]/10 flex items-center justify-center text-[#cc9f37]">
-                    <activeItem.Icon size={16} strokeWidth={2} />
+                  <div className="w-7 h-7 rounded-lg bg-[#dfb144]/10 flex items-center justify-center text-[#cc9f37]">
+                    <activeItem.Icon size={14} />
                   </div>
-                  <span className="text-zinc-400 text-xs font-semibold uppercase tracking-wider">Detail služby</span>
+                  <span className="text-zinc-400 text-[11px] font-semibold uppercase tracking-wider">Detail služby</span>
                 </div>
 
-                <h3 className="text-2xl md:text-3xl font-display font-bold text-zinc-900 mb-2">
+                <h3 className="text-xl md:text-2xl font-display font-bold text-zinc-900 mb-1.5">
                   {activeItem.t}
                 </h3>
-                <p className="text-zinc-600 text-base md:text-lg leading-relaxed">
-                  {activeItem.d} – V našom penzióne dbáme na maximálne pohodlie a spokojnosť hostí. Táto služba je plne k dispozícii počas celého vášho pobytu u nás v Štrbe.
+                <p className="text-[#cc9f37] text-xs font-medium mb-3">
+                  {activeItem.d}
+                </p>
+                <p className="text-zinc-600 text-sm leading-relaxed">
+                  V našom penzióne dbáme na maximálne pohodlie, čistotu a spokojnosť hostí. Táto služba je plne k dispozícii pre všetkých ubytovaných návštevníkov počas celého pobytu u nás v Štrbe.
                 </p>
 
-                {/* Spodné zatváracie tlačidlo pre lepšiu ovládateľnosť na mobile */}
-                <div className="mt-8 flex justify-end">
+                <div className="mt-6 flex justify-end">
                   <button
                     onClick={() => setActiveItem(null)}
-                    className="px-6 py-2.5 bg-zinc-900 hover:bg-zinc-800 text-white rounded-xl text-sm font-medium transition-colors shadow-sm"
+                    className="px-5 py-2 bg-zinc-900 hover:bg-zinc-800 text-white rounded-xl text-xs font-medium transition-colors shadow-sm"
                   >
-                    Zatvoriť detail
+                    Zatvoriť
                   </button>
                 </div>
               </div>
