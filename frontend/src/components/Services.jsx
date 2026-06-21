@@ -7,127 +7,127 @@ import {
   Snowflake,
   Mountain,
   ChefHat,
-  GraduationCap,
   Baby,
   Wifi,
   Sparkles,
   Cake,
-  FileText 
+  Users,
+  Scroll // Importovaná ikona pre Informačný leták
 } from "lucide-react";
 import { useLang } from "@/contexts/LangContext";
 
 export default function Services() {
   const { tr, lang } = useLang();
-  const rawItems = tr("services.items");
-  const baseItems = Array.isArray(rawItems) ? rawItems : [];
 
-  // Bezpečné priradenie textov na základe indexov zo súboru i18n.js
-  const pizzerieTexts = baseItems[0] || { t: "Reštaurácia & Pizzeria", d: "Denne 15:00 – 23:00" };
-  const kuchynkyTexts = baseItems[1] || { t: "Jedáleň", d: "Priestor na stravovanie" };
-  const letakTexts    = baseItems[2] || { t: "Informačný leták", d: "Kompletné informácie" };
-  const wifiTexts     = baseItems[3] || { t: "Wifi zdarma", d: "V celom objekte" };
-  const parkovanieTexts = baseItems[4] || { t: "Bezplatné parkovanie", d: "Priamo pri penzióne" };
-  const nefajciarTexts = baseItems[5] || { t: "Nefajčiarsky objekt", d: "Čisté a zdravé prostredie" };
-  const lyziarenTexts  = baseItems[6] || { t: "Lyžiareň", d: "Vyhrievaná a uzamykateľná" };
-  const pozicovnaTexts = baseItems[7] || { t: "Požičovňa lyží", d: "Zľava pre hostí" };
-  const kuchynkyPoschodieTexts = baseItems[8] || { t: "Kuchynky na poschodí", d: "Plne vybavené" };
-  const skoliacaTexts  = baseItems[9] || { t: "Školiaca miestnosť", d: "Kapacita až 40 osôb" };
-  const kutikTexts     = baseItems[10] || { t: "Detský kútik", d: "Priestor pre najmenších" };
-
-  // OPRAVA FALLBACKU: Ak anglický preklad v i18n.js na indexe 11 chýba, natvrdo priradíme EN/DE texty podľa prepnutého jazyka
-  const ranajkyTexts   = baseItems[11] || (
-    lang === "en" 
-      ? { t: "Breakfast buffet", d: "07:30 – 09:00 included" }
-      : lang === "de"
-      ? { t: "Frühstücksbuffet", d: "07:30 – 09:00 inklusive" }
-      : { t: "Raňajkový bufet", d: "07:30 – 09:00 v cene" }
-  );
-
-  // Výsledné pole s presným poradím vizuálnych bubliniek a priradenými fotkami/ikonami
+  // Pole služieb definované napevno s priamym mapovaním na prekladové kľúče z i18n.js
   const allItems = [
     {
-      ...pizzerieTexts,
+      t: tr("services.items.0.t"), // Reštaurácia & Pizzeria
+      d: tr("services.items.0.d"),
       image: "/pizzeria.jpg",
       fallbackImage: "/pizzeria.JPG",
       Icon: UtensilsCrossed
     },
     {
-      ...kuchynkyTexts,
+      t: tr("services.items.8.t"), // Kuchynky na poschodí
+      d: tr("services.items.8.d"),
       image: "/kuch.jpg",
       fallbackImage: "/kuch.JPG",
       Icon: ChefHat
     },
     {
-      ...letakTexts,
-      image: "/letak.png",
-      fallbackImage: "/letak.PNG",
-      Icon: FileText
-    },
-    {
-      ...wifiTexts,
-      image: "/wifi.jpg",
-      fallbackImage: "/wifi.JPG",
-      Icon: Wifi
-    },
-    {
-      ...parkovanieTexts,
-      image: "/parkovanie.jpg",
-      fallbackImage: "/parkovanie.JPG",
-      Icon: ParkingCircle
-    },
-    {
-      ...nefajciarTexts,
-      image: "/nefajci.jpg",
-      fallbackImage: "/nefajci.JPG",
-      Icon: Snowflake
-    },
-    {
-      ...lyziarenTexts,
-      image: "/lyziaren.jpg",
-      fallbackImage: "/lyziaren.JPG",
-      Icon: Mountain
-    },
-    {
-      ...pozicovnaTexts,
-      image: "/pozicovna.JPG",
-      fallbackImage: "/pozicovna.jpg",
-      Icon: GraduationCap
-    },
-    {
-      ...kutikTexts,
-      image: "/kutik.JPG",
-      fallbackImage: "/kutik.jpg",
-      Icon: Baby
-    },
-    {
-      ...kuchynkyPoschodieTexts,
-      image: "/welnes.JPG",
-      fallbackImage: "/welnes.jpg",
-      Icon: Sparkles
-    },
-    {
-      ...skoliacaTexts,
+      t: tr("audiences.cards.4.title"), // Rodinné oslavy a spoločenské akcie (ťahané z podujatí)
+      d: tr("audiences.cards.4.tag"),
       image: "/oslava.jpg",
       fallbackImage: "/oslava.JPG",
       Icon: Cake
     },
     {
-      ...ranajkyTexts, // Raňajkový bufet na 12. mieste na konci
+      t: tr("services.items.3.t"), // Wifi zdarma
+      d: tr("services.items.3.d"),
+      image: "/wifi.jpg",
+      fallbackImage: "/wifi.JPG",
+      Icon: Wifi
+    },
+    {
+      t: tr("services.items.4.t"), // Bezplatné parkovanie
+      d: tr("services.items.4.d"),
+      image: "/parkovanie.jpg",
+      fallbackImage: "/parkovanie.JPG",
+      Icon: ParkingCircle
+    },
+    {
+      t: tr("services.items.5.t"), // Nefajčiarsky objekt
+      d: tr("services.items.5.d"),
+      image: "/nefajci.jpg",
+      fallbackImage: "/nefajci.JPG",
+      Icon: Snowflake
+    },
+    {
+      t: tr("services.items.6.t"), // Lyžiareň
+      d: tr("services.items.6.d"),
+      image: "/lyziaren.jpg",
+      fallbackImage: "/lyziaren.JPG",
+      Icon: Mountain
+    },
+    {
+      t: tr("services.items.7.t"), // Požičovňa lyží
+      d: tr("services.items.7.d"),
+      image: "/pozicovna.JPG",
+      fallbackImage: "/pozicovna.jpg",
+      Icon: Mountain
+    },
+    {
+      t: tr("services.items.10.t"), // Detský kútik
+      d: tr("services.items.10.d"),
+      image: "/kutik.JPG",
+      fallbackImage: "/kutik.jpg",
+      Icon: Baby
+    },
+    {
+      t: lang === "en" ? "Private Wellness" : lang === "de" ? "Privater Wellnessbereich" : "Privátny Wellness",
+      d: lang === "en" ? "Perfect relaxation" : lang === "de" ? "Perfekte Entspannung" : "Dokonalý relax v saune a vírivke",
+      image: "/welnes.JPG",
+      fallbackImage: "/welnes.jpg",
+      Icon: Sparkles
+    },
+    {
+      // NOVÁ BUBLINKA: INFORMAČNÝ LETÁK HNEĎ ZA WELLNESSOM
+      t: lang === "en" ? "Information Brochure" : lang === "de" ? "Informationsbroschüre" : "Informačný leták",
+      d: lang === "en" ? "All information in one place" : lang === "de" ? "Alle Informationen an einem Ort" : "Všetky informácie na jednom mieste",
+      image: "/letak.png",
+      fallbackImage: "/letak.png",
+      Icon: Scroll
+    },
+    {
+      t: tr("services.items.9.t"), // Školiaca miestnosť
+      d: tr("services.items.9.d"),
+      image: "/skoliaca.jpg",
+      fallbackImage: "/skoliaca.JPG",
+      Icon: Users
+    },
+    // Čisté bublinky bez fotiek na konci mriežky
+    {
+      t: tr("services.items.1.t"), // Jedáleň
+      d: tr("services.items.1.d"),
+      image: null,
+      fallbackImage: null,
+      Icon: UtensilsCrossed
+    },
+    {
+      t: tr("services.items.2.t"), // Raňajkový bufet
+      d: tr("services.items.2.d"),
       image: null,
       fallbackImage: null,
       Icon: Coffee
     }
   ];
 
-  // Stav pre otvorené vyskakovacie okno
   const [activeItem, setActiveItem] = useState(null);
-
-  // Sledovanie ciest obrázkov (ak zlyhá základná, prepne sa na záložnú)
   const [currentImages, setCurrentImages] = useState({});
-  // Sledovanie definitívnych chýb (ak zlyhá aj záložný variant)
   const [failedImages, setFailedImages] = useState({});
 
-  // Inicializácia základných ciest obrázkov pri načítaní komponentu alebo zmene prekladu
+  // Inicializácia základných ciest pre obrázky po načítaní komponentu
   useEffect(() => {
     const initialImages = {};
     allItems.forEach((item, index) => {
@@ -136,7 +136,7 @@ export default function Services() {
       }
     });
     setCurrentImages(initialImages);
-  }, [baseItems]);
+  }, [lang]); // Zmena jazyka pregeneruje správne texty v poli
 
   const handleImageError = (index, item) => {
     if (currentImages[index] === item.image && item.fallbackImage) {
@@ -146,7 +146,7 @@ export default function Services() {
     }
   };
 
-  // Blokovanie scrollovania pozadia
+  // Blokovanie skrolovania na pozadí pri otvorenom modálnom okne
   useEffect(() => {
     if (activeItem) {
       document.body.style.overflow = "hidden";
@@ -246,7 +246,6 @@ export default function Services() {
               transition={{ type: "spring", duration: 0.4 }}
               onClick={(e) => e.stopPropagation()}
             >
-              {/* Horné tlačidlo X v rohu */}
               <button 
                 onClick={() => setActiveItem(null)}
                 className="absolute top-4 right-4 bg-white/80 hover:bg-white text-zinc-900 w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold shadow-md transition-colors z-50 backdrop-blur-sm border border-zinc-200"
@@ -255,7 +254,6 @@ export default function Services() {
                 ✕
               </button>
 
-              {/* Veľký obrázok alebo záložná ikona */}
               {activeItem.image && !failedImages[activeItem.originalIndex] ? (
                 <div className="w-full h-64 md:h-80 bg-zinc-900 flex items-center justify-center relative p-2">
                   <img 
@@ -272,7 +270,6 @@ export default function Services() {
                 </div>
               )}
 
-              {/* Obsah pod fotkou */}
               <div className="p-6 md:p-7">
                 <div className="flex items-center gap-3 mb-3">
                   <div className="w-7 h-7 rounded-lg bg-[#dfb144]/10 flex items-center justify-center text-[#cc9f37]">
@@ -294,7 +291,7 @@ export default function Services() {
                     ? "In our pension, we care about maximum comfort, cleanliness, and guest satisfaction. This service is fully available to all accommodated visitors throughout their stay with us in Štrba."
                     : lang === "de"
                     ? "In unserer Pension legen wir großen Wert auf maximalen Komfort, Sauberkeit und die Zufriedenheit unserer Gäste. Dieser Service steht allen übernachtenden Gästen während ihres gesamten Aufenthalts in Štrba uneingeschränkt zur Verfügung."
-                    : "V našom penzióne dbáme na maximálne pohodlie, čistotu a spokojnosť hostí. Táto služba je plne k dispozícii pre všetkých ubytovaných návštevníkov počas celého pobytu u nás v Štrbe."}
+                    : "V našom penzióne dbáme na maximálne pohodlie, čistotu a spokojnosť hostí. Táto služba je plne k dispozícii pre všetkých ubytovaných návštevnických hostí počas celého pobytu u nás v Štrbe."}
                 </p>
 
                 <div className="mt-6 flex justify-end">
