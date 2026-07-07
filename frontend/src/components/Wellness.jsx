@@ -14,15 +14,15 @@ export default function Wellness() {
     {
       t: baseItems[0]?.t || "Infra sauna",
       d: baseItems[0]?.d || "40 – 65 °C • regenerácia svalov",
-      image: "/sauna.jpg",
-      fallbackImage: "/sauna.JPG",
+      image: "/sauna.webp",
+      fallbackImage: "/sauna.webp",
       Icon: Flame
     },
     {
       t: baseItems[2]?.t || "Oddychová zóna",
       d: baseItems[2]?.d || "Tlmené LED svetlo • ticho",
-      image: "/oddychova.jpg",
-      fallbackImage: "/oddychova.JPG",
+      image: "/oddychova.webp",
+      fallbackImage: "/oddychova.webp",
       Icon: Waves
     },
     {

@@ -24,86 +24,86 @@ export default function Services() {
     {
       t: tr("services.items.0.t"), // Reštaurácia & Pizzeria
       d: tr("services.items.0.d"),
-      image: "/pizzeria.jpg",
-      fallbackImage: "/pizzeria.JPG",
+      image: "/pizzeria.webp",
+      fallbackImage: "/pizzeria.webp",
       Icon: UtensilsCrossed
     },
     {
       t: tr("services.items.8.t"), // Kuchynky na poschodí
       d: tr("services.items.8.d"),
-      image: "/kuch.jpg",
-      fallbackImage: "/kuch.JPG",
+      image: "/kuch.webp",
+      fallbackImage: "/kuch.webp",
       Icon: ChefHat
     },
     {
       t: tr("audiences.cards.4.title"), // Rodinné oslavy a spoločenské akcie (ťahané z podujatí)
       d: tr("audiences.cards.4.tag"),
-      image: "/oslava.jpg",
-      fallbackImage: "/oslava.JPG",
+      image: "/oslava.webp",
+      fallbackImage: "/oslava.webp",
       Icon: Cake
     },
     {
       t: tr("services.items.3.t"), // Wifi zdarma
       d: tr("services.items.3.d"),
-      image: "/wifi.jpg",
-      fallbackImage: "/wifi.JPG",
+      image: "/wifi.webp",
+      fallbackImage: "/wifi.webp",
       Icon: Wifi
     },
     {
       t: tr("services.items.4.t"), // Bezplatné parkovanie
       d: tr("services.items.4.d"),
-      image: "/parkovanie.jpg",
-      fallbackImage: "/parkovanie.JPG",
+      image: "/parkovanie.webp",
+      fallbackImage: "/parkovanie.webp",
       Icon: ParkingCircle
     },
     {
       t: tr("services.items.5.t"), // Nefajčiarsky objekt
       d: tr("services.items.5.d"),
-      image: "/nefajci.jpg",
-      fallbackImage: "/nefajci.JPG",
+      image: "/nefajci.webp",
+      fallbackImage: "/nefajci.webp",
       Icon: Snowflake
     },
     {
       t: tr("services.items.6.t"), // Lyžiareň
       d: tr("services.items.6.d"),
-      image: "/lyziaren.jpg",
-      fallbackImage: "/lyziaren.JPG",
+      image: "/lyziaren.webp",
+      fallbackImage: "/lyziaren.webp",
       Icon: Mountain
     },
     {
       t: tr("services.items.7.t"), // Požičovňa lyží
       d: tr("services.items.7.d"),
-      image: "/pozicovna.JPG",
-      fallbackImage: "/pozicovna.jpg",
+      image: "/pozicovna.webp",
+      fallbackImage: "/pozicovna.webp",
       Icon: Mountain
     },
     {
       t: tr("services.items.10.t"), // Detský kútik
       d: tr("services.items.10.d"),
-      image: "/kutik.JPG",
-      fallbackImage: "/kutik.jpg",
+      image: "/kutik.webp",
+      fallbackImage: "/kutik.webp",
       Icon: Baby
     },
     {
       t: lang === "en" ? "Private Wellness" : lang === "de" ? "Privater Wellnessbereich" : "Privátny Wellness",
       d: lang === "en" ? "Perfect relaxation" : lang === "de" ? "Perfekte Entspannung" : "Dokonalý relax v saune a vírivke",
-      image: "/welnes.JPG",
-      fallbackImage: "/welnes.jpg",
+      image: "/welnes.webp",
+      fallbackImage: "/welnes.webp",
       Icon: Sparkles
     },
     {
       // NOVÁ BUBLINKA: INFORMAČNÝ LETÁK HNEĎ ZA WELLNESSOM
       t: lang === "en" ? "Information Brochure" : lang === "de" ? "Informationsbroschüre" : "Informačný leták",
       d: lang === "en" ? "All information in one place" : lang === "de" ? "Alle Informationen an einem Ort" : "Všetky informácie na jednom mieste",
-      image: "/letak.png",
-      fallbackImage: "/letak.png",
+      image: "/letak.webp",
+      fallbackImage: "/letak.webp",
       Icon: Scroll
     },
     {
       t: tr("services.items.9.t"), // Školiaca miestnosť
       d: tr("services.items.9.d"),
-      image: "/skoliaca.jpg",
-      fallbackImage: "/skoliaca.JPG",
+      image: "/skoliaca.webp",
+      fallbackImage: "/skoliaca.webp",
       Icon: Users
     },
     // Čisté bublinky bez fotiek na konci mriežky
