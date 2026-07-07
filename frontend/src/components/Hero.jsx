@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { motion } from "framer-motion";
 import { useLang } from "@/contexts/LangContext";
 import BookingDialog from "./BookingDialog";
 import { api } from "@/lib/api";
@@ -45,7 +44,6 @@ export default function Hero() {
     }
   };
 
-  // Výber prekladu na základe aktívneho jazyka s fallbackom na slovenčinu
   const current = content[lang] || content.sk;
 
   return (
@@ -53,14 +51,15 @@ export default function Hero() {
       id="top"
       className="relative min-h-screen flex items-center justify-center overflow-hidden bg-zinc-950 text-white"
     >
-      {/* Pozadie - OPTIMALIZOVANÉ: Klasický img s CSS animáciou pre bleskové vykreslenie bez preťaženia JS */}
+      {/* Pozadie - OPTIMALIZOVANÉ */}
       <div className="absolute inset-0 z-0">
+        {/* OPRAVENÉ: Komentár presunutý mimo atribútov tagu img, fetchPriority je správne v camelCase */}
         <img
           src={HERO_IMAGE}
           alt={lang === "en" ? "High Tatras Mountains" : lang === "de" ? "Hohe Tatra Berge" : "Vysoké Tatry"}
-          className="absolute inset-0 w-full h-full object-cover hero-photo opacity-40 brightness-75 transition-all duration-[1400ms] ease-out scale-100"
+          className="absolute inset-0 w-full h-full object-cover opacity-40 brightness-75"
           loading="eager"
-          fetchpriority="high"
+          fetchPriority="high"
           data-testid="hero-image"
         />
         <div className="absolute inset-0 bg-black/50" />
@@ -68,12 +67,7 @@ export default function Hero() {
 
       {/* Stredový obsah */}
       <div className="relative z-10 max-w-[1400px] mx-auto w-full px-6 md:px-10 pt-28 text-center flex flex-col items-center justify-center">
-        <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, ease: [0.2, 0.8, 0.2, 1] }}
-          className="max-w-4xl mx-auto flex flex-col items-center"
-        >
+        <div className="max-w-4xl mx-auto flex flex-col items-center animate-fade-in-up">
           {/* Horný menší text */}
           <p className="text-xs md:text-sm uppercase tracking-[0.3em] text-zinc-300 mb-6 font-semibold">
             {current.overline}
@@ -95,7 +89,6 @@ export default function Hero() {
 
           {/* Akčná zóna */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6">
-            {/* Tlačidlo Overiť dostupnosť s dynamickou URL pre správny jazyk */}
             <a 
               href={current.bookingUrl}
               target="_blank"
@@ -105,12 +98,11 @@ export default function Hero() {
               {current.btnBook}
             </a>
 
-            {/* Cenovka v elegantnej bubline */}
             <div className="inline-flex items-center justify-center px-6 py-3.5 bg-white/10 backdrop-blur-md border border-white/20 rounded-full text-sm sm:text-base text-zinc-200 font-medium tracking-wide shadow-md">
               {current.priceFrom} &nbsp;<span className="font-bold text-[#dfb144] text-lg sm:text-xl">59 €</span>&nbsp; {current.priceUnit}
             </div>
           </div>
-        </motion.div>
+        </div>
       </div>
 
       <BookingDialog 
