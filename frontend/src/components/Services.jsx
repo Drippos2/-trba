@@ -102,8 +102,8 @@ export default function Services() {
     {
       t: tr("services.items.9.t"), // Školiaca miestnosť
       d: tr("services.items.9.d"),
-      image: "/skoliaca.webp",
-      fallbackImage: "/skoliaca.webp",
+      image: null,          // Nastavíme na null, keďže fotka neexistuje
+      fallbackImage: null,  // Nastavíme na null
       Icon: Users
     },
     // Čisté bublinky bez fotiek na konci mriežky
@@ -155,7 +155,7 @@ export default function Services() {
     }
     return () => {
       document.body.style.overflow = "unset";
-    };
+    }
   }, [activeItem]);
 
   return (
@@ -194,7 +194,7 @@ export default function Services() {
                     <Icon size={18} strokeWidth={1.75} />
                   </div>
                   
-                  {/* Náhľadová fotka */}
+                  {/* Náhľadová fotka (Zobrazí sa, len ak it.image nie je null) */}
                   {it.image && (
                     <div className="w-full h-32 rounded-xl overflow-hidden mb-4 bg-zinc-50 relative flex items-center justify-center border border-zinc-100/50">
                       {imgSrc && !isFailed ? (
@@ -254,6 +254,7 @@ export default function Services() {
                 ✕
               </button>
 
+              {/* OPRAVENÁ PODMIENKA: Ak activeItem.image existuje a zároveň načítanie nezlyhalo */}
               {activeItem.image && !failedImages[activeItem.originalIndex] ? (
                 <div className="w-full h-64 md:h-80 bg-zinc-900 flex items-center justify-center relative p-2">
                   <img 
@@ -265,8 +266,9 @@ export default function Services() {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent pointer-events-none rounded-2xl" />
                 </div>
               ) : (
-                <div className="w-full h-36 bg-gradient-to-br from-zinc-50 to-zinc-100 border-b border-zinc-100 flex items-center justify-center text-[#cc9f37]">
-                  <activeItem.Icon size={44} strokeWidth={1.5} />
+                /* PEKNÝ BOX S IKONKOU: Zobrazí sa v modále vtedy, ak fotka v objekte chýba (je null) */
+                <div className="w-full h-48 bg-gradient-to-br from-zinc-50 to-zinc-100 border-b border-zinc-100 flex items-center justify-center text-[#cc9f37]">
+                  <activeItem.Icon size={54} strokeWidth={1.5} />
                 </div>
               )}
 
@@ -290,7 +292,7 @@ export default function Services() {
                   {lang === "en" 
                     ? "In our pension, we care about maximum comfort, cleanliness, and guest satisfaction. This service is fully available to all accommodated visitors throughout their stay with us in Štrba."
                     : lang === "de"
-                    ? "In unserer Pension legen wir großen Wert auf maximalen Komfort, Sauberkeit und die Zufriedenheit unserer Gäste. Dieser Service steht allen übernachtenden Gästen während ihres gesamten Aufenthalts in Štrba uneingeschränkt zur Verfügung."
+                    ? "In einer Pension legen wir großen Wert auf maximalen Komfort, Sauberkeit und die Zufriedenheit unserer Gäste. Dieser Service steht allen übernachtenden Gästen während seines gesamten Aufenthalts in Štrba uneingeschränkt zur Verfügung."
                     : "V našom penzióne dbáme na maximálne pohodlie, čistotu a spokojnosť hostí. Táto služba je plne k dispozícii pre všetkých ubytovaných návštevnických hostí počas celého pobytu u nás v Štrbe."}
                 </p>
 
