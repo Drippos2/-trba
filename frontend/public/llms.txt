@@ -1,2 +1,12 @@
-# Penzión Štrba
-Ubytovanie a wellness vo Vysokých Tatrách.
+# Penzión Štrba - Informácie pre AI agentov
+
+Tento súbor poskytuje štruktúrované informácie o webe Penziónu Štrba vo Vysokých Tatrách pre modely umelej inteligencie a webových crawlerov.
+
+## Hlavné sekcie a odkazy
+- [Izby a ubytovanie](https://www.penzion-strba.sk/#rooms)
+- [Privátny Wellness](https://www.penzion-strba.sk/#wellness)
+- [Lokalita a kontakt](https://www.penzion-strba.sk/#location)
+- [Rezervácia pobytu](https://booking.previo.cz/stay/index/step-2/?hotId=41403&currency=EUR&lang=sk)
+
+## O penzióne
+Penzión Štrba ponúka pokojné ubytovanie v srdci Vysokých Tatier, len pár minút od Štrbského Plesa. Súčasťou je vlastná reštaurácia s pizzeriou, privátny wellness (sauna a vírivka), detský kútik, bezplatné parkovanie a wifi.
