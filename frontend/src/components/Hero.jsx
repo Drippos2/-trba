@@ -51,19 +51,19 @@ export default function Hero() {
       id="top"
       className="relative min-h-screen flex items-center justify-center overflow-hidden bg-zinc-950 text-white"
     >
-      {/* Pozadie - OPTIMALIZOVANÉ */}
-      <div className="absolute inset-0 z-0">
-        {/* OPRAVENÉ: Komentár presunutý mimo atribútov tagu img, fetchPriority je správne v camelCase */}
-        <img
-          src={HERO_IMAGE}
-          alt={lang === "en" ? "High Tatras Mountains" : lang === "de" ? "Hohe Tatra Berge" : "Vysoké Tatry"}
-          className="absolute inset-0 w-full h-full object-cover opacity-40 brightness-75"
-          loading="eager"
-          fetchPriority="high"
-          data-testid="hero-image"
-        />
-        <div className="absolute inset-0 bg-black/50" />
-      </div>
+      {/* Pozadie - OPTIMALIZOVANÉ PRE MOBIL AJ PC */}
+      <div className="absolute inset-0 z-0 bg-slate-900"> {/* Pridaná tmavá farba ako fallback */}
+       <img
+         src={HERO_IMAGE}
+         alt={lang === "en" ? "High Tatras Mountains" : lang === "de" ? "Hohe Tatra Berge" : "Vysoké Tatry"}
+         /* ZMENA: Pridaná Tailwind trieda 'hidden md:block'. Na mobile sa img kompletne skryje a nestiahne sa, na PC (od md vyššie) sa zobrazí */
+        className="hidden md:block absolute inset-0 w-full h-full object-cover opacity-40 brightness-75"
+        loading="eager"
+        fetchPriority="high"
+        data-testid="hero-image"
+      />
+       <div className="absolute inset-0 bg-black/50" />
+    </div>
 
       {/* Stredový obsah */}
       <div className="relative z-10 max-w-[1400px] mx-auto w-full px-6 md:px-10 pt-28 text-center flex flex-col items-center justify-center">
