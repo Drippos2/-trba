@@ -1,12 +1,12 @@
 import React from "react";
 import { api } from "@/lib/api";
 
-const LOGO_URL =
-  "https://customer-assets.emergentagent.com/job_mountain-escape-23/artifacts/rrbwu1nr_Penzion%20%C5%A1trba%20logo.jpg";
+// Cesta upravená na tvoj nový optimalizovaný WebP obrázok v public zložke
+const LOGO_URL = "/logo.webp";
 
 /**
  * Logo component — displays the official Penzión Štrba logo.
- * Uses CSS multiply blend so the white background of the JPG disappears
+ * Uses CSS multiply blend so the white background disappears
  * onto white / light surfaces. `size` controls vertical height in px.
  */
 export default function Logo({ size = 44, className = "" }) {
