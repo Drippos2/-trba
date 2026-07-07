@@ -66,17 +66,24 @@ export default function Navigation() {
     >
       <div className="max-w-[1400px] mx-auto h-20 md:h-24 px-4 flex items-center justify-between w-full">
         
-        {/* Logo PC s explicitne poslanými rozmermi pre istotu */}
+        {/* REFAKTOR: Jediné spoločné logo pre PC aj Mobil */}
         <a 
           href="#top" 
           data-testid="brand-logo" 
           className="flex items-center gap-3 shrink-0 z-50"
           aria-label={lang === "en" ? "Go to top of the page" : lang === "de" ? "Nach oben scrollen" : "Prejsť na začiatok stránky"}
         >
-          <Logo size={64} width={64} height={64} />
+          {/* Väčšie logo na desktope (od sm: hore) */}
+          <div className="hidden sm:block">
+            <Logo size={64} />
+          </div>
+          {/* Menšie logo na mobile (pod sm) */}
+          <div className="block sm:hidden">
+            <Logo size={48} />
+          </div>
         </a>
 
-        {/* Desktop menu */}
+        {/* Desktop stredové menu */}
         <nav className="hidden lg:flex items-center gap-7 text-sm font-medium text-white">
           {links.map((l) => (
             <a
@@ -90,10 +97,9 @@ export default function Navigation() {
           ))}
         </nav>
 
-        {/* Pravá časť pre PC */}
+        {/* Pravá časť pre DESKTOP */}
         <div className="hidden lg:flex items-center gap-4 shrink-0">
           <div className="flex items-center gap-3 text-white">
-            {/* Facebook PC */}
             <a 
               href="https://www.facebook.com/penzion.strba/" 
               target="_blank" 
@@ -104,7 +110,6 @@ export default function Navigation() {
               <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.57 6 13.5 6H16v3h-2c-.55 0-1 .45-1 1v2h3v3h-3v6.95c4.56-.93 8-4.96 8-9.8z"/></svg>
             </a>
             
-            {/* Instagram PC */}
             <a 
               href="https://instagram.com" 
               target="_blank" 
@@ -126,38 +131,28 @@ export default function Navigation() {
           </a>
         </div>
 
-        {/* MOBILNÁ LIŠTA - PRIDANÉ: Vyriešené logo a rozmery na mobile */}
-        <div className="flex lg:hidden items-center justify-between w-full">
+        {/* REFAKTOR: Pravá časť pre MOBIL (Iba Tlačidlo + Hamburger, bez loga) */}
+        <div className="flex lg:hidden items-center gap-2 z-50">
           <a 
-            href="#top" 
-            className="flex items-center gap-2 z-50"
-            aria-label={lang === "en" ? "Go to top of the page" : lang === "de" ? "Nach oben scrollen" : "Prejsť na začiatok stránky"}
+            href={currentButton.url} 
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-3 py-1.5 text-slate-900 bg-[#dfb144] rounded-full font-bold text-[11px] uppercase tracking-wider shadow-sm"
           >
-            <Logo size={48} width={48} height={48} />
+            {currentButton.text}
           </a>
 
-          <div className="flex items-center gap-2 z-50">
-            <a 
-              href={currentButton.url} 
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-3 py-1.5 text-slate-900 bg-[#dfb144] rounded-full font-bold text-[11px] uppercase tracking-wider shadow-sm"
-            >
-              {currentButton.text}
-            </a>
-
-            <button
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="text-white focus:outline-none p-2 min-w-[44px] min-h-[44px] flex items-center justify-center"
-              aria-label="Menu"
-            >
-              {isMobileMenuOpen ? (
-                <span className="text-2xl font-bold font-mono block transition-transform duration-200 rotate-90">✕</span>
-              ) : (
-                <span className="text-2xl font-bold font-mono block">☰</span>
-              )}
-            </button>
-          </div>
+          <button
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="text-white focus:outline-none p-2 min-w-[44px] min-h-[44px] flex items-center justify-center"
+            aria-label="Menu"
+          >
+            {isMobileMenuOpen ? (
+              <span className="text-2xl font-bold font-mono block transition-transform duration-200 rotate-90">✕</span>
+            ) : (
+              <span className="text-2xl font-bold font-mono block">☰</span>
+            )}
+          </button>
         </div>
 
       </div>
@@ -188,7 +183,6 @@ export default function Navigation() {
             <LanguageSwitcher />
           </div>
           <div className="flex items-center gap-5 text-white">
-            {/* Facebook Mobil */}
             <a 
               href="https://www.facebook.com/penzion.strba/" 
               target="_blank" 
@@ -200,7 +194,6 @@ export default function Navigation() {
               <svg className="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.57 6 13.5 6H16v3h-2c-.55 0-1 .45-1 1v2h3v3h-3v6.95c4.56-.93 8-4.96 8-9.8z"/></svg>
             </a>
             
-            {/* Instagram Mobil */}
             <a 
               href="https://instagram.com" 
               target="_blank" 
