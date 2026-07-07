@@ -66,14 +66,14 @@ export default function Navigation() {
     >
       <div className="max-w-[1400px] mx-auto h-20 md:h-24 px-4 flex items-center justify-between w-full">
         
-        {/* Logo - OPRAVENÉ: Pridané aria-label */}
+        {/* Logo PC s explicitne poslanými rozmermi pre istotu */}
         <a 
           href="#top" 
           data-testid="brand-logo" 
           className="flex items-center gap-3 shrink-0 z-50"
           aria-label={lang === "en" ? "Go to top of the page" : lang === "de" ? "Nach oben scrollen" : "Prejsť na začiatok stránky"}
         >
-          <Logo size={64} />
+          <Logo size={64} width={64} height={64} />
         </a>
 
         {/* Desktop menu */}
@@ -93,7 +93,7 @@ export default function Navigation() {
         {/* Pravá časť pre PC */}
         <div className="hidden lg:flex items-center gap-4 shrink-0">
           <div className="flex items-center gap-3 text-white">
-            {/* Facebook PC - OPRAVENÉ: Pridané aria-label */}
+            {/* Facebook PC */}
             <a 
               href="https://www.facebook.com/penzion.strba/" 
               target="_blank" 
@@ -104,7 +104,7 @@ export default function Navigation() {
               <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.57 6 13.5 6H16v3h-2c-.55 0-1 .45-1 1v2h3v3h-3v6.95c4.56-.93 8-4.96 8-9.8z"/></svg>
             </a>
             
-            {/* Instagram PC - OPRAVENÉ: Pridané aria-label */}
+            {/* Instagram PC */}
             <a 
               href="https://instagram.com" 
               target="_blank" 
@@ -112,7 +112,7 @@ export default function Navigation() {
               className="hover:text-[#dfb144] transition-colors"
               aria-label={lang === "en" ? "Visit our Instagram profile" : lang === "de" ? "Besuchen Sie unser Instagram-Profil" : "Navštívte náš Instagram profil"}
             >
-              <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+              <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0 3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
             </a>
           </div>
           <LanguageSwitcher />
@@ -126,28 +126,38 @@ export default function Navigation() {
           </a>
         </div>
 
-        {/* MOBILNÁ LIŠTA */}
-        <div className="flex lg:hidden items-center gap-3 z-50">
+        {/* MOBILNÁ LIŠTA - PRIDANÉ: Vyriešené logo a rozmery na mobile */}
+        <div className="flex lg:hidden items-center justify-between w-full">
           <a 
-            href={currentButton.url} 
-            target="_blank"
-            rel="noopener noreferrer"
-            className="px-3 py-1.5 text-slate-900 bg-[#dfb144] rounded-full font-bold text-[11px] uppercase tracking-wider shadow-sm"
+            href="#top" 
+            className="flex items-center gap-2 z-50"
+            aria-label={lang === "en" ? "Go to top of the page" : lang === "de" ? "Nach oben scrollen" : "Prejsť na začiatok stránky"}
           >
-            {currentButton.text}
+            <Logo size={48} width={48} height={48} />
           </a>
 
-          <button
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="text-white focus:outline-none p-2"
-            aria-label="Menu"
-          >
-            {isMobileMenuOpen ? (
-              <span className="text-2xl font-bold font-mono block transition-transform duration-200 rotate-90">✕</span>
-            ) : (
-              <span className="text-2xl font-bold font-mono block">☰</span>
-            )}
-          </button>
+          <div className="flex items-center gap-2 z-50">
+            <a 
+              href={currentButton.url} 
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-3 py-1.5 text-slate-900 bg-[#dfb144] rounded-full font-bold text-[11px] uppercase tracking-wider shadow-sm"
+            >
+              {currentButton.text}
+            </a>
+
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="text-white focus:outline-none p-2 min-w-[44px] min-h-[44px] flex items-center justify-center"
+              aria-label="Menu"
+            >
+              {isMobileMenuOpen ? (
+                <span className="text-2xl font-bold font-mono block transition-transform duration-200 rotate-90">✕</span>
+              ) : (
+                <span className="text-2xl font-bold font-mono block">☰</span>
+              )}
+            </button>
+          </div>
         </div>
 
       </div>
@@ -178,7 +188,7 @@ export default function Navigation() {
             <LanguageSwitcher />
           </div>
           <div className="flex items-center gap-5 text-white">
-            {/* Facebook Mobil - OPRAVENÉ: Pridané aria-label */}
+            {/* Facebook Mobil */}
             <a 
               href="https://www.facebook.com/penzion.strba/" 
               target="_blank" 
@@ -190,7 +200,7 @@ export default function Navigation() {
               <svg className="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.57 6 13.5 6H16v3h-2c-.55 0-1 .45-1 1v2h3v3h-3v6.95c4.56-.93 8-4.96 8-9.8z"/></svg>
             </a>
             
-            {/* Instagram Mobil - OPRAVENÉ: Pridané aria-label */}
+            {/* Instagram Mobil */}
             <a 
               href="https://instagram.com" 
               target="_blank" 
