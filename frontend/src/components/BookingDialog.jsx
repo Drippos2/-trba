@@ -1,7 +1,10 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { DayPicker } from "react-day-picker";
-import { sk, enUS, de } from "date-fns/locale";
+// OPTIMALIZÁCIA: Importovanie konkrétnych jazykov priamo z ich ciest výrazne zmenšuje finálny JavaScript balík
+import sk from "date-fns/locale/sk";
+import enUS from "date-fns/locale/en-US";
+import de from "date-fns/locale/de";
 import "react-day-picker/dist/style.css";
 import { X, Check, ChevronLeft, ChevronRight, Clock, Users, Calendar } from "lucide-react";
 
@@ -61,7 +64,7 @@ export default function BookingDialog({ open, onClose }) {
   const canProceed2 = (adults + children) >= 1 && (adults + children) <= MAX_CAPACITY;
   const canSubmit = contact.first_name && contact.last_name && contact.email && contact.phone;
 
-    const submit = async () => {
+  const submit = async () => {
     if (!canSubmit) return;
     setSubmitting(true);
     
@@ -70,7 +73,6 @@ export default function BookingDialog({ open, onClose }) {
       const correctedDate = new Date(selectedDate.getTime() - (offset * 60 * 1000));
       const dateStr = correctedDate.toISOString().split('T')[0];
 
-      // OTVORENIE ZÁTVORKY A SLOŽENEJ ZÁTVORKY TU:
       await api.post("/api/wellness-reservations", {
         ...contact,
         date: dateStr,
@@ -78,7 +80,7 @@ export default function BookingDialog({ open, onClose }) {
         guests_adults: adults,
         guests_children: children,
         language: lang,
-      }); // ZATVORENIE SLOŽENEJ ZÁTVORKY A ZÁTVORKY FUNKCIE TU
+      });
 
       setDone(true);
     } catch (err) {

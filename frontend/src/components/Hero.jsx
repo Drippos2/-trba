@@ -1,10 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, lazy, Suspense } from "react";
 import { useLang } from "@/contexts/LangContext";
-import BookingDialog from "./BookingDialog";
 import { api } from "@/lib/api";
 
-const HERO_IMAGE =
-  "https://customer-assets.emergentagent.com/job_mountain-escape-23/artifacts/wnn6gm19_IMG_6789.jpg";
+// OPTIMALIZÁCIA: Kalendár sa načíta až vtedy, keď niekto reálne klikne na tlačidlo
+const BookingDialog = lazy(() => import("./BookingDialog"));
 
 export default function Hero() {
   const { lang } = useLang();
@@ -51,19 +50,10 @@ export default function Hero() {
       id="top"
       className="relative min-h-screen flex items-center justify-center overflow-hidden bg-zinc-950 text-white"
     >
-      {/* Pozadie - OPTIMALIZOVANÉ PRE MOBIL AJ PC */}
-      <div className="absolute inset-0 z-0 bg-slate-900"> {/* Pridaná tmavá farba ako fallback */}
-       <img
-         src={HERO_IMAGE}
-         alt={lang === "en" ? "High Tatras Mountains" : lang === "de" ? "Hohe Tatra Berge" : "Vysoké Tatry"}
-         /* ZMENA: Pridaná Tailwind trieda 'hidden md:block'. Na mobile sa img kompletne skryje a nestiahne sa, na PC (od md vyššie) sa zobrazí */
-        className="hidden md:block absolute inset-0 w-full h-full object-cover opacity-40 brightness-75"
-        loading="eager"
-        fetchPriority="high"
-        data-testid="hero-image"
-      />
-       <div className="absolute inset-0 bg-black/50" />
-    </div>
+      {/* Pozadie - ČISTÝ GRADIENT BEZ ZBYTOČNÝCH OBRÁZKOV */}
+      <div className="absolute inset-0 z-0 bg-gradient-to-b from-zinc-900 to-zinc-950">
+        <div className="absolute inset-0 bg-black/40" />
+      </div>
 
       {/* Stredový obsah */}
       <div className="relative z-10 max-w-[1400px] mx-auto w-full px-6 md:px-10 pt-28 text-center flex flex-col items-center justify-center">
@@ -105,10 +95,13 @@ export default function Hero() {
         </div>
       </div>
 
-      <BookingDialog 
-        open={isWellnessOpen} 
-        onClose={() => setIsWellnessOpen(false)} 
-      />
+      {/* Obalenie do Suspense kvôli lazy loadingu kalendára */}
+      <Suspense fallback={null}>
+        <BookingDialog 
+          open={isWellnessOpen} 
+          onClose={() => setIsWellnessOpen(false)} 
+        />
+      </Suspense>
     </section>
   );
 }
