@@ -53,15 +53,14 @@ export default function Hero() {
       id="top"
       className="relative min-h-screen flex items-center justify-center overflow-hidden bg-zinc-950 text-white"
     >
-      {/* Pozadie */}
+      {/* Pozadie - OPTIMALIZOVANÉ: Klasický img s CSS animáciou pre bleskové vykreslenie bez preťaženia JS */}
       <div className="absolute inset-0 z-0">
-        <motion.img
+        <img
           src={HERO_IMAGE}
-          alt="Vysoké Tatry"
-          className="absolute inset-0 w-full h-full object-cover hero-photo opacity-40 brightness-75"
-          initial={{ opacity: 0, scale: 1.04 }}
-          animate={{ opacity: 0.4, scale: 1 }}
-          transition={{ duration: 1.4, ease: [0.2, 0.8, 0.2, 1] }}
+          alt={lang === "en" ? "High Tatras Mountains" : lang === "de" ? "Hohe Tatra Berge" : "Vysoké Tatry"}
+          className="absolute inset-0 w-full h-full object-cover hero-photo opacity-40 brightness-75 transition-all duration-[1400ms] ease-out scale-100"
+          loading="eager"
+          fetchpriority="high"
           data-testid="hero-image"
         />
         <div className="absolute inset-0 bg-black/50" />
@@ -70,9 +69,9 @@ export default function Hero() {
       {/* Stredový obsah */}
       <div className="relative z-10 max-w-[1400px] mx-auto w-full px-6 md:px-10 pt-28 text-center flex flex-col items-center justify-center">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.9, ease: [0.2, 0.8, 0.2, 1] }}
+          transition={{ duration: 0.7, ease: [0.2, 0.8, 0.2, 1] }}
           className="max-w-4xl mx-auto flex flex-col items-center"
         >
           {/* Horný menší text */}

@@ -12,7 +12,7 @@ import {
   Sparkles,
   Cake,
   Users,
-  Scroll // Importovaná ikona pre Informačný leták
+  Scroll 
 } from "lucide-react";
 import { useLang } from "@/contexts/LangContext";
 
@@ -36,7 +36,7 @@ export default function Services() {
       Icon: ChefHat
     },
     {
-      t: tr("audiences.cards.4.title"), // Rodinné oslavy a spoločenské akcie (ťahané z podujatí)
+      t: tr("audiences.cards.4.title"), // Rodinné oslavy a spoločenské akcie
       d: tr("audiences.cards.4.tag"),
       image: "/oslava.webp",
       fallbackImage: "/oslava.webp",
@@ -92,7 +92,7 @@ export default function Services() {
       Icon: Sparkles
     },
     {
-      // NOVÁ BUBLINKA: INFORMAČNÝ LETÁK HNEĎ ZA WELLNESSOM
+      // INFORMAČNÝ LETÁK HNEĎ ZA WELLNESSOM
       t: lang === "en" ? "Information Brochure" : lang === "de" ? "Informationsbroschüre" : "Informačný leták",
       d: lang === "en" ? "All information in one place" : lang === "de" ? "Alle Informationen an einem Ort" : "Všetky informácie na jednom mieste",
       image: "/letak.webp",
@@ -102,11 +102,10 @@ export default function Services() {
     {
       t: tr("services.items.9.t"), // Školiaca miestnosť
       d: tr("services.items.9.d"),
-      image: null,          // Nastavíme na null, keďže fotka neexistuje
-      fallbackImage: null,  // Nastavíme na null
+      image: null,          
+      fallbackImage: null,  
       Icon: Users
     },
-    // Čisté bublinky bez fotiek na konci mriežky
     {
       t: tr("services.items.1.t"), // Jedáleň
       d: tr("services.items.1.d"),
@@ -124,26 +123,10 @@ export default function Services() {
   ];
 
   const [activeItem, setActiveItem] = useState(null);
-  const [currentImages, setCurrentImages] = useState({});
   const [failedImages, setFailedImages] = useState({});
 
-  // Inicializácia základných ciest pre obrázky po načítaní komponentu
-  useEffect(() => {
-    const initialImages = {};
-    allItems.forEach((item, index) => {
-      if (item.image) {
-        initialImages[index] = item.image;
-      }
-    });
-    setCurrentImages(initialImages);
-  }, [lang]); // Zmena jazyka pregeneruje správne texty v poli
-
-  const handleImageError = (index, item) => {
-    if (currentImages[index] === item.image && item.fallbackImage) {
-      setCurrentImages((prev) => ({ ...prev, [index]: item.fallbackImage }));
-    } else {
-      setFailedImages((prev) => ({ ...prev, [index]: true }));
-    }
+  const handleImageError = (index) => {
+    setFailedImages((prev) => ({ ...prev, [index]: true }));
   };
 
   // Blokovanie skrolovania na pozadí pri otvorenom modálnom okne
@@ -155,7 +138,7 @@ export default function Services() {
     }
     return () => {
       document.body.style.overflow = "unset";
-    }
+    };
   }, [activeItem]);
 
   return (
@@ -170,23 +153,19 @@ export default function Services() {
           </h2>
         </div>
 
-        {/* Mriežka s bublinkami */}
+        {/* Mriežka s bublinkami - OPTIMALIZOVANÉ: Odstránené ťažké JS posuny na webe */}
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {allItems.map((it, i) => {
             const Icon = it.Icon;
-            const imgSrc = currentImages[i];
             const isFailed = failedImages[i];
+            const imgSrc = isFailed ? null : it.image;
 
             return (
-              <motion.div
+              <div
                 key={i}
                 data-testid={`service-item-${i}`}
-                className="p-6 min-h-[240px] flex flex-col justify-between border border-zinc-100 hover:border-[#dfb144]/40 hover:shadow-md cursor-pointer transition-all duration-300 group rounded-3xl bg-white shadow-sm"
+                className="p-6 min-h-[240px] flex flex-col justify-between border border-zinc-100 hover:border-[#dfb144]/40 hover:shadow-md cursor-pointer transition-all duration-300 group rounded-3xl bg-white shadow-sm transform motion-safe:hover:-translate-y-1"
                 onClick={() => setActiveItem({ ...it, originalIndex: i })}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: (i % 4) * 0.06 }}
               >
                 <div>
                   {/* Ikona */}
@@ -194,14 +173,17 @@ export default function Services() {
                     <Icon size={18} strokeWidth={1.75} />
                   </div>
                   
-                  {/* Náhľadová fotka (Zobrazí sa, len ak it.image nie je null) */}
+                  {/* Náhľadová fotka */}
                   {it.image && (
                     <div className="w-full h-32 rounded-xl overflow-hidden mb-4 bg-zinc-50 relative flex items-center justify-center border border-zinc-100/50">
-                      {imgSrc && !isFailed ? (
+                      {imgSrc ? (
                         <img 
                           src={imgSrc} 
                           alt={it.t} 
-                          onError={() => handleImageError(i, it)}
+                          width={300}
+                          height={128}
+                          loading="lazy"
+                          onError={() => handleImageError(i)}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                         />
                       ) : (
@@ -222,13 +204,13 @@ export default function Services() {
                     <span className="text-[#dfb144] opacity-0 group-hover:opacity-100 transition-opacity font-bold text-base ml-2">→</span>
                   </div>
                 </div>
-              </motion.div>
+              </div>
             );
           })}
         </div>
       </div>
 
-      {/* VYSKAKOVACIE OKNO (MODAL) */}
+      {/* VYSKAKOVACIE OKNO (MODAL) - Ponechaná plynulá animácia pre UX */}
       <AnimatePresence>
         {activeItem && (
           <motion.div 
@@ -254,19 +236,16 @@ export default function Services() {
                 ✕
               </button>
 
-              {/* OPRAVENÁ PODMIENKA: Ak activeItem.image existuje a zároveň načítanie nezlyhalo */}
               {activeItem.image && !failedImages[activeItem.originalIndex] ? (
                 <div className="w-full h-64 md:h-80 bg-zinc-900 flex items-center justify-center relative p-2">
                   <img 
-                    src={currentImages[activeItem.originalIndex]} 
+                    src={activeItem.image} 
                     alt={activeItem.t} 
-                    onError={() => handleImageError(activeItem.originalIndex, activeItem)}
                     className="w-full h-full object-contain rounded-2xl" 
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent pointer-events-none rounded-2xl" />
                 </div>
               ) : (
-                /* PEKNÝ BOX S IKONKOU: Zobrazí sa v modále vtedy, ak fotka v objekte chýba (je null) */
                 <div className="w-full h-48 bg-gradient-to-br from-zinc-50 to-zinc-100 border-b border-zinc-100 flex items-center justify-center text-[#cc9f37]">
                   <activeItem.Icon size={54} strokeWidth={1.5} />
                 </div>
