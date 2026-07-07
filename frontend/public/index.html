@@ -15,7 +15,7 @@
         <meta property="og:type" content="website" />
         <meta property="og:locale" content="sk_SK" />
         <meta property="og:title" content="Penzión Štrba *** — Ubytovanie 8 km od Štrbského Plesa s wellness" />
-        <meta property="og:description" content="30 izieb, privátny wellness, reštaurácia a bezplatné parkovanie 8 km od Štrbského Plesa. Pobyty od 59 €/noc." />
+        <meta property="og:description" content="30 izieb, privátny wellness, reštaurácia and bezplatné parkovanie 8 km od Štrbského Plesa. Pobyty od 59 €/noc." />
         <meta property="og:image" content="https://customer-assets.emergentagent.com/job_mountain-escape-23/artifacts/wnn6gm19_IMG_6789.jpg" />
 
         <meta name="twitter:card" content="summary_large_image" />
@@ -57,7 +57,8 @@
 
         <title>Penzión Štrba *** — Ubytovanie 8 km od Štrbského Plesa</title>
         <script>window.addEventListener("error",function(e){if(e.error instanceof DOMException&&e.error.name==="DataCloneError"&&e.message&&e.message.includes("PerformanceServerTiming")){e.stopImmediatePropagation();e.preventDefault()}},true);</script>
-        <script src="https://assets.emergent.sh/scripts/emergent-main.js"></script>
+        
+        <script src="https://assets.emergent.sh/scripts/emergent-main.js" defer></script>
     </head>
     <body>
         <noscript>You need to enable JavaScript to run this app.</noscript>
@@ -125,12 +126,15 @@
                     }),
                     (e.__SV = 1));
             })(document, window.posthog || []);
+            
             posthog.init("phc_xAvL2Iq4tFmANRE7kzbKwaSqp1HJjN7x48s3vr0CMjs", {
                 api_host: "https://us.i.posthog.com",
                 person_profiles: "identified_only",
+                // OPTIMALIZÁCIA: Nahrávanie obrazovky sa spustí len na počítačoch, mobilné procesory to totálne odľahčí
                 session_recording: {
                     recordCrossOriginIframes: true,
                     capturePerformance: false,
+                    disable_for_mobile: true
                 },
             });
         </script>
