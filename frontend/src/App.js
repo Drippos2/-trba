@@ -1,7 +1,6 @@
 import React, { lazy, Suspense } from "react";
 import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { Toaster } from "sonner";
 import { LangProvider } from "@/contexts/LangContext";
 import { AuthProvider } from "@/contexts/AuthContext";
 
@@ -9,6 +8,9 @@ import { AuthProvider } from "@/contexts/AuthContext";
 const Home = lazy(() => import("@/pages/Home"));
 const AdminLogin = lazy(() => import("@/pages/AdminLogin"));
 const AdminDashboard = lazy(() => import("@/pages/AdminDashboard"));
+
+// OPTIMALIZÁCIA: Lazy import pre Toaster, aby nezaťažoval úvodné načítanie hlavnej stránky
+const Toaster = lazy(() => import("sonner").then(module => ({ default: module.Toaster })));
 
 // Jednoduchý, ultra-ľahký placeholder, kým sa stránka načítava (nezaberá žiadny výkon)
 const PageLoader = () => (
@@ -24,15 +26,17 @@ function App() {
     <LangProvider>
       <AuthProvider>
         <BrowserRouter>
-          {/* Suspense obaluje routy a zabezpečuje plynulé lazy loading načítavanie */}
+          {/* Suspense obaluje routy aj Toaster a zabezpečuje plynulé lazy loading načítavanie */}
           <Suspense fallback={<PageLoader />}>
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/admin/login" element={<AdminLogin />} />
               <Route path="/admin" element={<AdminDashboard />} />
             </Routes>
+            
+            {/* Presunuté sem, aby sa Toaster načítal asynchrónne na pozadí */}
+            <Toaster theme="light" position="top-right" richColors />
           </Suspense>
-          <Toaster theme="light" position="top-right" richColors />
         </BrowserRouter>
       </AuthProvider>
     </LangProvider>
