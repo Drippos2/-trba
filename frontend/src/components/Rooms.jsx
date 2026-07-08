@@ -6,7 +6,7 @@ export default function Rooms() {
   const [isIntersecting, setIsIntersecting] = useState(false);
   const containerRef = useRef(null);
 
-  // OPTIMALIZÁCIA: Sledovanie, kedy užívateľ docestuje k sekcii izieb
+  // OPTIMALIZÁCIA: Sledovanie, kedy užívateľ reálne vstúpi na sekciu izieb (rootMargin: 0px pre ochranu procesora pred robotmi)
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -15,7 +15,7 @@ export default function Rooms() {
           observer.disconnect(); // Akonáhle ho raz uvidí, odpojíme observer
         }
       },
-      { rootMargin: "200px" } // Začne načítavať Previo už 200px pred doscrollom, aby užívateľ nečakal
+      { rootMargin: "0px" } // Spustí sa presne na hranici sekcie, čím odľahčí úvodný test
     );
 
     if (containerRef.current) {
