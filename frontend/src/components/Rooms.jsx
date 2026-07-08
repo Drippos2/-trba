@@ -64,7 +64,12 @@ export default function Rooms() {
   }, [isIntersecting, lang]);
 
   return (
-    <section id="rooms" className="section bg-white py-24" ref={containerRef}>
+    <section 
+      id="rooms" 
+      className="section bg-white py-24" 
+      ref={containerRef}
+      style={{ contentVisibility: "auto", containIntrinsicSize: "0 800px" }} // Prehliadač vie dopredu vyhradiť priestor pre izby bez posunu stránky
+    >
       <div className="max-w-[1400px] mx-auto px-4">
         
         <div className="flex items-end justify-between flex-wrap gap-6 mb-14">
@@ -81,10 +86,14 @@ export default function Rooms() {
           </div>
         </div>
 
-        {/* Previo kontajner s inteligentným načítaním */}
-        <div id="previo-booking-engine" className="min-h-[400px] relative">
+        {/* Previo kontajner s prísnymi rozmermi pre stabilizáciu Layoutu */}
+        <div 
+          id="previo-booking-engine" 
+          className="min-h-[500px] w-full relative transition-all duration-300"
+          style={{ minHeight: "500px" }}
+        >
           {!isIntersecting && (
-            <div className="absolute inset-0 flex flex-col items-center justify-center bg-zinc-50 border border-zinc-100 rounded-2xl p-8">
+            <div className="absolute inset-0 flex flex-col items-center justify-center bg-zinc-50 border border-zinc-100 rounded-2xl p-8 h-[500px]">
               <div className="w-10 h-10 border-4 border-[#dfb144] border-t-transparent rounded-full animate-spin mb-4" />
               <p className="text-sm text-zinc-400 font-medium tracking-wide animate-pulse">
                 Načítavam ponuku izieb...
