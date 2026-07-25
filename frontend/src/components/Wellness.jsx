@@ -23,7 +23,7 @@ const WELLNESS_STRUCTURE = [
   },
   {
     keyIndex: 1,
-    defaultTitle: "Vírivnná vaňa",
+    defaultTitle: "Vírivná vaňa",
     defaultDesc: "Hydromasáž • uvoľnenie",
     image: "/virivka.webp",
     fallbackImage: "/virivka.webp",
