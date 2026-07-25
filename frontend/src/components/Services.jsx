@@ -108,18 +108,19 @@ export default function Services() {
       Icon: UtensilsCrossed
     },
     {
+      // RAŇAJKOVÝ BUFET S PRIDANOU FOTKOU /ranajkybuf.webp
+      t: tr("services.items.2.t"), // Raňajkový bufet
+      d: tr("services.items.2.d"),
+      image: "/ranajkybuf.webp",
+      fallbackImage: "/ranajkybuf.webp",
+      Icon: Coffee
+    },
+    {
       t: tr("services.items.9.t"), // Školiaca miestnosť (bez fotky dole)
       d: tr("services.items.9.d"),
       image: null,          
       fallbackImage: null,  
       Icon: Users
-    },
-    {
-      t: tr("services.items.2.t"), // Raňajkový bufet (bez fotky dole)
-      d: tr("services.items.2.d"),
-      image: null,
-      fallbackImage: null,
-      Icon: Coffee
     }
   ];
 
