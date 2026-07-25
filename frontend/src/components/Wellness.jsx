@@ -25,8 +25,8 @@ const WELLNESS_STRUCTURE = [
     keyIndex: 1,
     defaultTitle: "Vírivá vaňa",
     defaultDesc: "Hydromasáž • uvoľnenie",
-    image: null,
-    fallbackImage: null,
+    image: "/virivka.webp",
+    fallbackImage: "/virivka.webp",
     Icon: Droplets
   }
 ];
