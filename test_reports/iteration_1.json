@@ -1,0 +1,39 @@
+{
+  "summary": "Full backend + frontend E2E testing of Penzión Štrba luxury hotel app. All 22 backend pytest tests pass (health, rooms, reviews, auth, reservations CRUD with price formulas verified, contact, admin stats). Frontend E2E verified: SK/EN/DE language switching, 3-step booking flow (room → calendar → guests → contact → success screen), contact form, admin login/dashboard/confirm-status/logout. Dashboard shows 3 reservations, stats (Revenue €648, Pending=2, Confirmed=1) and Messages tab correctly. Price math validated end-to-end (base + 2€ tax + 1-night fee + wellness 30€ + half_board 10€/p/night). RESEND_API_KEY empty — backend gracefully logs warning and persists to DB.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Default language", "issues": ["LangContext defaults to browser navigator.language (en-US → EN). Spec implies SK should be default; currently if no localStorage + en browser, EN is used. Minor UX/spec mismatch."]}
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/backend_test.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [
+    "Optional: If SK must be hard default regardless of browser locale, change LangContext.jsx initial useState to always return 'sk' when no saved value, instead of inferring from navigator.language.",
+    "Booking step 1 requires nights >= 2 silently (canProceed1 = nights >= 2). Consider surfacing this as explicit helper text (already shown '1-night fee' message, but Next stays disabled for 1 night). Minor UX polish."
+  ],
+  "critical_code_review_comments": [
+    "server.py uses deprecated FastAPI @app.on_event('startup'); consider lifespan context managers (non-blocking).",
+    "CORS allow_origins='*' combined with allow_credentials=True is ignored by browsers when credentials are used; acceptable here since JWT is via Authorization header (not cookies).",
+    "seed_admin is idempotent and updates password hash if env changes — good.",
+    "MongoDB _id is excluded on all list/find endpoints using projection {'_id': 0} — good.",
+    "Room capacity validated; nights validated; price rounding with round(..., 2) — good.",
+    "Reservation model returns full request payload including PII — acceptable for admin-only list; public POST response also returns all fields (fine for confirmation screen)."
+  ],
+  "updated_files": [
+    "/app/backend/tests/backend_test.py (created)"
+  ],
+  "success_rate": {"backend": "100% (22/22)", "frontend": "100% (all critical flows)"},
+  "test_credentials": "admin@penzion-strba.sk / Admin123! — verified working",
+  "seed_data_creation": "Tests create a few TEST_ prefixed reservations and contacts; one is cleaned up, others remain in admin dashboard (3 reservations visible).",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Backend pytest suite at /app/backend/tests/backend_test.py covers all endpoints with data assertions + price formula validation. Run with: pytest /app/backend/tests/backend_test.py -v. Frontend booking flow requires >=2 nights and future dates; DayPicker is clicked via button[name='day'] text match. Default lang = browser locale (navigator.language), override via localStorage ps_lang."
+}

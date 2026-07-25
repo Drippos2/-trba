@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- Hlavná stránka -->
+  <url>
+    <loc>https://www.penzion-strba.sk/</loc>
+    <priority>1.00</priority>
+  </url>
+  <!-- O nás -->
+  <url>
+    <loc>https://www.penzion-strba.sk/o-nas</loc>
+    <priority>0.80</priority>
+  </url>
+  <!-- Izby -->
+  <url>
+    <loc>https://www.penzion-strba.sk/izby</loc>
+    <priority>0.80</priority>
+  </url>
+  <!-- Wellness -->
+  <url>
+    <loc>https://www.penzion-strba.sk/wellness</loc>
+    <priority>0.80</priority>
+  </url>
+  <!-- Pobyty -->
+  <url>
+    <loc>https://www.penzion-strba.sk/pobyty</loc>
+    <priority>0.80</priority>
+  </url>
+  <!-- Služby -->
+  <url>
+    <loc>https://www.penzion-strba.sk/sluzby</loc>
+    <priority>0.80</priority>
+  </url>
+  <!-- Lokalita -->
+  <url>
+    <loc>https://www.penzion-strba.sk/lokalita</loc>
+    <priority>0.70</priority>
+  </url>
+  <!-- Recenzie -->
+  <url>
+    <loc>https://www.penzion-strba.sk/recenzie</loc>
+    <priority>0.70</priority>
+  </url>
+  <!-- Kontakt -->
+  <url>
+    <loc>https://www.penzion-strba.sk/kontakt</loc>
+    <priority>0.70</priority>
+  </url>
+</urlset>
