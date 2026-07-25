@@ -92,7 +92,7 @@ export default function Services() {
       Icon: Sparkles
     },
     {
-      // INFORMAČNÝ LETÁK HNEĎ ZA WELLNESSOM
+      // INFORMAČNÝ LETÁK
       t: lang === "en" ? "Information Brochure" : lang === "de" ? "Informationsbroschüre" : "Informačný leták",
       d: lang === "en" ? "All information in one place" : lang === "de" ? "Alle Informationen an einem Ort" : "Všetky informácie na jednom mieste",
       image: "/letak.webp",
@@ -100,21 +100,22 @@ export default function Services() {
       Icon: Scroll
     },
     {
-      t: tr("services.items.9.t"), // Školiaca miestnosť
+      // JEDÁLEŇ S FOTKOU HNEĎ VEDĽA LETÁKU
+      t: tr("services.items.1.t"), // Jedáleň
+      d: tr("services.items.1.d"),
+      image: "/jedlo.webp",
+      fallbackImage: "/jedlo.webp",
+      Icon: UtensilsCrossed
+    },
+    {
+      t: tr("services.items.9.t"), // Školiaca miestnosť (bez fotky dole)
       d: tr("services.items.9.d"),
       image: null,          
       fallbackImage: null,  
       Icon: Users
     },
     {
-      t: tr("services.items.1.t"), // Jedáleň
-      d: tr("services.items.1.d"),
-      image: null,
-      fallbackImage: null,
-      Icon: UtensilsCrossed
-    },
-    {
-      t: tr("services.items.2.t"), // Raňajkový bufet
+      t: tr("services.items.2.t"), // Raňajkový bufet (bez fotky dole)
       d: tr("services.items.2.d"),
       image: null,
       fallbackImage: null,
