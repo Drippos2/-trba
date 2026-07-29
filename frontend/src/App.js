@@ -22,9 +22,9 @@ const PageLoader = () => (
 
 function App() {
   return (
-    <LangProvider>
-      <AuthProvider>
-        <BrowserRouter>
+    <BrowserRouter> {/* 1. BrowserRouter musí byť úplne navrchu */}
+      <LangProvider>   {/* 2. Teraz už LangProvider bezpečne môže používať useLocation/useNavigate */}
+        <AuthProvider>
           <Suspense fallback={<PageLoader />}>
             <Routes>
               {/* Slovenčina (predvolená hlavná URL) */}
@@ -44,9 +44,9 @@ function App() {
             
             <Toaster theme="light" position="top-right" richColors />
           </Suspense>
-        </BrowserRouter>
-      </AuthProvider>
-    </LangProvider>
+        </AuthProvider>
+      </LangProvider>
+    </BrowserRouter>
   );
 }
 
