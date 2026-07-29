@@ -165,8 +165,8 @@ export default function Location() {
         {/* Sekcia: Detailné pokyny ako sa k nám dostanete */}
         <div className="mt-12 surface-card p-6 md:p-10 border border-slate-100 rounded-[16px]">
           <div className="mb-8">
-            <div className="overline mb-2 text-[#dfb144]">{tr("location.directionsOverline") || "Navigačné pokyny"}</div>
-            <h3 className="font-display text-2xl md:text-3xl font-semibold text-slate-900">{tr("location.directionsTitle") || "Ako sa k nám dostanete?"}</h3>
+            <div className="overline mb-2 text-[#dfb144]">{tr("location.directionsOverline")}</div>
+            <h3 className="font-display text-2xl md:text-3xl font-semibold text-slate-900">{tr("location.directionsTitle")}</h3>
           </div>
 
           <div className="grid md:grid-cols-2 gap-8">
@@ -176,13 +176,13 @@ export default function Location() {
                 <div className="w-8 h-8 rounded-lg bg-[#dfb144]/10 flex items-center justify-center text-[#dfb144] shrink-0">
                   <Train size={18} />
                 </div>
-                <span>{tr("location.trainTitle") || "Zo železničnej stanice (cca 10 min)"}</span>
+                <span>{tr("location.trainTitle")}</span>
               </div>
               <ul className="space-y-2 text-slate-600 text-sm pl-11 list-disc marker:text-[#dfb144]">
-                <li>{tr("location.trainStep1") || "Na konci staničnej budovy sa vydajte po chodníku rovno až k benzínovej pumpe (cca 500m)."}</li>
-                <li>{tr("location.trainStep2") || "Ďalej prejdete po prechode cez hlavnú cestu na druhú stranu."}</li>
-                <li>{tr("location.trainStep3") || "Pokračujte po chodníku okolo Slovenskej Koliby a ďalej rovno na sever (cca 400m)."}</li>
-                <li>{tr("location.trainStep4") || "Po ľavej strane uvidíte budovu potravín a reštaurácie – vchod do penziónu je hneď za reštauráciou."}</li>
+                <li>{tr("location.trainStep1")}</li>
+                <li>{tr("location.trainStep2")}</li>
+                <li>{tr("location.trainStep3")}</li>
+                <li>{tr("location.trainStep4")}</li>
               </ul>
             </div>
 
@@ -192,13 +192,13 @@ export default function Location() {
                 <div className="w-8 h-8 rounded-lg bg-[#dfb144]/10 flex items-center justify-center text-[#dfb144] shrink-0">
                   <Bus size={18} />
                 </div>
-                <span>{tr("location.busTitle") || "Z autobusovej zastávky (cca 5 min)"}</span>
+                <span>{tr("location.busTitle")}</span>
               </div>
               <ul className="space-y-2 text-slate-600 text-sm pl-11 list-disc marker:text-[#dfb144]">
-                <li>{tr("location.busStep1") || "Po vystúpení z autobusu sa vydajte rovno, smerom na Štrbské Pleso až ku Slovenskej Kolibe (cca 50m)."}</li>
-                <li>{tr("location.busStep2") || "Pokračujte po chodníku rovno okolo Slovenskej Koliby smerom na sever (cca 400m)."}</li>
-                <li>{tr("location.busStep3") || "Po ľavej strane uvidíte budovu potravín a reštaurácie."}</li>
-                <li>{tr("location.busStep4") || "Vchod do penziónu je hneď za reštauráciou."}</li>
+                <li>{tr("location.busStep1")}</li>
+                <li>{tr("location.busStep2")}</li>
+                <li>{tr("location.busStep3")}</li>
+                <li>{tr("location.busStep4")}</li>
               </ul>
             </div>
 
@@ -208,13 +208,13 @@ export default function Location() {
                 <div className="w-8 h-8 rounded-lg bg-[#dfb144]/10 flex items-center justify-center text-[#dfb144] shrink-0">
                   <Car size={18} />
                 </div>
-                <span>{tr("location.carEastTitle") || "Autom od Prešova / Popradu (cca 5 min)"}</span>
+                <span>{tr("location.carEastTitle")}</span>
               </div>
               <ul className="space-y-2 text-slate-600 text-sm pl-11 list-disc marker:text-[#dfb144]">
-                <li>{tr("location.carEastStep1") || "Za tunelom Bôrik použite výjazd z diaľnice na Štrbu."}</li>
-                <li>{tr("location.carEastStep2") || "Potom pokračujte stále rovno, smerom na Tatranskú Štrbu."}</li>
-                <li>{tr("location.carEastStep3") || "Na najbližšej križovatke v Tatranskej Štrbe pokračujte rovno, smerom na Štrbské Pleso."}</li>
-                <li>{tr("location.carEastStep4") || "Po ľavej strane uvidíte budovu potravín a reštaurácie – vchod do penziónu je hneď za reštauráciou."}</li>
+                <li>{tr("location.carEastStep1")}</li>
+                <li>{tr("location.carEastStep2")}</li>
+                <li>{tr("location.carEastStep3")}</li>
+                <li>{tr("location.carEastStep4")}</li>
               </ul>
             </div>
 
@@ -224,13 +224,13 @@ export default function Location() {
                 <div className="w-8 h-8 rounded-lg bg-[#dfb144]/10 flex items-center justify-center text-[#dfb144] shrink-0">
                   <Car size={18} />
                 </div>
-                <span>{tr("location.carWestTitle") || "Autom od Žiliny / Lipt. Mikuláša (cca 5 min)"}</span>
+                <span>{tr("location.carWestTitle")}</span>
               </div>
               <ul className="space-y-2 text-slate-600 text-sm pl-11 list-disc marker:text-[#dfb144]">
-                <li>{tr("location.carWestStep1") || "Na diaľnici použite výjazd na Štrbu."}</li>
-                <li>{tr("location.carWestStep2") || "Potom pokračujte stále rovno, smerom na Tatranskú Štrbu."}</li>
-                <li>{tr("location.carWestStep3") || "Na najbližšej križovatke v Tatranskej Štrbe pokračujte rovno, smerom na Štrbské Pleso."}</li>
-                <li>{tr("location.carWestStep4") || "Po ľavej strane uvidíte budovu potravín a reštaurácie – vchod do penziónu je hneď za reštauráciou."}</li>
+                <li>{tr("location.carWestStep1")}</li>
+                <li>{tr("location.carWestStep2")}</li>
+                <li>{tr("location.carWestStep3")}</li>
+                <li>{tr("location.carWestStep4")}</li>
               </ul>
             </div>
           </div>
