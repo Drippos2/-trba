@@ -15,8 +15,8 @@ export default function About() {
   // Fixne definované dáta pre presunuté exteriérové bublinky s automatickým prekladom podľa jazyka
   const aboutItems = [
     {
-      image: "/a.webp",
-      fallbackImage: "/a.webp",
+      image: "/penzion-strba-vchod.webp",
+      fallbackImage: "/penzion-strba-vchod.webp",
       Icon: Compass,
       ...(lang === "en" 
         ? { t: "Pension Štrba - Front view", d: "Exterior and main entrance to the building" }
@@ -26,8 +26,8 @@ export default function About() {
       )
     },
     {
-      image: "/b.webp",
-      fallbackImage: "/b.webp",
+      image: "/penzion-strba-terasa.webp",
+      fallbackImage: "/penzion-strba-terasa.webp",
       Icon: Trees,
       ...(lang === "en" 
         ? { t: "Pension area", d: "Side view of the accommodation part" }
@@ -37,8 +37,8 @@ export default function About() {
       )
     },
     {
-      image: "/c.webp",
-      fallbackImage: "/c.webp",
+      image: "/penzion-strba-exterier.webp",
+      fallbackImage: "/penzion-strba-exterier.webp",
       Icon: Home,
       ...(lang === "en" 
         ? { t: "Accommodation wing", d: "Detailed shot of the pension complex" }

@@ -9,24 +9,24 @@ const WELLNESS_STRUCTURE = [
     keyIndex: 0,
     defaultTitle: "Infra sauna",
     defaultDesc: "40 – 65 °C • regenerácia svalov",
-    image: "/sauna.webp",
-    fallbackImage: "/sauna.webp",
+    image: "/penzion-strba-sauna.webp",
+    fallbackImage: "/penzion-strba-sauna.webp",
     Icon: Flame
   },
   {
     keyIndex: 2,
     defaultTitle: "Oddychová zóna",
     defaultDesc: "Tlmené LED svetlo • ticho",
-    image: "/oddychova.webp",
-    fallbackImage: "/oddychova.webp",
+    image: "/penzion-strba-oddychova-miestnost.webp",
+    fallbackImage: "/penzion-strba-oddychova-miestnost.webp",
     Icon: Waves
   },
   {
     keyIndex: 1,
     defaultTitle: "Vírivná vaňa",
     defaultDesc: "Hydromasáž • uvoľnenie",
-    image: "/virivka.webp",
-    fallbackImage: "/virivka.webp",
+    image: "/penzion-strba-virivka.webp",
+    fallbackImage: "/penzion-strba-virivka.webp",
     Icon: Droplets
   }
 ];

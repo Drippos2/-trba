@@ -2,7 +2,7 @@ import React from "react";
 import { api } from "@/lib/api";
 
 // Cesta upravená na tvoj nový optimalizovaný WebP obrázok v public zložke
-const LOGO_URL = "/logo.webp";
+const LOGO_URL = "/penzion-strba-logo.webp";
 
 /**
  * Logo component — displays the official Penzión Štrba logo.

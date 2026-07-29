@@ -24,95 +24,95 @@ export default function Services() {
     {
       t: tr("services.items.0.t"), // Reštaurácia & Pizzeria
       d: tr("services.items.0.d"),
-      image: "/pizzeria.webp",
-      fallbackImage: "/pizzeria.webp",
+      image: "/penzion-strba-pizzeria.webp",
+      fallbackImage: "/penzion-strba-pizzeria.webp",
       Icon: UtensilsCrossed
     },
     {
       t: tr("services.items.8.t"), // Kuchynky na poschodí
       d: tr("services.items.8.d"),
-      image: "/kuch.webp",
-      fallbackImage: "/kuch.webp",
+      image: "/penzion-strba-kuchyna.webp",
+      fallbackImage: "/penzion-strba-kuchyna.webp",
       Icon: ChefHat
     },
     {
       t: tr("audiences.cards.4.title"), // Rodinné oslavy a spoločenské akcie
       d: tr("audiences.cards.4.tag"),
-      image: "/oslava.webp",
-      fallbackImage: "/oslava.webp",
+      image: "/penzion-strba-oslava.webp",
+      fallbackImage: "/penzion-strba-oslava.webp",
       Icon: Cake
     },
     {
       t: tr("services.items.3.t"), // Wifi zdarma
       d: tr("services.items.3.d"),
-      image: "/wifi.webp",
-      fallbackImage: "/wifi.webp",
+      image: "/penzion-strba-wifi.webp",
+      fallbackImage: "/penzion-strba-wifi.webp",
       Icon: Wifi
     },
     {
       t: tr("services.items.4.t"), // Bezplatné parkovanie
       d: tr("services.items.4.d"),
-      image: "/parkovanie.webp",
-      fallbackImage: "/parkovanie.webp",
+      image: "/penzion-strba-parkovanie.webp",
+      fallbackImage: "/penzion-strba-parkovanie.webp",
       Icon: ParkingCircle
     },
     {
       t: tr("services.items.5.t"), // Nefajčiarsky objekt
       d: tr("services.items.5.d"),
-      image: "/nefajci.webp",
-      fallbackImage: "/nefajci.webp",
+      image: "/penzion-strba-nefajciarka.webp",
+      fallbackImage: "/penzion-strba-nefajciarka.webp",
       Icon: Snowflake
     },
     {
       t: tr("services.items.6.t"), // Lyžiareň
       d: tr("services.items.6.d"),
-      image: "/lyziaren.webp",
-      fallbackImage: "/lyziaren.webp",
+      image: "/penzion-strba-lyziaren.webp",
+      fallbackImage: "/penzion-strba-lyziaren.webp",
       Icon: Mountain
     },
     {
       t: tr("services.items.7.t"), // Požičovňa lyží
       d: tr("services.items.7.d"),
-      image: "/pozicovna.webp",
-      fallbackImage: "/pozicovna.webp",
+      image: "/penzion-strba-pozicovna.webp",
+      fallbackImage: "/penzion-strba-pozicovna.webp",
       Icon: Mountain
     },
     {
       t: tr("services.items.10.t"), // Detský kútik
       d: tr("services.items.10.d"),
-      image: "/kutik.webp",
-      fallbackImage: "/kutik.webp",
+      image: "/penzion-strba-detsky-kutik.webp",
+      fallbackImage: "/penzion-strba-detsky-kutik.webp",
       Icon: Baby
     },
     {
       t: lang === "en" ? "Private Wellness" : lang === "de" ? "Privater Wellnessbereich" : "Privátny Wellness",
       d: lang === "en" ? "Perfect relaxation" : lang === "de" ? "Perfekte Entspannung" : "Dokonalý relax v saune a vírivke",
-      image: "/welnes.webp",
-      fallbackImage: "/welnes.webp",
+      image: "/penzion-strba-wellnes.webp",
+      fallbackImage: "/penzion-strba-wellnes.webp",
       Icon: Sparkles
     },
     {
       // INFORMAČNÝ LETÁK
       t: lang === "en" ? "Information Brochure" : lang === "de" ? "Informationsbroschüre" : "Informačný leták",
       d: lang === "en" ? "All information in one place" : lang === "de" ? "Alle Informationen an einem Ort" : "Všetky informácie na jednom mieste",
-      image: "/letak.webp",
-      fallbackImage: "/letak.webp",
+      image: "/penzion-strba-letak.webp",
+      fallbackImage: "/penzion-strba-letak.webp",
       Icon: Scroll
     },
     {
       // JEDÁLEŇ S FOTKOU HNEĎ VEDĽA LETÁKU
       t: tr("services.items.1.t"), // Jedáleň
       d: tr("services.items.1.d"),
-      image: "/jedlo.webp",
-      fallbackImage: "/jedlo.webp",
+      image: "/penzion-strba-jedalen.webp",
+      fallbackImage: "/penzion-strba-jedalen.webp",
       Icon: UtensilsCrossed
     },
     {
       // RAŇAJKOVÝ BUFET S PRIDANOU FOTKOU /ranajkybuf.webp
       t: tr("services.items.2.t"), // Raňajkový bufet
       d: tr("services.items.2.d"),
-      image: "/ranajkybuf.webp",
-      fallbackImage: "/ranajkybuf.webp",
+      image: "/penzion-strba-bufet.webp",
+      fallbackImage: "/penzion-strba-bufet.webp",
       Icon: Coffee
     },
     {
