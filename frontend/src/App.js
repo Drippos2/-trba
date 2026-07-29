@@ -1,18 +1,17 @@
 import React, { lazy, Suspense } from "react";
 import "./App.css";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { LangProvider } from "@/contexts/LangContext";
 import { AuthProvider } from "@/contexts/AuthContext";
 
-// Dynamický (Lazy) import stránok - stiahnu sa až vtedy, keď na ne používateľ reálne prejde
+// Dynamický (Lazy) import stránok
 const Home = lazy(() => import("@/pages/Home"));
 const AdminLogin = lazy(() => import("@/pages/AdminLogin"));
 const AdminDashboard = lazy(() => import("@/pages/AdminDashboard"));
 
-// OPTIMALIZÁCIA: Lazy import pre Toaster, aby nezaťažoval úvodné načítanie hlavnej stránky
+// Lazy import pre Toaster
 const Toaster = lazy(() => import("sonner").then(module => ({ default: module.Toaster })));
 
-// Jednoduchý, ultra-ľahký placeholder, kým sa stránka načítava (nezaberá žiadny výkon)
 const PageLoader = () => (
   <div className="min-h-screen bg-zinc-950 flex items-center justify-center text-white font-serif">
     <div className="animate-pulse text-[#dfb144] tracking-widest text-sm uppercase">
@@ -26,15 +25,23 @@ function App() {
     <LangProvider>
       <AuthProvider>
         <BrowserRouter>
-          {/* Suspense obaluje routy aj Toaster a zabezpečuje plynulé lazy loading načítavanie */}
           <Suspense fallback={<PageLoader />}>
             <Routes>
-              <Route path="/" element={<Home />} />
+              {/* Slovenčina (predvolená hlavná URL) */}
+              <Route path="/" element={<Home lang="sk" />} />
+              
+              {/* Jazykové sub-cesty pre SEO (Nemčina a Angličtina) */}
+              <Route path="/de" element={<Home lang="de" />} />
+              <Route path="/en" element={<Home lang="en" />} />
+
+              {/* Administrácia */}
               <Route path="/admin/login" element={<AdminLogin />} />
               <Route path="/admin" element={<AdminDashboard />} />
+
+              {/* Fallback pre neexistujúce stránky */}
+              <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
             
-            {/* Presunuté sem, aby sa Toaster načítal asynchrónne na pozadí */}
             <Toaster theme="light" position="top-right" richColors />
           </Suspense>
         </BrowserRouter>
