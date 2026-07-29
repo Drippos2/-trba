@@ -103,27 +103,27 @@ export default function Location() {
                   <MapPin size={20} />
                 </div>
                 <div>
-                  <div className="overline mb-1 text-[#dfb144]">Adresa</div>
-                  <div className="font-display text-2xl font-semibold text-slate-900">Horská 1130/31</div>
-                  <div className="text-slate-500 mt-1">059 41 Tatranská Štrba, Slovensko</div>
-                  <div className="text-xs text-[#dfb144] font-medium mt-1">GPS: 49° 5′ 15.35″ N, 20° 4′ 16.65″ E</div>
+                  <div className="overline mb-1 text-[#dfb144]">{tr("location.addressLabel") || "Adresa"}</div>
+                  <div className="font-display text-2xl font-semibold text-slate-900">{tr("location.addressTitle") || "Horská 1130/31"}</div>
+                  <div className="text-slate-500 mt-1">{tr("location.addressSubtitle") || "059 41 Tatranská Štrba, Slovensko"}</div>
+                  <div className="text-xs text-[#dfb144] font-medium mt-1">{tr("location.gps") || "GPS: 49° 5′ 15.35″ N, 20° 4′ 16.65″ E"}</div>
                 </div>
               </div>
               <div className="mt-6 pt-6 border-t border-slate-200 grid grid-cols-3 gap-4 text-sm">
                 <div>
-                  <div className="text-xs tracking-wider uppercase text-slate-400 mb-1">Auto</div>
-                  <div className="font-display font-semibold text-slate-900">5 min</div>
-                  <div className="text-xs text-slate-500">diaľnica</div>
+                  <div className="text-xs tracking-wider uppercase text-slate-400 mb-1">{tr("location.carTimeLabel") || "Auto"}</div>
+                  <div className="font-display font-semibold text-slate-900">{tr("location.carTimeValue") || "5 min"}</div>
+                  <div className="text-xs text-slate-500">{tr("location.carTimeSub") || "diaľnica"}</div>
                 </div>
                 <div>
-                  <div className="text-xs tracking-wider uppercase text-slate-400 mb-1">Vlak</div>
-                  <div className="font-display font-semibold text-slate-900">10 min</div>
-                  <div className="text-xs text-slate-500">pešo</div>
+                  <div className="text-xs tracking-wider uppercase text-slate-400 mb-1">{tr("location.trainTimeLabel") || "Vlak"}</div>
+                  <div className="font-display font-semibold text-slate-900">{tr("location.trainTimeValue") || "10 min"}</div>
+                  <div className="text-xs text-slate-500">{tr("location.trainTimeSub") || "pešo"}</div>
                 </div>
                 <div>
-                  <div className="text-xs tracking-wider uppercase text-slate-400 mb-1">Bus</div>
-                  <div className="font-display font-semibold text-slate-900">5 min</div>
-                  <div className="text-xs text-slate-500">zastávka</div>
+                  <div className="text-xs tracking-wider uppercase text-slate-400 mb-1">{tr("location.busTimeLabel") || "Bus"}</div>
+                  <div className="font-display font-semibold text-slate-900">{tr("location.busTimeValue") || "5 min"}</div>
+                  <div className="text-xs text-slate-500">{tr("location.busTimeSub") || "zastávka"}</div>
                 </div>
               </div>
             </div>
@@ -135,7 +135,7 @@ export default function Location() {
               rel="noreferrer"
               className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full border border-slate-300 text-slate-700 hover:bg-zinc-950 hover:text-white hover:border-zinc-950 text-sm font-semibold transition-all duration-300 mt-6 self-start min-h-[44px]"
             >
-              Otvoriť v Google Maps <ExternalLink size={14} />
+              {tr("location.openMapBtn") || "Otvoriť v Google Maps"} <ExternalLink size={14} />
             </a>
           </div>
 
@@ -156,7 +156,7 @@ export default function Location() {
             ) : (
               <div className="flex flex-col items-center justify-center p-8">
                 <div className="w-8 h-8 border-4 border-[#dfb144] border-t-transparent rounded-full animate-spin mb-3" />
-                <p className="text-xs text-zinc-400 font-medium tracking-wide">Načítavam mapu...</p>
+                <p className="text-xs text-zinc-400 font-medium tracking-wide">{tr("location.loadingMap") || "Načítavam mapu..."}</p>
               </div>
             )}
           </div>
@@ -165,8 +165,8 @@ export default function Location() {
         {/* Sekcia: Detailné pokyny ako sa k nám dostanete */}
         <div className="mt-12 surface-card p-6 md:p-10 border border-slate-100 rounded-[16px]">
           <div className="mb-8">
-            <div className="overline mb-2 text-[#dfb144]">Navigačné pokyny</div>
-            <h3 className="font-display text-2xl md:text-3xl font-semibold text-slate-900">Ako sa k nám dostanete?</h3>
+            <div className="overline mb-2 text-[#dfb144]">{tr("location.directionsOverline") || "Navigačné pokyny"}</div>
+            <h3 className="font-display text-2xl md:text-3xl font-semibold text-slate-900">{tr("location.directionsTitle") || "Ako sa k nám dostanete?"}</h3>
           </div>
 
           <div className="grid md:grid-cols-2 gap-8">
@@ -176,13 +176,13 @@ export default function Location() {
                 <div className="w-8 h-8 rounded-lg bg-[#dfb144]/10 flex items-center justify-center text-[#dfb144] shrink-0">
                   <Train size={18} />
                 </div>
-                <span>Zo železničnej stanice (cca 10 min)</span>
+                <span>{tr("location.trainTitle") || "Zo železničnej stanice (cca 10 min)"}</span>
               </div>
               <ul className="space-y-2 text-slate-600 text-sm pl-11 list-disc marker:text-[#dfb144]">
-                <li>Na konci staničnej budovy sa vydajte po chodníku rovno až k benzínovej pumpe (cca 500m).</li>
-                <li>Ďalej prejdete po prechode cez hlavnú cestu na druhú stranu.</li>
-                <li>Pokračujte po chodníku okolo Slovenskej Koliby a ďalej rovno na sever (cca 400m).</li>
-                <li>Po ľavej strane uvidíte budovu potravín a reštaurácie – vchod do penziónu je hneď za reštauráciou.</li>
+                <li>{tr("location.trainStep1") || "Na konci staničnej budovy sa vydajte po chodníku rovno až k benzínovej pumpe (cca 500m)."}</li>
+                <li>{tr("location.trainStep2") || "Ďalej prejdete po prechode cez hlavnú cestu na druhú stranu."}</li>
+                <li>{tr("location.trainStep3") || "Pokračujte po chodníku okolo Slovenskej Koliby a ďalej rovno na sever (cca 400m)."}</li>
+                <li>{tr("location.trainStep4") || "Po ľavej strane uvidíte budovu potravín a reštaurácie – vchod do penziónu je hneď za reštauráciou."}</li>
               </ul>
             </div>
 
@@ -192,13 +192,13 @@ export default function Location() {
                 <div className="w-8 h-8 rounded-lg bg-[#dfb144]/10 flex items-center justify-center text-[#dfb144] shrink-0">
                   <Bus size={18} />
                 </div>
-                <span>Z autobusovej zastávky (cca 5 min)</span>
+                <span>{tr("location.busTitle") || "Z autobusovej zastávky (cca 5 min)"}</span>
               </div>
               <ul className="space-y-2 text-slate-600 text-sm pl-11 list-disc marker:text-[#dfb144]">
-                <li>Po vystúpení z autobusu sa vydajte rovno, smerom na Štrbské Pleso až ku Slovenskej Kolibe (cca 50m).</li>
-                <li>Pokračujte po chodníku rovno okolo Slovenskej Koliby smerom na sever (cca 400m).</li>
-                <li>Po ľavej strane uvidíte budovu potravín a reštaurácie.</li>
-                <li>Vchod do penziónu je hneď za reštauráciou.</li>
+                <li>{tr("location.busStep1") || "Po vystúpení z autobusu sa vydajte rovno, smerom na Štrbské Pleso až ku Slovenskej Kolibe (cca 50m)."}</li>
+                <li>{tr("location.busStep2") || "Pokračujte po chodníku rovno okolo Slovenskej Koliby smerom na sever (cca 400m)."}</li>
+                <li>{tr("location.busStep3") || "Po ľavej strane uvidíte budovu potravín a reštaurácie."}</li>
+                <li>{tr("location.busStep4") || "Vchod do penziónu je hneď za reštauráciou."}</li>
               </ul>
             </div>
 
@@ -208,13 +208,13 @@ export default function Location() {
                 <div className="w-8 h-8 rounded-lg bg-[#dfb144]/10 flex items-center justify-center text-[#dfb144] shrink-0">
                   <Car size={18} />
                 </div>
-                <span>Autom od Prešova / Popradu (cca 5 min)</span>
+                <span>{tr("location.carEastTitle") || "Autom od Prešova / Popradu (cca 5 min)"}</span>
               </div>
               <ul className="space-y-2 text-slate-600 text-sm pl-11 list-disc marker:text-[#dfb144]">
-                <li>Za tunelom Bôrik použite výjazd z diaľnice na Štrbu.</li>
-                <li>Potom pokračujte stále rovno, smerom na Tatranskú Štrbu.</li>
-                <li>Na najbližšej križovatke v Tatranskej Štrbe pokračujte rovno, smerom na Štrbské Pleso.</li>
-                <li>Po ľavej strane uvidíte budovu potravín a reštaurácie – vchod do penziónu je hneď za reštauráciou.</li>
+                <li>{tr("location.carEastStep1") || "Za tunelom Bôrik použite výjazd z diaľnice na Štrbu."}</li>
+                <li>{tr("location.carEastStep2") || "Potom pokračujte stále rovno, smerom na Tatranskú Štrbu."}</li>
+                <li>{tr("location.carEastStep3") || "Na najbližšej križovatke v Tatranskej Štrbe pokračujte rovno, smerom na Štrbské Pleso."}</li>
+                <li>{tr("location.carEastStep4") || "Po ľavej strane uvidíte budovu potravín a reštaurácie – vchod do penziónu je hneď za reštauráciou."}</li>
               </ul>
             </div>
 
@@ -224,13 +224,13 @@ export default function Location() {
                 <div className="w-8 h-8 rounded-lg bg-[#dfb144]/10 flex items-center justify-center text-[#dfb144] shrink-0">
                   <Car size={18} />
                 </div>
-                <span>Autom od Žiliny / Lipt. Mikuláša (cca 5 min)</span>
+                <span>{tr("location.carWestTitle") || "Autom od Žiliny / Lipt. Mikuláša (cca 5 min)"}</span>
               </div>
               <ul className="space-y-2 text-slate-600 text-sm pl-11 list-disc marker:text-[#dfb144]">
-                <li>Na diaľnici použite výjazd na Štrbu.</li>
-                <li>Potom pokračujte stále rovno, smerom na Tatranskú Štrbu.</li>
-                <li>Na najbližšej križovatke v Tatranskej Štrbe pokračujte rovno, smerom na Štrbské Pleso.</li>
-                <li>Po ľavej strane uvidíte budovu potravín a reštaurácie – vchod do penziónu je hneď za reštauráciou.</li>
+                <li>{tr("location.carWestStep1") || "Na diaľnici použite výjazd na Štrbu."}</li>
+                <li>{tr("location.carWestStep2") || "Potom pokračujte stále rovno, smerom na Tatranskú Štrbu."}</li>
+                <li>{tr("location.carWestStep3") || "Na najbližšej križovatke v Tatranskej Štrbe pokračujte rovno, smerom na Štrbské Pleso."}</li>
+                <li>{tr("location.carWestStep4") || "Po ľavej strane uvidíte budovu potravín a reštaurácie – vchod do penziónu je hneď za reštauráciou."}</li>
               </ul>
             </div>
           </div>
