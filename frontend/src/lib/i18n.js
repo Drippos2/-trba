@@ -119,7 +119,7 @@ export const dict = {
         { t: "Rodinné oslavy a spoločenské akcie", d: "Narodeniny, jubileá a krstiny" },
       ],
     },
-     location: {
+    location: {
       overline: "Lokalita",
       title: "8 km od Štrbského plesa.",
       subtitle: "Diaľnica 5 minút autom  •  vlak 10 minút pešo  •  autobus 5 minút.",
@@ -130,7 +130,6 @@ export const dict = {
       winterItems: ["Štrbské Pleso lyžovanie", "Lučivná", "Bežkovanie", "Skialpinizmus"],
       relaxItems: ["Aquacity Poprad", "Tatralandia", "Bešeňová", "Jaskyne"],
       
-      // Nové navigačné pokyny z obrázkov
       navTitle: "Ako sa k nám dostanete?",
       navSubtitle: "NAVIGAČNÉ POKYNY",
       trainCard: {
@@ -169,7 +168,6 @@ export const dict = {
           "Po ľavej strane uvidíte budovu potravín a reštaurácie – vchod do penziónu je hneď za reštauráciou."
         ]
       }
-    },
     },
     reviews: {
       overline: "Recenzie",
@@ -254,7 +252,7 @@ export const dict = {
         {
           id: "groups",
           tag: "Pre skupiny",
-          title: "Firmy, schools, teambuildingy.",
+          title: "Firmy, školy, teambuildingy.",
           body: "Školiaca miestnosť až pre 40 osôb, salónik, individuálne cenové ponuky pre teambuildingy, lyžiarske kurzy a firemné výjazdy.",
           bullets: ["Školiaca miestnosť 40 osôb", "Coffee break a catering", "Individuálne ceny", "Bezplatné parkovisko"],
         },
@@ -276,7 +274,7 @@ export const dict = {
           id: "celebrations",
           tag: "Oslavy a podujatia",
           title: "Oslavy",
-          body: "Naplánujte si narodeninové oslavy, jubileá, krstiny či menšie svadby priamo v našom penzióne. Zabezpečíme kompletné menu, ubytovanie a súkromie.",
+          body: "Naplánujte si narodeninové oslavy, jubileá, krstiny či menšie svadby priamo v našom penzióne. Zabezpečíme kompletné menu, ubytovanje a súkromie.",
           bullets: ["Kapacita podujatí do 40 osôb", "Tradičné domáce menu", "Možnosť rezervácie celého objektu", "Individuálny prístup k výzdobe"],
         },
       ],
@@ -424,7 +422,6 @@ export const dict = {
       summerItems: ["High-altitude hiking", "160+ km of bike trails", "Boating on the lake", "Spiš Castle"],
       winterItems: ["Štrbské Pleso skiing", "Lučivná", "Cross-country skiing", "Ski touring"],
       relaxItems: ["Aquacity Poprad", "Tatralandia", "Bešeňová", "Caves"],
-
       navTitle: "How to get to us?",
       navSubtitle: "NAVIGATION DIRECTIONS",
       trainCard: {
@@ -463,7 +460,6 @@ export const dict = {
           "On the left side, you will see the grocery and restaurant building – the guesthouse entrance is right behind the restaurant."
         ]
       }
-    },
     },
     reviews: { overline: "Reviews", title: "What our guests say 8 km from Štrbské Pleso." },
     contact: { overline: "Contact", title: "Write to us.", name: "Full name", email: "E-mail", phone: "Phone", subject: "Subject", message: "Message", send: "Send message", sent: "Your message has been sent." },
@@ -573,7 +569,12 @@ export const dict = {
       year: "365 days",
       yearSub: "Open all year",
     },
-    footer: { tagline: "Accommodation 8 km from Štrbské Pleso with wellness. Peace of detail.", address: "Horská 1130/31, 059 41 Tatranská Štrba", rights: "All rights reserved." },
+    footer: { 
+      tagline: "Accommodation 8 km from Štrbské Pleso with wellness. Peace of detail.", 
+      address: "Horská 1130/31, 059 41 Tatranská Štrba", 
+      rights: "All rights reserved." 
+    },
+  },
   de: {
     nav: {
       about: "Über uns",
@@ -700,7 +701,6 @@ export const dict = {
       summerItems: ["Hochgebirgswandern", "160+ km Radwege", "Bootfahren am See", "Burg Zips"],
       winterItems: ["Skifahren in Štrbské Pleso", "Lučivná", "Langlauf", "Skitouren"],
       relaxItems: ["Aquacity Poprad", "Tatralandia", "Bešeňová", "Höhlen"],
-
       navTitle: "Wie Sie zu uns kommen?",
       navSubtitle: "WEGBESCHREIBUNG",
       trainCard: {
@@ -738,7 +738,8 @@ export const dict = {
           "An der nächsten Kreuzung in Tatranská Štrba fahren Sie geradeaus weiter in Richtung Štrbské Pleso.",
           "Auf der linken Seite sehen Sie das Gebäude mit Lebensmittelgeschäft und Restaurant – der Hoteleingang befindet sich direkt hinter dem Restaurant."
         ]
-      },
+      }
+    },
     reviews: { overline: "Bewertungen", title: "Was unsere Gäste sagen – 8 km vom Štrbské Pleso." },
     contact: { overline: "Kontakt", title: "Schreiben Sie uns.", name: "Vor- und Nachname", email: "E-Mail", phone: "Telefon", subject: "Betreff", message: "Nachricht", send: "Nachricht senden", sent: "Ihre Nachricht wurde gesendet." },
     booking: {
@@ -847,6 +848,10 @@ export const dict = {
       year: "365 Tage",
       yearSub: "Ganzjährig geöffnet",
     },
-    footer: { tagline: "Unterkunft 8 km vom Štrbské Pleso mit wellness. Ruhe im Detail.", address: "Horská 1130/31, 059 41 Tatranská Štrba", rights: "Alle Rechte vorbehalten." },
+    footer: { 
+      tagline: "Unterkunft 8 km vom Štrbské Pleso mit wellness. Ruhe im Detail.", 
+      address: "Horská 1130/31, 059 41 Tatranská Štrba", 
+      rights: "Alle Rechte vorbehalten." 
+    },
   },
 };
