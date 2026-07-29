@@ -119,7 +119,7 @@ export const dict = {
         { t: "Rodinné oslavy a spoločenské akcie", d: "Narodeniny, jubileá a krstiny" },
       ],
     },
-    location: {
+     location: {
       overline: "Lokalita",
       title: "8 km od Štrbského plesa.",
       subtitle: "Diaľnica 5 minút autom  •  vlak 10 minút pešo  •  autobus 5 minút.",
@@ -129,6 +129,47 @@ export const dict = {
       summerItems: ["Vysokohorské túry", "160+ km cyklotrás", "Člnkovanie na Plese", "Spišský hrad"],
       winterItems: ["Štrbské Pleso lyžovanie", "Lučivná", "Bežkovanie", "Skialpinizmus"],
       relaxItems: ["Aquacity Poprad", "Tatralandia", "Bešeňová", "Jaskyne"],
+      
+      // Nové navigačné pokyny z obrázkov
+      navTitle: "Ako sa k nám dostanete?",
+      navSubtitle: "NAVIGAČNÉ POKYNY",
+      trainCard: {
+        title: "Zo železničnej stanice (cca 10 min)",
+        steps: [
+          "Na konci staničnej budovy sa vydajte po chodníku rovno až k benzínovej pumpe (cca 500m).",
+          "Ďalej prejdete po prechode cez hlavnú cestu na druhú stranu.",
+          "Pokračujte po chodníku okolo Slovenskej Koliby a ďalej rovno na sever (cca 400m).",
+          "Po ľavej strane uvidíte budovu potravín a reštaurácie – vchod do penziónu je hneď za reštauráciou."
+        ]
+      },
+      busCard: {
+        title: "Z autobusovej zastávky (cca 5 min)",
+        steps: [
+          "Po vystúpení z autobusu sa vydajte rovno, smerom na Štrbské Pleso až ku Slovenskej Kolibe (cca 50m).",
+          "Pokračujte po chodníku rovno okolo Slovenskej Koliby smerom na sever (cca 400m).",
+          "Po ľavej strane uvidíte budovu potravín a reštaurácie.",
+          "Vchod do penziónu je hneď za reštauráciou."
+        ]
+      },
+      carEastCard: {
+        title: "Autom od Prešova / Popradu (cca 5 min)",
+        steps: [
+          "Za tunelom Bôrik použite výjazd z dálnice na Štrbu.",
+          "Potom pokračujte stále rovno, smerom na Tatranskú Štrbu.",
+          "Na najbližšej križovatke v Tatranskej Štrbe pokračujte rovno, smerom na Štrbské Pleso.",
+          "Po ľavej strane uvidíte budovu potravín a reštaurácie – vchod do penziónu je hneď za reštauráciou."
+        ]
+      },
+      carWestCard: {
+        title: "Autom od Žiliny / Lipt. Mikuláša (cca 5 min)",
+        steps: [
+          "Na diaľnici použite výjazd na Štrbu.",
+          "Potom pokračujte stále rovno, smerom na Tatranskú Štrbu.",
+          "Na najbližšej križovatke v Tatranskej Štrbe pokračujte rovno, smerom na Štrbské Pleso.",
+          "Po ľavej strane uvidíte budovu potravín a reštaurácie – vchod do penziónu je hneď za reštauráciou."
+        ]
+      }
+    },
     },
     reviews: {
       overline: "Recenzie",
@@ -383,6 +424,46 @@ export const dict = {
       summerItems: ["High-altitude hiking", "160+ km of bike trails", "Boating on the lake", "Spiš Castle"],
       winterItems: ["Štrbské Pleso skiing", "Lučivná", "Cross-country skiing", "Ski touring"],
       relaxItems: ["Aquacity Poprad", "Tatralandia", "Bešeňová", "Caves"],
+
+      navTitle: "How to get to us?",
+      navSubtitle: "NAVIGATION DIRECTIONS",
+      trainCard: {
+        title: "From the railway station (approx. 10 min)",
+        steps: [
+          "At the end of the station building, head straight along the sidewalk to the gas station (approx. 500m).",
+          "Then cross the main road to the other side using the crosswalk.",
+          "Continue along the sidewalk past Slovenská Koliba and straight north (approx. 400m).",
+          "On the left side, you will see the grocery and restaurant building – the guesthouse entrance is right behind the restaurant."
+        ]
+      },
+      busCard: {
+        title: "From the bus stop (approx. 5 min)",
+        steps: [
+          "After getting off the bus, head straight towards Štrbské Pleso until you reach Slovenská Koliba (approx. 50m).",
+          "Continue straight along the sidewalk past Slovenská Koliba heading north (approx. 400m).",
+          "On the left side, you will see the grocery and restaurant building.",
+          "The entrance to the guesthouse is right behind the restaurant."
+        ]
+      },
+      carEastCard: {
+        title: "By car from Prešov / Poprad (approx. 5 min)",
+        steps: [
+          "After the Bôrik tunnel, take the exit from the highway toward Štrba.",
+          "Then continue straight towards Tatranská Štrba.",
+          "At the nearest intersection in Tatranská Štrba, continue straight toward Štrbské Pleso.",
+          "On the left side, you will see the grocery and restaurant building – the guesthouse entrance is right behind the restaurant."
+        ]
+      },
+      carWestCard: {
+        title: "By car from Žilina / Lipt. Mikuláš (approx. 5 min)",
+        steps: [
+          "On the highway, take the exit toward Štrba.",
+          "Then continue straight towards Tatranská Štrba.",
+          "At the nearest intersection in Tatranská Štrba, continue straight toward Štrbské Pleso.",
+          "On the left side, you will see the grocery and restaurant building – the guesthouse entrance is right behind the restaurant."
+        ]
+      }
+    },
     },
     reviews: { overline: "Reviews", title: "What our guests say 8 km from Štrbské Pleso." },
     contact: { overline: "Contact", title: "Write to us.", name: "Full name", email: "E-mail", phone: "Phone", subject: "Subject", message: "Message", send: "Send message", sent: "Your message has been sent." },
@@ -493,7 +574,6 @@ export const dict = {
       yearSub: "Open all year",
     },
     footer: { tagline: "Accommodation 8 km from Štrbské Pleso with wellness. Peace of detail.", address: "Horská 1130/31, 059 41 Tatranská Štrba", rights: "All rights reserved." },
-  },
   de: {
     nav: {
       about: "Über uns",
@@ -620,7 +700,45 @@ export const dict = {
       summerItems: ["Hochgebirgswandern", "160+ km Radwege", "Bootfahren am See", "Burg Zips"],
       winterItems: ["Skifahren in Štrbské Pleso", "Lučivná", "Langlauf", "Skitouren"],
       relaxItems: ["Aquacity Poprad", "Tatralandia", "Bešeňová", "Höhlen"],
-    },
+
+      navTitle: "Wie Sie zu uns kommen?",
+      navSubtitle: "WEGBESCHREIBUNG",
+      trainCard: {
+        title: "Vom Bahnhof (ca. 10 Min.)",
+        steps: [
+          "Gehen Sie am Ende des Bahnhofsgebäudes geradeaus auf dem Gehweg bis zur Tankstelle (ca. 500m).",
+          "Überqueren Sie anschließend die Hauptstraße über den Fußgängerüberweg auf die andere Seite.",
+          "Gehen Sie weiter auf dem Gehweg an der Slovenská Koliba vorbei und geradeaus nach Norden (ca. 400m).",
+          "Auf der linken Seite sehen Sie das Gebäude mit Lebensmittelgeschäft und Restaurant – der Hoteleingang befindet sich direkt hinter dem Restaurant."
+        ]
+      },
+      busCard: {
+        title: "Von der Bushaltestelle (ca. 5 Min.)",
+        steps: [
+          "Gehen Sie nach dem Aussteigen aus dem Bus geradeaus in Richtung Štrbské Pleso bis zur Slovenská Koliba (ca. 50m).",
+          "Folgen Sie dem Gehweg geradeaus an der Slovenská Koliba vorbei nach Norden (ca. 400m).",
+          "Auf der linken Seite sehen Sie das Gebäude des Lebensmittelgeschäfts und Restaurants.",
+          "Der Eingang zur Pension befindet sich direkt hinter dem Restaurant."
+        ]
+      },
+      carEastCard: {
+        title: "Mit dem Auto von Prešov / Poprad (ca. 5 Min.)",
+        steps: [
+          "Nehmen Sie nach dem Bôrik-Tunnel die Autobahnausfahrt nach Štrba.",
+          "Fahren Sie anschließend geradeaus weiter in Richtung Tatranská Štrba.",
+          "An der nächsten Kreuzung in Tatranská Štrba fahren Sie geradeaus weiter in Richtung Štrbské Pleso.",
+          "Auf der linken Seite sehen Sie das Gebäude mit Lebensmittelgeschäft und Restaurant – der Hoteleingang befindet sich direkt hinter dem Restaurant."
+        ]
+      },
+      carWestCard: {
+        title: "Mit dem Auto von Žilina / Lipt. Mikuláš (ca. 5 Min.)",
+        steps: [
+          "Nehmen Sie auf der Autobahn die Ausfahrt nach Štrba.",
+          "Fahren Sie anschließend geradeaus weiter in Richtung Tatranská Štrba.",
+          "An der nächsten Kreuzung in Tatranská Štrba fahren Sie geradeaus weiter in Richtung Štrbské Pleso.",
+          "Auf der linken Seite sehen Sie das Gebäude mit Lebensmittelgeschäft und Restaurant – der Hoteleingang befindet sich direkt hinter dem Restaurant."
+        ]
+      },
     reviews: { overline: "Bewertungen", title: "Was unsere Gäste sagen – 8 km vom Štrbské Pleso." },
     contact: { overline: "Kontakt", title: "Schreiben Sie uns.", name: "Vor- und Nachname", email: "E-Mail", phone: "Telefon", subject: "Betreff", message: "Nachricht", send: "Nachricht senden", sent: "Ihre Nachricht wurde gesendet." },
     booking: {
