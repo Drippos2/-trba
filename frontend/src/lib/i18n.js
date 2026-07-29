@@ -13,6 +13,7 @@ export const dict = {
       contact: "Kontakt",
       book: "Overiť dostupnosť",
       admin: "Admin",
+      navigate: "Navigácia",
     },
     hero: {
       overline: "Ubytovanie 8 km od Štrbského Plesa s wellness",
@@ -268,6 +269,7 @@ export const dict = {
       contact: "Contact",
       book: "Check availability",
       admin: "Admin",
+      navigate: "Navigation",
     },
     hero: {
       overline: "Accommodation 8 km from Štrbské Pleso with wellness",
@@ -503,7 +505,8 @@ export const dict = {
       reviews: "Bewertungen",
       contact: "Kontakt",
       book: "Verfügbarkeit prüfen",
-      admin: "Admin"
+      admin: "Admin",
+      navigate: "Navigation",
     },
     hero: {
       overline: "Unterkunft 8 km vom Štrbské Pleso mit Wellness",
@@ -582,7 +585,7 @@ export const dict = {
       from: "ab",
       night: "/ Nacht",
       guests: "Kapazität",
-      book: "Verfügbarkeit prüfen"
+      book: "Verfügbarkeit prüfen",
     },
     services: {
       overline: "Service & Ausstattung",

@@ -1,7 +1,6 @@
 import React from "react";
 import { useLang } from "@/contexts/LangContext";
 import Logo from "./Logo";
-import { api } from "@/lib/api";
 
 export default function Footer() {
   const { tr } = useLang();
@@ -16,11 +15,9 @@ export default function Footer() {
           </div>
           
           <div>
-            {/* OPRAVENÉ: Validné Tailwind formátovanie nadpisu */}
             <div className="text-xs font-semibold tracking-wider uppercase mb-4 text-[#dfb144]">
               {tr("nav.contact")}
             </div>
-            {/* OPRAVENÉ: Kontakty zmenené na reálne klikateľné odkazy pre lepšie UX a SEO skóre */}
             <div className="space-y-2 text-zinc-400 text-sm">
               <div className="block">
                 <a href="tel:+421949334341" className="hover:text-[#dfb144] transition-colors">
@@ -37,11 +34,9 @@ export default function Footer() {
           </div>
           
           <div>
-            {/* OPRAVENÉ: Validné Tailwind formátovanie nadpisu */}
             <div className="text-xs font-semibold tracking-wider uppercase mb-4 text-[#dfb144]">
-              Navigate
+              {tr("nav.about")}
             </div>
-            {/* OPRAVENÉ: Pridané aria-label atribúty pre bezchybné Best Practices a SEO hodnotenie */}
             <div className="space-y-2 text-zinc-400 text-sm">
               <a 
                 href="#rooms" 
@@ -75,7 +70,6 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* OPRAVENÉ: Nahradená neexistujúca trieda .hairline korektným Tailwind borderom */}
         <div className="border-t border-zinc-800" />
         
         <div className="pt-8 flex flex-wrap gap-4 justify-between items-center text-xs text-zinc-500">

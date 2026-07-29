@@ -1,22 +1,55 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { SUPPORTED_LANGS, dict } from "@/lib/i18n";
-import { api } from "@/lib/api";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const LangContext = createContext(null);
 
 export function LangProvider({ children }) {
-  const [lang, setLang] = useState(() => {
-    if (typeof window !== "undefined") {
-      const saved = localStorage.getItem("ps_lang");
-      if (saved && SUPPORTED_LANGS.includes(saved)) return saved;
-    }
-    return "sk";
-  });
+  const location = useLocation();
+  const navigate = useNavigate();
 
+  // Zistíme jazyk z aktuálnej URL (napr. /de/.. -> "de", /en/.. -> "en", inak "sk")
+  const getLangFromPath = (pathname) => {
+    const segments = pathname.split("/");
+    const potentialLang = segments[1]; // Druhý segment po prvom lomítku
+    if (SUPPORTED_LANGS.includes(potentialLang)) {
+      return potentialLang;
+    }
+    return "sk"; // Predvolená slovenčina pre "/"
+  };
+
+  const [lang, setLangState] = useState(() => getLangFromPath(window.location.pathname));
+
+  // Ak sa zmení URL (napr. užívateľ klikne na odkaz alebo späť v prehliadači), aktualizujeme stav jazyka
   useEffect(() => {
-    localStorage.setItem("ps_lang", lang);
-    document.documentElement.lang = lang;
-  }, [lang]);
+    const currentLang = getLangFromPath(location.pathname);
+    if (currentLang !== lang) {
+      setLangState(currentLang);
+    }
+    document.documentElement.lang = currentLang;
+  }, [location.pathname]);
+
+  // Vlastná funkcia na zmenu jazyka, ktorá reálne presmeruje na správnu URL pod-cestu
+  const setLang = (newLang) => {
+    if (!SUPPORTED_LANGS.includes(newLang)) return;
+    
+    setLangState(newLang);
+    localStorage.setItem("ps_lang", newLang);
+
+    // Zistíme čistú cestu bez aktuálneho jazykového prefixu
+    const segments = location.pathname.split("/");
+    if (SUPPORTED_LANGS.includes(segments[1])) {
+      segments.splice(1, 1); // Odstránime starý jazyk
+    }
+    const cleanPath = segments.join("/") || "/";
+
+    // Presmerujeme na novú URL pre daný jazyk
+    if (newLang === "sk") {
+      navigate(cleanPath);
+    } else {
+      navigate(`/${newLang}${cleanPath === "/" ? "" : cleanPath}`);
+    }
+  };
 
   // Vylepšená funkcia na preklady, ktorá bezpečne vracia texty aj polia (napr. wellness.items)
   const tr = (path) => {
