@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { toast } from "sonner";
-import { Phone, Mail, MapPin, Send } from "lucide-react";
+import { Phone, Mail, MapPin, Send, FileText } from "lucide-react";
 import { api, formatApiError } from "@/lib/api";
 
 import { useLang } from "@/contexts/LangContext";
@@ -73,6 +73,21 @@ export default function ContactSection() {
                 <div className="font-display font-semibold text-zinc-900">Horská 1130/31</div>
                 <div className="text-slate-500 text-sm">059 41 Tatranská Štrba</div>
               </div>
+            </div>
+
+            {/* GDPR dokument */}
+            <div className="mt-8 pt-6 border-t border-zinc-200">
+              <a 
+                href="/GDPR.pdf" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="flex items-center gap-3 text-slate-700 hover:text-[#dfb144] transition-colors group"
+              >
+                <div className="w-9 h-9 rounded-lg bg-[#dfb144]/10 flex items-center justify-center text-[#cc9f37] shrink-0 group-hover:bg-[#dfb144] group-hover:text-zinc-950 transition-colors">
+                  <FileText size={16} />
+                </div>
+                <span className="text-sm font-medium">Právne informácie & GDPR</span>
+              </a>
             </div>
           </div>
         </div>
